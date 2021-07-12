@@ -1,0 +1,3 @@
+<img src="/logo.svg" width="64px"/>
+
+The project is in stealth mode...
