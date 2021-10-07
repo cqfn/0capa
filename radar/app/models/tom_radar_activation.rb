@@ -1,0 +1,2 @@
+class TomRadarActivation < ApplicationRecord
+end

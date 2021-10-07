@@ -1,0 +1,2 @@
+class TomProject < ApplicationRecord
+end
