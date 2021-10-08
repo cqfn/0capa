@@ -1,5 +1,5 @@
-require "./http"
-require "./json"
+require "http"
+require "json"
 
 class Api::V1::IssuesController < ApplicationController
   @base_uri = 'https://api.github.com/repos/xavzelada/repo_test/issues'
