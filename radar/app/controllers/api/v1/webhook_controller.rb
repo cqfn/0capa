@@ -1,4 +1,6 @@
 class Api::V1::WebhookController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def index
     render json: {message: "This URL expects POST requests from a code hub platform WebHook."}, status: 200
   end
