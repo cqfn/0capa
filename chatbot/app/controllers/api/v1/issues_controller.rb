@@ -11,7 +11,6 @@ class Api::V1::IssuesController < ApplicationController
 
 
     TomRadarActivation.where(status: "Pending").each do | issue |
-    begin
 
       puts issue.id
       response = HTTP[:accept => "application/vnd.github.v3+json",:Authorization => "token " + settings.apisecret ].post('https://api.github.com/repos/xavzelada/repo_test/issues', :json => { :title => issue.issuetitle, :body => issue.issuebody })
