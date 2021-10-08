@@ -1,0 +1,2 @@
+class TomSetting < ApplicationRecord
+end
