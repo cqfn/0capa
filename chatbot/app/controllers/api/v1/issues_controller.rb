@@ -2,6 +2,7 @@ require "http"
 require "json"
 
 class Api::V1::IssuesController < ApplicationController
+  skip_before_action :verify_authenticity_token
   @base_uri = 'https://api.github.com/repos/xavzelada/repo_test/issues'
 
   def create
