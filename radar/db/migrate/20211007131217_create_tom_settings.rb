@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Table to store TOM Radars settings
 class CreateTomSettings < ActiveRecord::Migration[6.1]
   def change
     create_table :tom_settings do |t|
