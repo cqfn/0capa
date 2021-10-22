@@ -35,6 +35,6 @@
 yarn-debug.log*
 .yarn-integrity
 .env
-
+/.scannerwork/*
 /coverage/*
 !/coverage/.resultset.json
