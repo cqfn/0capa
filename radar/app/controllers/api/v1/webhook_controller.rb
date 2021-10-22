@@ -25,7 +25,7 @@ module Api
               raise "Invalid content-type: \"#{request.content_type}\""
             end
           )
-
+          # puts JSON.pretty_generate(json)
           radar_name = params[:source].capitalize
           myRadar = RadarFactoryClass.create("#{radar_name}Radar", nil)
           if myRadar.get_last_update(json)

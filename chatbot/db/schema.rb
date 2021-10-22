@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_22_111210) do
+ActiveRecord::Schema.define(version: 2021_10_22_115231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "tom_issues", force: :cascade do |t|
+    t.string "issueid"
+    t.string "repo_issueid"
+    t.datetime "created_at_ext"
+    t.integer "comments"
+    t.datetime "closed_at_ext"
+    t.string "closed_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "tom_projects", force: :cascade do |t|
     t.string "name"

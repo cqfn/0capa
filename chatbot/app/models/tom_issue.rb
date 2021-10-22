@@ -1,0 +1,2 @@
+class TomIssue < ApplicationRecord
+end
