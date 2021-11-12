@@ -18,7 +18,7 @@ class SonarqubeExtractor < MetricsBaseController
     # TODO: implment a feature to handle repositories with multiple projects
 
     TomPushInfo.where(status: "D").each do |pushInfo|
-      dir_name = "./tmp_source_code/github_" + pushInfo.head_commit_id + "/" + pushInfo.repo_name
+      dir_name = "./tmp/github_" + pushInfo.head_commit_id + "/" + pushInfo.repo_name
 
       #check if there is a project created on sonarqube
       url = "http://188.130.155.202:7000/api/projects/search?projects=" + pushInfo.repo_name
@@ -63,6 +63,8 @@ class SonarqubeExtractor < MetricsBaseController
         Dir.chdir(dir_name) {
           %x[#{command}]
         }
+        pushInfo.status = "P"
+        pushInfo.save
       when "ruby"
       else
         puts "Language no supported"
@@ -158,7 +160,7 @@ class SonarqubeExtractor < MetricsBaseController
         File.write(repo_path + "/pom.xml", pom)
       end
 
-      command = "mvn sonar:sonar -Dsonar.projectKey=" + repo_name + " -Dsonar.host.url=http://188.130.155.202:7000  -Dsonar.login=a368d326f8524205b7579d9ff2695ceb3342dcb4"
+      command = "mvn sonar:sonar -Dsonar.projectKey=" + repo_name + " -Dsonar.host.url=http://188.130.155.202:7000  -Dsonar.login=" + @extractor_seetings.apikey
     elsif File.exists?(repo_path + "/build.gradle")
       puts "gradle project detected"
     else
