@@ -1,27 +1,33 @@
 # frozen_string_literal: false
 
 require "json"
-require_relative "base_radar_controller"
+require "git"
+require "fileutils"
+
+require_relative "radar_base_controller"
 
 class GithubRadar < RadarBaseController
   SORUCE = "github"
 
   def initialize
     puts "initialize GithubRadar"
-    _Initialize(SORUCE)
+    Initialize(SORUCE)
   end
 
   def get_last_update(json)
     puts "getting last update GithubRadar"
 
     pushInfo = TomPushInfo.new()
-    pushInfo.repoid = json["repository"]["id"]
+    pushInfo.head_commit_id = json["head_commit"]["id"]
+    pushInfo.repo_name = json["repository"]["name"]
     pushInfo.full_name = json["repository"]["full_name"]
     pushInfo.isFork = json["repository"]["fork"]
     pushInfo.open_issues_count = json["repository"]["open_issues_count"]
     pushInfo.size = json["repository"]["size"]
     pushInfo.language = json["repository"]["language"]
+    pushInfo.repo_url = json["repository"]["clone_url"]
     pushInfo.commits_count = json["commits"].length
+    pushInfo.status = "P"
 
     total_added = 0
     total_removed = 0
@@ -80,6 +86,27 @@ class GithubRadar < RadarBaseController
       end
     else
       return false
+    end
+  end
+
+  def getSourceCode()
+    # downloading those repositories that have been recently updated
+    TomPushInfo.where(status: "P").each do |pushInfo|
+      dir_name = "./tmp_source_code/github_" + pushInfo.head_commit_id
+      # Creating a temporal folder where the repository will be cloned
+      Dir.mkdir(dir_name) unless Dir.exists?(dir_name)
+      begin
+        g = Git.clone(pushInfo.repo_url, pushInfo.repo_name, :path => dir_name)
+      rescue Exception => e
+        puts "--- error catched ---"
+        puts e.message
+      end
+      # updating the status to pass next stage, prepare the repo and run sonarqube analysis
+      pushInfo.status = "D"
+      pushInfo.save
+
+      puts pushInfo.inspect
+      break
     end
   end
 end

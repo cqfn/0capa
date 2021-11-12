@@ -1,0 +1,2 @@
+class TomAnalysisMetric < ApplicationRecord
+end

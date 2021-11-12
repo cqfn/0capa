@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_22_111210) do
+ActiveRecord::Schema.define(version: 2021_11_12_132325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "tom_analyses", force: :cascade do |t|
+    t.string "extractor_id"
+    t.string "repo_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tom_analysis_metrics", force: :cascade do |t|
+    t.string "analysis_id"
+    t.string "metric_name"
+    t.string "value"
+    t.string "is_best_value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "tom_projects", force: :cascade do |t|
     t.string "name"
@@ -24,7 +40,7 @@ ActiveRecord::Schema.define(version: 2021_10_22_111210) do
   end
 
   create_table "tom_push_infos", force: :cascade do |t|
-    t.string "repoid"
+    t.string "head_commit_id"
     t.string "full_name"
     t.string "isFork"
     t.integer "open_issues_count"
@@ -36,6 +52,9 @@ ActiveRecord::Schema.define(version: 2021_10_22_111210) do
     t.integer "total_files_changed"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "repo_name"
+    t.string "repo_url"
+    t.string "status", default: "P"
   end
 
   create_table "tom_radar_activations", force: :cascade do |t|

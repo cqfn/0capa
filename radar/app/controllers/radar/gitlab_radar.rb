@@ -2,11 +2,15 @@
 
 #TODO: implement the class methods
 require "json"
-require_relative "base_radar_controller"
+require_relative "radar_base_controller"
 
 class GitlabRadar < RadarBaseController
   def initialize
     puts "initialize GitlabRadar"
-    _Initialize("gitlab")
+    Initialize("gitlab")
+  end
+
+  def get_last_update(json)
+    # implementation
   end
 end

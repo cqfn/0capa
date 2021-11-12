@@ -57,3 +57,7 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 gem "require_all"
 gem "simplecov", require: false, group: :test
 gem "simplecov-json", :require => false, :group => :test
+
+gem "git"
+gem "nokogiri"
+gem "http"

@@ -3,7 +3,7 @@
 class RadarBaseController
   @@radar_seetings
 
-  def _Initialize(radar_name)
+  def Initialize(radar_name)
     puts "Initializing radar -> #{radar_name}"
     @radar_seetings = TomSetting.find_by(agentname: radar_name)
   end
@@ -12,9 +12,13 @@ class RadarBaseController
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
+  def getSourceCode()
+    raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+  end
+
   def get_settings
     @radar_seetings
   end
 
-  protected :_Initialize
+  protected :Initialize
 end

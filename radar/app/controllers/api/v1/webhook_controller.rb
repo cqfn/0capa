@@ -27,7 +27,7 @@ module Api
           )
           # puts JSON.pretty_generate(json)
           radar_name = params[:source].capitalize
-          myRadar = RadarFactoryClass.create("#{radar_name}Radar", nil)
+          myRadar = FactoryClass.create("#{radar_name}Radar", nil)
           if myRadar.get_last_update(json)
             render json: { message: "Call catched" }, status: 201
           else
@@ -44,6 +44,42 @@ module Api
           render json: { message: "Activations deleted - only for testing purposes" }, status: 204
         else
           render json: { error: "Operation not allowed" }, status: 403
+        end
+      end
+
+      def CodeScanner
+        radar_name = "Github"
+        myRadar = FactoryClass.create("#{radar_name}Radar", nil)
+        myRadar.getSourceCode()
+
+        extractor_name = "Sonarqube"
+        extractor = FactoryClass.create("#{extractor_name}Extractor", nil)
+        extractor.runAnalysis()
+      end
+
+      def CodeScannerHook
+        begin
+          request.body.rewind
+          json = JSON.parse(
+            case request.content_type
+            when "application/x-www-form-urlencoded"
+              params[:payload]
+            when "application/json"
+              request.body.read
+            else
+              raise "Invalid content-type: \"#{request.content_type}\""
+            end
+          )
+          # puts JSON.pretty_generate(json)
+          extractor_name = params[:source].capitalize
+          extractor = FactoryClass.create("#{extractor_name}Extractor", nil)
+          if extractor.get_last_update(json)
+            render json: { message: "Call catched" }, status: 201
+          else
+            render json: { error: "Error Fetching the data" }, status: 400
+          end
+        rescue Exception => e
+          render json: { radar: extractor_name, error: e.message }, status: 422
         end
       end
     end

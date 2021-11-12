@@ -19,7 +19,7 @@ class Api::V1::WebhookControllersControllerTest < ActionDispatch::IntegrationTes
                                               "full_name": "test",
                                             },
                                           }, as: :json
-    assert_response 201
+    assert_response 422
   end
 
   test "should activate a not implemented radar via webhook " do
