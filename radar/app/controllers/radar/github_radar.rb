@@ -92,7 +92,7 @@ class GithubRadar < RadarBaseController
   def getSourceCode()
     # downloading those repositories that have been recently updated
     TomPushInfo.where(status: "P").each do |pushInfo|
-      dir_name = "./tmp_source_code/github_" + pushInfo.head_commit_id
+      dir_name = "./tmp/github_" + pushInfo.head_commit_id
       # Creating a temporal folder where the repository will be cloned
       Dir.mkdir(dir_name) unless Dir.exists?(dir_name)
       begin
