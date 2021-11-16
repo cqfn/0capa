@@ -17,7 +17,8 @@ class SonarqubeExtractor < MetricsBaseController
     # processing those repositories that had been downloaded and run the sonarqube analysis
     # TODO: implment a feature to handle repositories with multiple projects
 
-    TomPushInfo.where(status: "D").each do |pushInfo|
+    #TOOD: Comment status on the code
+    TomPushInfo.where(status: "D").each do |pushInfo| 
       dir_name = "./tmp/github_" + pushInfo.head_commit_id + "/" + pushInfo.repo_name
 
       #check if there is a project created on sonarqube
