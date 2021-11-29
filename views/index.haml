@@ -1,0 +1,15 @@
+%div.center
+  %p
+    %a{href:url('/')}
+      %img.logo{src:'https://avatars.githubusercontent.com/u/95225052'}
+  %p
+    CAPAs Generator
+  %p
+    %a{href:'https://github.com/cqfn/0capa'}
+      %img{src:'https://img.shields.io/github/stars/cqfn/0capa.svg'}
+  %p.versions
+    %img{src:url('/images/logo.svg'), alt:'Currently deployed version'}
+    %span{title:'Currently deployed version'}
+      = ver
+  %p
+    %span{style: 'color:' + (remaining < 1000 ? 'red' : 'green'), title: 'GitHub API remaining quota'}= remaining
