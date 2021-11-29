@@ -34,8 +34,8 @@ require 'octokit'
 require 'tmpdir'
 require 'glogin'
 
-require_relative 'objects/github'
 require_relative 'version'
+require_relative 'objects/github'
 
 configure do
   Haml::Options.defaults[:format] = :xhtml
