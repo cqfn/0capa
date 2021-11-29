@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2021 TOM
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -103,7 +105,7 @@ get '/' do
     title: '0capa',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
-    remaining: settings.github.rate_limit.remaining,
+    remaining: settings.github.rate_limit.remaining
   )
 end
 

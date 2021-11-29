@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2021 TOM
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,16 +21,12 @@
 
 source 'https://rubygems.org'
 
-gem 'aws-sdk-dynamodb', '1.59.0'
-gem 'aws-sdk-s3', '1.90.0'
 gem 'codecov', '0.5.1'
 gem 'glogin', '0.7.0'
 gem 'haml', '5.2.1'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
-gem 'nokogiri', '1.11.4'
 gem 'octokit', '4.20.0'
-gem 'pdd', '0.20.6'
 gem 'rack', '2.2.3'
 gem 'rack-test', '1.1.0'
 gem 'rake', '13.0.3', require: false

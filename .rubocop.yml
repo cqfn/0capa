@@ -13,8 +13,6 @@ Naming/UncommunicativeMethodParamName:
   MinNameLength: 1
 Style/CommandLiteral:
   Enabled: false
-Style/FrozenStringLiteralComment:
-  Enabled: false
 Layout/IndentationWidth:
   Enabled: false
 Layout/ElseAlignment:

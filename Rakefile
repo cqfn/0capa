@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2021 TOM
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +24,6 @@ require 'rubygems'
 require 'rake'
 require 'rdoc'
 require 'rake/clean'
-require_relative 'objects/dynamo'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -30,7 +31,7 @@ task default: %i[check_outdated_gems clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
-Rake::TestTask.new(test: :dynamo) do |test|
+Rake::TestTask.new(:test) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
