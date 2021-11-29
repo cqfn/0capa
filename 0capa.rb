@@ -55,7 +55,7 @@ configure do
   if ENV['RACK_ENV'] != 'test'
     Raven.configure do |c|
       c.dsn = config['sentry']
-      c.release = VERSION
+      c.release = Capa::VERSION
     end
   end
   set :config, config
