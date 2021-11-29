@@ -140,7 +140,6 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e) unless e.is_a?(UserError)
   haml(
     :error,
     layout: :layout,
