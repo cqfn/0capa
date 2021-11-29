@@ -104,8 +104,6 @@ end
 get '/' do
   haml :index, layout: :layout, locals: merged(
     title: '0capa',
-    ruby_version: settings.ruby_version,
-    git_version: settings.git_version,
     remaining: settings.github.rate_limit.remaining
   )
 end
