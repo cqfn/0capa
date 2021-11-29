@@ -34,6 +34,7 @@ require 'octokit'
 require 'tmpdir'
 require 'glogin'
 
+require_relative 'objects/github'
 require_relative 'version'
 
 configure do
