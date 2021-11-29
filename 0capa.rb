@@ -60,7 +60,7 @@ configure do
   end
   set :config, config
   set :server_settings, timeout: 25
-  set :github, Github.new(config).client
+  set :github, Capa::Github.new(config).client
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -71,7 +71,7 @@ end
 
 before '/*' do
   @locals = {
-    ver: VERSION,
+    ver: Capa::VERSION,
     login_link: settings.glogin.login_uri
   }
   if cookies[:glogin]
@@ -104,7 +104,6 @@ end
 get '/' do
   haml :index, layout: :layout, locals: merged(
     title: '0capa',
-    ver: Capa::VERSION,
     remaining: settings.github.rate_limit.remaining
   )
 end
@@ -115,7 +114,7 @@ Disallow: /snapshot'
 end
 
 get '/version' do
-  VERSION
+  Capa::VERSION
 end
 
 get '/p' do
