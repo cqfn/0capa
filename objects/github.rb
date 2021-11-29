@@ -26,7 +26,7 @@ require 'octokit'
 # Github client
 # API: http://octokit.github.io/octokit.rb/method_list.html
 #
-class Github
+class Capa::Github
   def initialize(config = {})
     @config = config
   end
@@ -34,7 +34,7 @@ class Github
   def client
     client = if @config['testing']
       require_relative '../test/fake_github'
-      FakeGithub.new
+      Capa::FakeGithub.new
     else
       args = {}
       args[:access_token] = @config['github']['token'] if @config['github']
