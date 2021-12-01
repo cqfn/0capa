@@ -18,7 +18,7 @@ release:
   script: |-
     pdd -f /dev/null
     bundle exec rake
-    git remote add dokku dokku@dokku.0capa.com:zeropdd
+    git remote add dokku dokku@dokku.0capa.com:capa
     rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
