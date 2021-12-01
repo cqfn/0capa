@@ -21,5 +21,5 @@
 # SOFTWARE.
 
 module Capa
-  VERSION = 'BUILD'
+  VERSION = '0.0.3'
 end
