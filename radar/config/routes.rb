@@ -8,4 +8,7 @@ Rails.application.routes.draw do
       post "code-scanner-hook", to: "webhook#CodeScannerHook"
     end
   end
+  namespace :web do
+    get "/", to: "tom_report#index"
+  end
 end

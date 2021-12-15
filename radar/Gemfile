@@ -61,3 +61,4 @@ gem "simplecov-json", :require => false, :group => :test
 gem "git"
 gem "nokogiri"
 gem "http"
+gem "pivot_table"

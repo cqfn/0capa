@@ -18,11 +18,11 @@ class SonarqubeExtractor < MetricsBaseController
     # TODO: implment a feature to handle repositories with multiple projects
 
     #TOOD: Comment status on the code
-    TomPushInfo.where(status: "D").each do |pushInfo| 
+    TomPushInfo.where(status: "D").each do |pushInfo|
       dir_name = "./tmp/github_" + pushInfo.head_commit_id + "/" + pushInfo.repo_name
 
       #check if there is a project created on sonarqube
-      url = "http://188.130.155.202:7000/api/projects/search?projects=" + pushInfo.repo_name
+      url = "http://188.130.155.202:7000/api/projects/search?projects=" + pushInfo.full_name
       response = HTTP["Content-Type": "JSON", "Content-Language": "en-US", "Authorization": "Basic #{@extractor_seetings.apisecret}"].get(
         url
       )
@@ -35,7 +35,7 @@ class SonarqubeExtractor < MetricsBaseController
 
       #Creating the sonarqube project in case it does not exist
       if sonar_project == nil
-        url = "http://188.130.155.202:7000/api/projects/create?visibility=private&name=" + pushInfo.repo_name + "&project=" + pushInfo.repo_name
+        url = "http://188.130.155.202:7000/api/projects/create?visibility=private&name=" + pushInfo.full_name + "&project=" + pushInfo.full_name
         response = HTTP["Content-Type": "JSON", "Content-Language": "en-US", "Authorization": "Basic #{@extractor_seetings.apisecret}"].post(
           url
         )
@@ -44,7 +44,7 @@ class SonarqubeExtractor < MetricsBaseController
           json = JSON.parse(response)
           sonar_project = json["project"]
 
-          url = "http://188.130.155.202:7000/api/webhooks/create?name=wh_" + pushInfo.repo_name + "&project=" + pushInfo.repo_name + "&url=https://tom-radar.herokuapp.com/api/v1/webhook?source=sonarqube"
+          url = "http://188.130.155.202:7000/api/webhooks/create?name=wh_" + pushInfo.full_name + "&project=" + pushInfo.full_name + "&url=https://tom-radar.herokuapp.com/api/v1/webhook?source=sonarqube"
           response = HTTP["Content-Type": "JSON", "Content-Language": "en-US", "Authorization": "Basic #{@extractor_seetings.apisecret}"].post(
             url
           )
@@ -64,7 +64,7 @@ class SonarqubeExtractor < MetricsBaseController
         Dir.chdir(dir_name) {
           %x[#{command}]
         }
-        pushInfo.status = "P"
+        pushInfo.status = "S"
         pushInfo.save
       when "ruby"
       else
