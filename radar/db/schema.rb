@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_12_132325) do
+ActiveRecord::Schema.define(version: 2021_12_28_122326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,12 +31,54 @@ ActiveRecord::Schema.define(version: 2021_11_12_132325) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tom_commits_metrics", force: :cascade do |t|
+    t.string "repoid"
+    t.string "full_name"
+    t.string "repo_name"
+    t.string "base_commit_id"
+    t.string "head_commit_id"
+    t.string "diff_url"
+    t.string "status"
+    t.integer "commits_count"
+    t.integer "total_files"
+    t.integer "total_files_added"
+    t.integer "total_files_removed"
+    t.integer "total_files_changed"
+    t.integer "total_added"
+    t.integer "total_removed"
+    t.integer "total_changed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tom_issues", force: :cascade do |t|
+    t.string "issueid"
+    t.string "repo_issueid"
+    t.datetime "created_at_ext"
+    t.integer "comments"
+    t.datetime "closed_at_ext"
+    t.string "closed_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "tom_projects", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "isactive"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "repo_fullname"
+    t.string "repo_url"
+    t.string "repoid"
+    t.string "invitation_id"
+    t.string "inviter_login"
+    t.string "permissions"
+    t.string "is_private"
+    t.string "owner_login"
+    t.string "last_commit_id"
+    t.datetime "last_scanner_date"
+    t.string "source"
   end
 
   create_table "tom_push_infos", force: :cascade do |t|
@@ -78,6 +120,12 @@ ActiveRecord::Schema.define(version: 2021_11_12_132325) do
     t.string "isactive"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "invitations_endpoint"
+    t.string "invitations_accept_endpoint"
+    t.string "notifications_endpoint"
+    t.string "content_type"
+    t.string "repos_info_url"
+    t.string "repos_diff_url"
   end
 
 end

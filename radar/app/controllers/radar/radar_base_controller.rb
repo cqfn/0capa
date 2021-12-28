@@ -8,6 +8,10 @@ class RadarBaseController
     @radar_seetings = TomSetting.find_by(agentname: radar_name)
   end
 
+  def check_new_invitations()
+    raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+  end
+
   def get_last_update(json)
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
