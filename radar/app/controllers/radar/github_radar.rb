@@ -367,7 +367,8 @@ class GithubRadar < RadarBaseController
         projectMetrics.repo_readme_length = 0
       end
     else
-      return false
+      puts "Error retriving data -> " + response.message
+      raise StandardError.new "Error retriving data, " + response.message
     end
 
     puts "getting commits info for -> " + repo_info.repo_fullname
@@ -469,7 +470,11 @@ class GithubRadar < RadarBaseController
         projectMetrics.contributors_top_avg_participation_week = 0
       end
     else
-      return false
+      projectMetrics.contributors_count = 0
+      projectMetrics.contributors_top_avg_commits = 0
+      projectMetrics.contributors_top_avg_additions = 0
+      projectMetrics.contributors_top_avg_deletions = 0
+      projectMetrics.contributors_top_avg_participation_week = 0
     end
 
     contributors_list = nil
