@@ -93,7 +93,7 @@ class GithubRadar < RadarBaseController
     puts Time.now.midnight
     puts Time.now.midnight + 1.day
     while true
-      project_list = TomProject.where("source = :source and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date))", {
+      project_list = TomProject.where("source = :source and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
         source: SORUCE, start_date: Time.now.midnight, end_date: Time.now.midnight + 1.day,
       }).limit(10)
 
@@ -110,6 +110,7 @@ class GithubRadar < RadarBaseController
           status: "P",
         }).each do |project|
           begin
+            puts "using node -> " + host
             t1 = Time.now.to_f
             puts "repo_fullname -> " + project.repo_fullname
             get_commits_info(settings, project)
