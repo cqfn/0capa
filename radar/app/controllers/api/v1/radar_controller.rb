@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_rel "../../radar/"
+require "socket"
 # Controller to handle github notifications
 class Api::V1::RadarController < ApplicationController
   def check_repos_update
@@ -11,5 +12,9 @@ class Api::V1::RadarController < ApplicationController
     else
       render json: { error: "Error Fetching the data" }, status: 400
     end
+  end
+
+  def get_host
+    render json: { host: Socket.gethostname }
   end
 end

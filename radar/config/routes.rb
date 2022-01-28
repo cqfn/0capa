@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :notications_handler, only: %i[index create destroy]
       get "invitations", to: "notications_handler#check_invitations"
       get "repos_update", to: "radar#check_repos_update"
+      get "radar_hostname", to: "radar#get_host"
       post "code-scanner", to: "webhook#CodeScanner"
       post "code-scanner-hook", to: "webhook#CodeScannerHook"
     end

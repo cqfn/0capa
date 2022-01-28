@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_28_122326) do
+ActiveRecord::Schema.define(version: 2022_01_28_083919) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,9 @@ ActiveRecord::Schema.define(version: 2021_12_28_122326) do
     t.integer "total_changed"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "commit_datetime"
+    t.integer "message_length"
+    t.index ["full_name"], name: "index_tom_commits_metrics_on_full_name"
   end
 
   create_table "tom_issues", force: :cascade do |t|
@@ -60,6 +63,93 @@ ActiveRecord::Schema.define(version: 2021_12_28_122326) do
     t.string "closed_by"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tom_project_metrics", force: :cascade do |t|
+    t.string "repo_fullname"
+    t.integer "commits_count"
+    t.integer "commits_days_since_first"
+    t.integer "commits_days_since_last"
+    t.integer "commits_total_lines_added"
+    t.integer "commits_total_lines_removed"
+    t.float "commits_avg_added"
+    t.float "commits_avg_removed"
+    t.float "commits_avg_files_changed"
+    t.float "commits_avg_message_length"
+    t.float "commits_avg_per_day"
+    t.float "commits_avg_per_day_real"
+    t.integer "commits_max_per_day"
+    t.integer "contributors_count"
+    t.float "contributors_top_avg_commits"
+    t.float "contributors_top_avg_participation_week"
+    t.float "contributors_top_avg_additions"
+    t.float "contributors_top_avg_deletions"
+    t.integer "forks_count"
+    t.float "forks_avg_per_day"
+    t.float "forks_avg_max_per_day"
+    t.integer "issues_total_comments"
+    t.integer "issues_count"
+    t.integer "issues_open"
+    t.integer "issues_labels"
+    t.float "issues_avg_labels"
+    t.float "issues_avg_closing_time"
+    t.float "issues_avg_comment_time"
+    t.float "issues_avg_comments"
+    t.float "issues_avg_comment_length"
+    t.float "issues_avg_title_length"
+    t.float "issues_avg_body_length"
+    t.float "issues_avg_per_day"
+    t.float "issues_avg_per_day_real"
+    t.float "issues_max_per_day"
+    t.integer "repo_size"
+    t.integer "repo_topics"
+    t.integer "repo_branches"
+    t.integer "repo_age_days"
+    t.integer "repo_workflows"
+    t.integer "repo_languages"
+    t.integer "repo_milestones"
+    t.integer "repo_watchers"
+    t.integer "repo_deployments"
+    t.integer "repo_readme_length"
+    t.integer "repo_network_members"
+    t.integer "pulls_count"
+    t.integer "pulls_total_lines_added"
+    t.integer "pulls_total_lines_removed"
+    t.float "pulls_avg_lines_added"
+    t.float "pulls_avg_lines_removed"
+    t.float "pulls_avg_closing_time"
+    t.float "pulls_avg_comments"
+    t.float "pulls_avg_review_comments"
+    t.float "pulls_avg_Commits"
+    t.float "pulls_avg_body_length"
+    t.float "pulls_avg_title_length"
+    t.float "pulls_avg_files_changed"
+    t.float "pulls_avg_labels"
+    t.float "pulls_avg_created_per_day"
+    t.float "pulls_avg_created_per_day_real"
+    t.integer "pulls_max_created_per_day"
+    t.integer "releases_count"
+    t.integer "releases_tags"
+    t.integer "releases_total_downloads"
+    t.float "releases_avg_body_length"
+    t.float "releases_avg_title_length"
+    t.float "releases_avg_assets"
+    t.float "releases_avg_assets_downloads"
+    t.float "releases_avg_assets_size"
+    t.float "releases_avg_downloads_per_day"
+    t.integer "stars_count"
+    t.float "stars_avg_per_day_real"
+    t.integer "stars_max_per_day"
+    t.integer "wf_count"
+    t.float "wf_avg_duration"
+    t.string "wf_avg_success_duration"
+    t.string "wf_avg_failure_duration"
+    t.string "wf_avg_successes_per_day"
+    t.string "wf_avg_successes_per_day_real"
+    t.string "wf_avg_fails_per_day"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["repo_fullname"], name: "index_tom_project_metrics_on_repo_fullname"
   end
 
   create_table "tom_projects", force: :cascade do |t|
@@ -79,6 +169,10 @@ ActiveRecord::Schema.define(version: 2021_12_28_122326) do
     t.string "last_commit_id"
     t.datetime "last_scanner_date"
     t.string "source"
+    t.datetime "repo_created_at"
+    t.string "last_analysis_time_elapsed"
+    t.string "status"
+    t.string "node_name"
   end
 
   create_table "tom_push_infos", force: :cascade do |t|
@@ -126,6 +220,16 @@ ActiveRecord::Schema.define(version: 2021_12_28_122326) do
     t.string "content_type"
     t.string "repos_info_url"
     t.string "repos_diff_url"
+    t.string "commits_info_url"
+    t.string "contributors_info_url"
+    t.string "forks_info_url"
+    t.string "issues_info_url"
+    t.string "pulls_info_url"
+    t.string "releases_info_url"
+    t.string "stars_info_url"
+    t.string "workflows_info_url"
+    t.string "issues_Comments_info_url"
+    t.string "node_name"
   end
 
 end
