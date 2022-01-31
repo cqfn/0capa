@@ -9,21 +9,31 @@ require "socket"
 require_relative "radar_base_controller"
 
 class GithubRadar < RadarBaseController
-  SORUCE = "github"
+  SOURCE = "github"
+  @@Tokens = nil
+  @@call_count = 0
 
   def initialize
     puts "initialize GithubRadar"
-    Initialize(SORUCE)
+    Initialize(SOURCE)
+    get_tokens()
+  end
+
+  def get_tokens()
+    if @@Tokens.nil?
+      puts "Getting token list!!"
+      @@Tokens = TomTokensQueue.where(source: SOURCE).where(isactive: "Y")
+    end
   end
 
   def check_new_invitations()
     host = Socket.gethostname
     settings = TomSetting.where("agentname = :agentname and (node_name = :host or node_name is null) ", {
-      agentname: SORUCE,
+      agentname: SOURCE,
       host: host,
     }).order(node_name: :asc).first
 
-    response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+    response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
       settings.invitations_endpoint, json: {},
     )
     puts JSON.pretty_generate(response.parse)
@@ -46,12 +56,12 @@ class GithubRadar < RadarBaseController
             permissions: invitation["permissions"],
             is_private: invitation["repository"]["private"] == true ? "True" : "False",
             owner_login: invitation["repository"]["owner"]["login"],
-            source: SORUCE,
+            source: SOURCE,
             isactive: "Y",
           )
           accept_url = settings.invitations_accept_endpoint.sub! "#invitation_id", invitation["id"].to_s
 
-          invitation_response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].patch(
+          invitation_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].patch(
             accept_url, json: {},
           )
           puts "invitation_response -> " + invitation_response.code.to_s
@@ -62,12 +72,14 @@ class GithubRadar < RadarBaseController
 
             request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-            response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
               request_url, json: {},
             )
             if invitation_response.code == 200
               repo = JSON.parse(response)
               project.repo_created_at = DateTime.parse(repo["created_at"])
+            else
+              puts JSON.pretty_generate(response.parse)
             end
 
             project.save
@@ -85,54 +97,56 @@ class GithubRadar < RadarBaseController
 
   def check_repos_update()
     host = Socket.gethostname
-    settings = TomSetting.where("agentname = :agentname and (node_name = :host or node_name is null) ", {
-      agentname: SORUCE, host: host,
+    settings = TomSetting.where("agentname = :agentname", {
+      agentname: SOURCE, host: host,
     }).order(node_name: :asc).first
 
     # https://api.github.com/repos/#repo_fullname
     puts Time.now.midnight
     puts Time.now.midnight + 1.day
-    while true
-      project_list = TomProject.where("source = :source and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
-        source: SORUCE, start_date: Time.now.midnight, end_date: Time.now.midnight + 1.day,
-      }).limit(10)
+    # while true
+    project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
+      source: SOURCE, start_date: Time.now.midnight - 7, end_date: Time.now.midnight + 1.day,
+    }).limit(5)
 
-      if project_list.length > 0
-        project_list.each do |project|
-          project.node_name = host
-          project.status = "P"
+    if project_list.length > 0
+      project_list.update(node_name: host, status: "L")
+      # project_list.save
+      # project_list.each do |project|
+      #   project.node_name = host
+      #   project.status = "P"
+      #   project.save
+      # end
+
+      project_list = TomProject.where("source = :source and node_name = :host and status = :status", {
+        source: SOURCE,
+        host: host,
+        status: "L",
+      }).each do |project|
+        begin
+          puts "using node -> " + host
+          t1 = Time.now.to_f
+          puts "repo_fullname -> " + project.repo_fullname
+          get_commits_info(settings, project)
+          get_daily_report(settings, project)
+          t2 = Time.now.to_f
+          delta = t2 - t1
+          puts "time used -> " + delta.to_s
+          project.last_analysis_time_elapsed = delta.to_s
+          project.last_scanner_date = Time.current.iso8601
+        rescue => e
+          project.last_analysis_time_elapsed = "Error"
+          puts "caught exception #{e}!"
+        ensure
+          project.node_name = nil
+          project.status = "W"
           project.save
         end
-
-        project_list = TomProject.where("source = :source and node_name = :host and status = :status", {
-          source: SORUCE,
-          host: host,
-          status: "P",
-        }).each do |project|
-          begin
-            puts "using node -> " + host
-            t1 = Time.now.to_f
-            puts "repo_fullname -> " + project.repo_fullname
-            get_commits_info(settings, project)
-            get_daily_report(settings, project)
-            t2 = Time.now.to_f
-            delta = t2 - t1
-            puts "time used -> " + delta.to_s
-            project.last_analysis_time_elapsed = delta.to_s
-            project.last_scanner_date = Time.current.iso8601
-          rescue => e
-            project.last_analysis_time_elapsed = "Error"
-            puts "caught exception #{e}!"
-          ensure
-            project.node_name = nil
-            project.status = "W"
-            project.save
-          end
-        end
-      else
-        break
       end
+    else
+      # break
     end
+    # end
   end
 
   def get_commits_info(settings, repo_info)
@@ -145,12 +159,14 @@ class GithubRadar < RadarBaseController
 
       request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url, json: {},
       )
       if response.code == 200
         repo = JSON.parse(response)
         repo_info.repoid = repo["id"]
+      else
+        puts JSON.pretty_generate(response.parse)
       end
     end
 
@@ -164,11 +180,11 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       if repo_info.last_commit_id.nil?
-        response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+        response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
       else
-        response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}", sha: repo_info.last_commit_id].get(
+        response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}", sha: repo_info.last_commit_id].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
       end
@@ -197,7 +213,7 @@ class GithubRadar < RadarBaseController
           puts "There is something new"
 
           commits.each do |commit|
-            response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
               commit["url"], json: {},
             )
             if response.code == 200
@@ -217,7 +233,8 @@ class GithubRadar < RadarBaseController
               )
               repoUpdate.save
             else
-              false
+              puts JSON.pretty_generate(response.parse)
+              break
             end
           end
 
@@ -228,6 +245,7 @@ class GithubRadar < RadarBaseController
           return true
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -250,7 +268,7 @@ class GithubRadar < RadarBaseController
 
     request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-    response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+    response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
       request_url, json: {},
     )
     if response.code == 200
@@ -271,7 +289,8 @@ class GithubRadar < RadarBaseController
       puts "getting branch info"
       while true
         page_counter += 1
-        response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+        response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
         if response.code == 200
@@ -281,6 +300,7 @@ class GithubRadar < RadarBaseController
           end
           projectMetrics.repo_branches += branches.length
         else
+          puts JSON.pretty_generate(response.parse)
           break
         end
       end
@@ -290,26 +310,28 @@ class GithubRadar < RadarBaseController
       info_url_template = "https://api.github.com/repos/#repo_fullname/actions/workflows"
       request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url, json: {},
       )
       if response.code == 200
         workflows = JSON.parse(response)
         projectMetrics.repo_workflows = workflows["total_count"]
       else
+        puts JSON.pretty_generate(response.parse)
         projectMetrics.repo_workflows = 0
       end
 
       puts "getting languages info"
       request_url = repo["languages_url"]
 
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url, json: {},
       )
       if response.code == 200
         languages = JSON.parse(response)
         projectMetrics.repo_languages = languages.length
       else
+        puts JSON.pretty_generate(response.parse)
         projectMetrics.repo_languages = 0
       end
 
@@ -319,7 +341,8 @@ class GithubRadar < RadarBaseController
       projectMetrics.repo_milestones = 0
       while true
         page_counter += 1
-        response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+        response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
         if response.code == 200
@@ -329,6 +352,7 @@ class GithubRadar < RadarBaseController
           end
           projectMetrics.repo_milestones += milestones.length
         else
+          puts JSON.pretty_generate(response.parse)
           projectMetrics.repo_milestones = 0
           break
         end
@@ -340,7 +364,8 @@ class GithubRadar < RadarBaseController
       projectMetrics.repo_deployments = 0
       while true
         page_counter += 1
-        response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+        response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
         if response.code == 200
@@ -350,6 +375,7 @@ class GithubRadar < RadarBaseController
           end
           projectMetrics.repo_deployments += deployments.length
         else
+          puts JSON.pretty_generate(response.parse)
           break
         end
       end
@@ -357,17 +383,19 @@ class GithubRadar < RadarBaseController
       info_url_template = "https://api.github.com/repos/#repo_fullname/readme"
       request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url, json: {},
       )
       if response.code == 200
         readme = JSON.parse(response)
         projectMetrics.repo_readme_length = readme["size"]
       else
+        puts JSON.pretty_generate(response.parse)
         projectMetrics.repo_readme_length = 0
       end
     else
       puts "Error retriving data -> " + response.message
+      puts JSON.pretty_generate(response.parse)
       raise StandardError.new "Error retriving data, " + response.message
     end
 
@@ -425,7 +453,7 @@ class GithubRadar < RadarBaseController
 
     contributors_list = []
 
-    response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+    response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
       request_url, json: {},
     )
 
@@ -470,6 +498,7 @@ class GithubRadar < RadarBaseController
         projectMetrics.contributors_top_avg_participation_week = 0
       end
     else
+      puts JSON.pretty_generate(response.parse)
       projectMetrics.contributors_count = 0
       projectMetrics.contributors_top_avg_commits = 0
       projectMetrics.contributors_top_avg_additions = 0
@@ -494,7 +523,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page forks -> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -508,6 +538,7 @@ class GithubRadar < RadarBaseController
           forks_list.push(f.dup)
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -559,7 +590,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page issues-> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?state=all&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -591,6 +623,7 @@ class GithubRadar < RadarBaseController
           issues_list.push(issue.dup)
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -645,7 +678,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page comments-> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -665,6 +699,7 @@ class GithubRadar < RadarBaseController
           last_comment_date = DateTime.parse(c["created_at"])
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -706,7 +741,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page pulls-> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -717,7 +753,7 @@ class GithubRadar < RadarBaseController
         end
 
         pulls_info.each do |pull|
-          response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+          response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
             pull["url"], json: {},
           )
           if response.code == 200
@@ -739,9 +775,12 @@ class GithubRadar < RadarBaseController
             end
 
             pull_list.push(p_info.dup)
+          else
+            puts JSON.pretty_generate(response.parse)
           end
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -812,7 +851,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page release -> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -835,6 +875,7 @@ class GithubRadar < RadarBaseController
           total_title_length += release["name"].length
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -877,7 +918,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page stars-> " + page_counter.to_s
-      response = HTTP[accept: "application/vnd.github.v3.star+json", Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: "application/vnd.github.v3.star+json", Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -889,6 +931,7 @@ class GithubRadar < RadarBaseController
         total_stars += stars_info.length
         stars_list.concat stars_info
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -927,7 +970,8 @@ class GithubRadar < RadarBaseController
     while true
       page_counter += 1
       puts "getting page wf -> " + page_counter.to_s
-      response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
@@ -949,6 +993,7 @@ class GithubRadar < RadarBaseController
           total_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
         end
       else
+        puts JSON.pretty_generate(response.parse)
         break
       end
     end
@@ -1040,7 +1085,7 @@ class GithubRadar < RadarBaseController
       issue_body.sub! "#capa-2", capas.sample
 
       activation = TomRadarActivation.new(
-        source: SORUCE,
+        source: SOURCE,
         issuetitle: "TOM Findings ##{repo_name}",
         issuebody: issue_body,
         status: "Pending",
@@ -1076,5 +1121,15 @@ class GithubRadar < RadarBaseController
       puts pushInfo.inspect
       break
     end
+  end
+
+  def getNextToken()
+    @@call_count += 1
+    next_token_index = (@@call_count % @@Tokens.length)
+    puts "call count -> " + @@call_count.to_s
+    puts "tokens count -> " + @@Tokens.length.to_s
+    puts "index -> " + next_token_index.to_s
+    puts "token -> " + @@Tokens[next_token_index].token
+    return @@Tokens[next_token_index].token
   end
 end

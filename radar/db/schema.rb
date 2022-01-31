@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_28_083919) do
+ActiveRecord::Schema.define(version: 2022_01_31_132930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,11 +142,11 @@ ActiveRecord::Schema.define(version: 2022_01_28_083919) do
     t.integer "stars_max_per_day"
     t.integer "wf_count"
     t.float "wf_avg_duration"
-    t.string "wf_avg_success_duration"
-    t.string "wf_avg_failure_duration"
-    t.string "wf_avg_successes_per_day"
-    t.string "wf_avg_successes_per_day_real"
-    t.string "wf_avg_fails_per_day"
+    t.float "wf_avg_success_duration"
+    t.float "wf_avg_failure_duration"
+    t.float "wf_avg_successes_per_day"
+    t.float "wf_avg_successes_per_day_real"
+    t.float "wf_avg_fails_per_day"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["repo_fullname"], name: "index_tom_project_metrics_on_repo_fullname"
@@ -230,6 +230,15 @@ ActiveRecord::Schema.define(version: 2022_01_28_083919) do
     t.string "workflows_info_url"
     t.string "issues_Comments_info_url"
     t.string "node_name"
+  end
+
+  create_table "tom_tokens_queues", force: :cascade do |t|
+    t.string "token"
+    t.string "source"
+    t.string "owner"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "isactive", default: "Y"
   end
 
 end
