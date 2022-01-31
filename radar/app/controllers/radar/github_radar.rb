@@ -104,49 +104,49 @@ class GithubRadar < RadarBaseController
     # https://api.github.com/repos/#repo_fullname
     puts Time.now.midnight
     puts Time.now.midnight + 1.day
-    # while true
-    project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
-      source: SOURCE, start_date: Time.now.midnight - 7, end_date: Time.now.midnight + 1.day,
-    }).limit(5)
+    while true
+      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
+        source: SOURCE, start_date: Time.now.midnight - 7, end_date: Time.now.midnight + 1.day,
+      }).limit(5)
 
-    if project_list.length > 0
-      project_list.update(node_name: host, status: "L")
-      # project_list.save
-      # project_list.each do |project|
-      #   project.node_name = host
-      #   project.status = "P"
-      #   project.save
-      # end
+      if project_list.length > 0
+        project_list.update(node_name: host, status: "L")
+        # project_list.save
+        # project_list.each do |project|
+        #   project.node_name = host
+        #   project.status = "P"
+        #   project.save
+        # end
 
-      project_list = TomProject.where("source = :source and node_name = :host and status = :status", {
-        source: SOURCE,
-        host: host,
-        status: "L",
-      }).each do |project|
-        begin
-          puts "using node -> " + host
-          t1 = Time.now.to_f
-          puts "repo_fullname -> " + project.repo_fullname
-          get_commits_info(settings, project)
-          get_daily_report(settings, project)
-          t2 = Time.now.to_f
-          delta = t2 - t1
-          puts "time used -> " + delta.to_s
-          project.last_analysis_time_elapsed = delta.to_s
-          project.last_scanner_date = Time.current.iso8601
-        rescue => e
-          project.last_analysis_time_elapsed = "Error"
-          puts "caught exception #{e}!"
-        ensure
-          project.node_name = nil
-          project.status = "W"
-          project.save
+        project_list = TomProject.where("source = :source and node_name = :host and status = :status", {
+          source: SOURCE,
+          host: host,
+          status: "L",
+        }).each do |project|
+          begin
+            puts "using node -> " + host
+            t1 = Time.now.to_f
+            puts "repo_fullname -> " + project.repo_fullname
+            get_commits_info(settings, project)
+            get_daily_report(settings, project)
+            t2 = Time.now.to_f
+            delta = t2 - t1
+            puts "time used -> " + delta.to_s
+            project.last_analysis_time_elapsed = delta.to_s
+            project.last_scanner_date = Time.current.iso8601
+          rescue => e
+            project.last_analysis_time_elapsed = "Error"
+            puts "caught exception #{e}!"
+          ensure
+            project.node_name = nil
+            project.status = "W"
+            project.save
+          end
         end
+      else
+        break
       end
-    else
-      # break
     end
-    # end
   end
 
   def get_commits_info(settings, repo_info)
