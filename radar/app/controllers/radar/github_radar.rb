@@ -105,8 +105,8 @@ class GithubRadar < RadarBaseController
     puts Time.now.midnight
     puts Time.now.midnight + 1.day
     while true
-      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between :start_date and :end_date)) and (status ='W' or status is null) ", {
-        source: SOURCE, start_date: Time.now.midnight - 7, end_date: Time.now.midnight + 1.day,
+      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '7 DAY') and now())) and (status ='W' or status is null) ", {
+        source: SOURCE,
       }).limit(5)
 
       if project_list.length > 0
@@ -134,12 +134,13 @@ class GithubRadar < RadarBaseController
             puts "time used -> " + delta.to_s
             project.last_analysis_time_elapsed = delta.to_s
             project.last_scanner_date = Time.current.iso8601
+            project.status = "W"
           rescue => e
             project.last_analysis_time_elapsed = "Error"
             puts "caught exception #{e}!"
+            project.status = "E"
           ensure
             project.node_name = nil
-            project.status = "W"
             project.save
           end
         end
