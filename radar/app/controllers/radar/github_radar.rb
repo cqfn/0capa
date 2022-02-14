@@ -135,6 +135,7 @@ class GithubRadar < RadarBaseController
             project.last_analysis_time_elapsed = delta.to_s
             project.last_scanner_date = Time.current.iso8601
           rescue => e
+            project.last_scanner_date = Time.current.iso8601
             project.last_analysis_time_elapsed = "Error"
             puts "caught exception #{e}!"
           ensure
@@ -179,11 +180,13 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
+      puts "getting page commits -> " + page_counter.to_s
       if repo_info.last_commit_id.nil?
         response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
       else
+        puts "last_commit -> " + repo_info.last_commit_id
         response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}", sha: repo_info.last_commit_id].get(
           request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
         )
@@ -213,6 +216,7 @@ class GithubRadar < RadarBaseController
           puts "There is something new"
 
           commits.each do |commit|
+            puts "getting info for -> " + repo_info.repo_fullname + ", commit -> " + commit["sha"]
             response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
               commit["url"], json: {},
             )
@@ -249,6 +253,7 @@ class GithubRadar < RadarBaseController
         break
       end
     end
+    return true
   end
 
   def get_daily_report(settings, repo_info)
@@ -1126,10 +1131,10 @@ class GithubRadar < RadarBaseController
   def getNextToken()
     @@call_count += 1
     next_token_index = (@@call_count % @@Tokens.length)
-    puts "call count -> " + @@call_count.to_s
-    puts "tokens count -> " + @@Tokens.length.to_s
-    puts "index -> " + next_token_index.to_s
-    puts "token -> " + @@Tokens[next_token_index].token
+    # puts "call count -> " + @@call_count.to_s
+    # puts "tokens count -> " + @@Tokens.length.to_s
+    # puts "index -> " + next_token_index.to_s
+    # puts "token -> " + @@Tokens[next_token_index].token
     return @@Tokens[next_token_index].token
   end
 end
