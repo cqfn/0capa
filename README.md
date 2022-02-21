@@ -22,9 +22,32 @@ For now, the identified `anomalies` and `CAPAS` will be generated through the in
 
 After you have been solved the issue, you can tag our bot ([@0capa](https://github.com/0capa)) on your closing comment, so TOM will run once again its analysis to verify that there are not more work to be done.
 
-## How to install your own bot
+## Software requirements
+ * Postgres 12+
+ * Ruby 2.6.8
+ * Posgres client for Ruby
+ * Docker
+
+## Installation using Docker
+Tom is divided into 3 diferent services (radar, ML Advisor and chatbot), please follow this step for each of them.
+
 ```
-This guide in process, will be released in a future update
+  - Step 1: Clone this repository on your local machine
+  - Step 2: Navigate to the service to be install 
+  - Step 3: On the Dockerfile, modify it to set the database URI and password
+  - Step 4: Build the docker imagen (e.g.: docker build . -t tom-radar)
+  - Step 5: Create the docker container based on the image created previously (e.g.: docker run --name tom-radar -p 3000:3000 -d tom-radar)
+  - Step 6: Log into the docker container to run the database migraions
+    - Run rake db:setup to initialize the database (only in the first instalation)
+     -Run rake db:migrate to create the tom database structure
+```
+
+## Setting up TOM Radar
+Once the services are properly deployed and the database has been created, the next step is to add the parameters for each Version control system(VCS) that you might like to integrate to TOM, for this purpose follow the these steps on the database
+
+```
+  - Step 1: Setup a new record on the table tom_settings, which requires all the endpoids to be used to extract the metrics from your VCS, (e.g.: repo_info_url, refers to the endpoint to fetch the most general information about an specific repository ),
+  - Step 2: Add the list of tokens to be use, due the fact that some VCS have limitations to fetch data from their systems a queue of tokens is required to increase the limit of request, this configuration should be added on the table tom_tokens_queue. 
 ```
 
 ## How to Contribute
@@ -33,4 +56,5 @@ Fork repository, make changes, send us a [pull request](https://www.yegor256.com
 We will review your changes and apply them to the `master` branch shortly,
 provided they don't violate our quality standards. 
 
-You will need Ruby 2.6+ and postgres 12+.
+
+
