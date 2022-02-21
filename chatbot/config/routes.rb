@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :issues, only: [:create]
       post "update_issue", to: "issues#update_issue"
+      post "create_issue", to: "issues#create_github_issues"
     end
   end
 end

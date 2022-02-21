@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_21_091749) do
+ActiveRecord::Schema.define(version: 2022_02_17_135103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
 
   create_table "tom_project_capa_predictions", force: :cascade do |t|
     t.integer "analysis_id"
-    t.string "repo_fullname"
     t.string "label"
     t.string "status"
     t.datetime "created_at", precision: 6, null: false

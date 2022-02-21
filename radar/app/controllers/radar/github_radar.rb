@@ -105,7 +105,7 @@ class GithubRadar < RadarBaseController
     puts Time.now.midnight
     puts Time.now.midnight + 1.day
     while true
-      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '7 DAY') and now())) and (status ='W' or status is null) ", {
+      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
         source: SOURCE,
       }).limit(5)
 
@@ -1132,10 +1132,6 @@ class GithubRadar < RadarBaseController
   def getNextToken()
     @@call_count += 1
     next_token_index = (@@call_count % @@Tokens.length)
-    # puts "call count -> " + @@call_count.to_s
-    # puts "tokens count -> " + @@Tokens.length.to_s
-    # puts "index -> " + next_token_index.to_s
-    # puts "token -> " + @@Tokens[next_token_index].token
     return @@Tokens[next_token_index].token
   end
 end
