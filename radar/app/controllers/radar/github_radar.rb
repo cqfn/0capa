@@ -61,18 +61,19 @@ class GithubRadar < RadarBaseController
           )
           accept_url = settings.invitations_accept_endpoint.sub! "#invitation_id", invitation["id"].to_s
 
-          invitation_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].patch(
+          invitation_response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].patch(
             accept_url, json: {},
           )
           puts "invitation_response -> " + invitation_response.code.to_s
+
           if invitation_response.code == 204
             info_url_template = settings.repos_info_url.dup
 
             puts "info_url_template -> " + info_url_template
 
-            request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+            request_url = info_url_template.sub! "#repo_fullname", invitation["repository"]["full_name"]
 
-            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+            response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
               request_url, json: {},
             )
             if invitation_response.code == 200
