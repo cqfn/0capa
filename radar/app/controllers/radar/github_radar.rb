@@ -33,7 +33,7 @@ class GithubRadar < RadarBaseController
       host: host,
     }).order(node_name: :asc).first
 
-    response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {},
     )
     puts JSON.pretty_generate(response.parse)
