@@ -1,0 +1,2 @@
+class TomWorkflowInfo < ApplicationRecord
+end

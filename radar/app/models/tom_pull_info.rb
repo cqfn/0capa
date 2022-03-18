@@ -1,0 +1,2 @@
+class TomPullInfo < ApplicationRecord
+end

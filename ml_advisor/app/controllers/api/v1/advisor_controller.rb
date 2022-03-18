@@ -129,7 +129,7 @@ class Api::V1::AdvisorController < ApplicationController
         end
       end
 
-      render json: { message: "Model trained" }, status: 200
+      render json: { message: "ML advisor has finished successfully" }, status: 200
     end
   end
 end

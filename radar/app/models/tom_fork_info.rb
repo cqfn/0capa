@@ -1,0 +1,2 @@
+class TomForkInfo < ApplicationRecord
+end

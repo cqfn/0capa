@@ -152,6 +152,61 @@ class GithubRadar < RadarBaseController
     end
   end
 
+  def get_repos_full_update()
+    host = Socket.gethostname
+    settings = TomSetting.where("agentname = :agentname", {
+      agentname: SOURCE, host: host,
+    }).order(node_name: :asc).first
+
+    puts Time.now.midnight
+    puts Time.now.midnight + 1.day
+    while true
+      project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
+        source: SOURCE,
+      }).limit(5)
+
+      if project_list.length > 0
+        project_list.update(node_name: host, status: "L")
+
+        project_list = TomProject.where("source = :source and node_name = :host and status = :status", {
+          source: SOURCE,
+          host: host,
+          status: "L",
+        }).each do |project|
+          begin
+            puts "using node -> " + host
+            t1 = Time.now.to_f
+            puts "repo_fullname -> " + project.repo_fullname
+            get_commits_info(settings, project)
+            get_forks_info(settings, project)
+            get_issues_info(settings, project)
+            get_pulls_info(settings, project)
+            get_release_info(settings, project)
+            get_workflows_info(settings, project)
+            get_repo_owner_info(settings, project)
+            t2 = Time.now.to_f
+            delta = t2 - t1
+            puts "time used -> " + delta.to_s
+            project.last_analysis_time_elapsed = delta.to_s
+            project.last_scanner_date = Time.current.iso8601
+            project.status = "W"
+          rescue => e
+            project.last_scanner_date = Time.current.iso8601
+            project.last_analysis_time_elapsed = "Error -> #{e}"
+            puts "caught exception #{e}!"
+            project.status = "E"
+          ensure
+            project.node_name = nil
+            project.save
+          end
+        end
+      else
+        break
+      end
+    end
+    return true
+  end
+
   def get_commits_info(settings, repo_info)
     if repo_info.repoid.blank?
       puts "getting repository info for -> " + repo_info.repo_fullname
@@ -218,29 +273,31 @@ class GithubRadar < RadarBaseController
           puts "There is something new"
 
           commits.each do |commit|
-            puts "getting info for -> " + repo_info.repo_fullname + ", commit -> " + commit["sha"]
-            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-              commit["url"], json: {},
-            )
-            if response.code == 200
-              commit_info = JSON.parse(response)
-
-              repoUpdate = TomCommitsMetric.new(
-                repoid: repo_info.repoid,
-                full_name: repo_info.repo_fullname,
-                repo_name: repo_info.name,
-                base_commit_id: commit_info["sha"][0..6],
-                commit_datetime: DateTime.parse(commit_info["commit"]["author"]["date"]),
-                message_length: commit_info["commit"]["message"].length,
-                total_added: commit_info["stats"]["additions"],
-                total_removed: commit_info["stats"]["deletions"],
-                total_changed: commit_info["stats"]["total"],
-                total_files: commit_info["files"].length,
+            if (!TomCommitsMetric.exists?(repoid: repo_info.repoid, base_commit_id: commit["sha"][0..6]))
+              puts "getting info for -> " + repo_info.repo_fullname + ", commit -> " + commit["sha"]
+              response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+                commit["url"], json: {},
               )
-              repoUpdate.save
-            else
-              puts JSON.pretty_generate(response.parse)
-              break
+              if response.code == 200
+                commit_info = JSON.parse(response)
+
+                repoUpdate = TomCommitsMetric.new(
+                  repoid: repo_info.repoid,
+                  full_name: repo_info.repo_fullname,
+                  repo_name: repo_info.name,
+                  base_commit_id: commit_info["sha"][0..6],
+                  commit_datetime: DateTime.parse(commit_info["commit"]["author"]["date"]),
+                  message_length: commit_info["commit"]["message"].length,
+                  total_added: commit_info["stats"]["additions"],
+                  total_removed: commit_info["stats"]["deletions"],
+                  total_changed: commit_info["stats"]["total"],
+                  total_files: commit_info["files"].length,
+                )
+                repoUpdate.save
+              else
+                puts JSON.pretty_generate(response.parse)
+                break
+              end
             end
           end
 
@@ -248,13 +305,489 @@ class GithubRadar < RadarBaseController
           repo_info.save
         else
           puts "There is no new information!!"
-          return true
+          break
         end
       else
         puts JSON.pretty_generate(response.parse)
         break
       end
     end
+    return true
+  end
+
+  def get_forks_info(settings, repo_info)
+    puts "getting forks info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.forks_info_url.dup
+
+    # Getting info about forks
+
+    puts "forks_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    page_counter = 0
+    while true
+      page_counter += 1
+      puts "getting page forks -> " + page_counter.to_s
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+      )
+      if response.code == 200
+        forks_info = JSON.parse(response)
+
+        if forks_info.length == 0
+          break
+        end
+
+        forks_info.each do |f|
+          if (!TomForkInfo.exists?(folk_id: f["id"]))
+            newRow = TomForkInfo.new(
+              repoid: repo_info.repoid,
+              repo_fullname: repo_info.repo_fullname,
+              folk_fullname: f["full_name"],
+              owner: f["owner"]["login"],
+              is_private: f["private"],
+              created_at_ext: !f["created_at"].nil? ? DateTime.parse(f["created_at"]) : nil,
+              updated_at_ext: !f["updated_at"].nil? ? DateTime.parse(f["updated_at"]) : nil,
+              pushed_at_ext: !f["pushed_at"].nil? ? DateTime.parse(f["pushed_at"]) : nil,
+            )
+            newRow.save
+          else
+            fork = TomForkInfo.where(folk_id: f["id"]).first
+
+            fork.folk_fullname = f["full_name"]
+            fork.owner = f["owner"]["login"]
+            fork.is_private = f["private"]
+            fork.created_at_ext = !f["created_at"].nil? ? DateTime.parse(f["created_at"]) : nil
+            fork.updated_at_ext = !f["updated_at"].nil? ? DateTime.parse(f["updated_at"]) : nil
+            fork.pushed_at_ext = !f["pushed_at"].nil? ? DateTime.parse(f["pushed_at"]) : nil
+            fork.save
+          end
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+        break
+      end
+    end
+
+    return true
+  end
+
+  def get_issues_info(settings, repo_info)
+    puts "getting issues info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.issues_info_url.dup
+
+    # Getting info about issues
+
+    puts "issues_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    page_counter = 0
+    while true
+      page_counter += 1
+      puts "getting page issues-> " + page_counter.to_s
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        request_url + "?state=all&page=" + page_counter.to_s, json: {},
+      )
+      if response.code == 200
+        issues_info = JSON.parse(response)
+
+        if issues_info.length == 0
+          break
+        end
+
+        issues_info.each do |issue|
+          # puts "Issue id -> #{issue["id"]}, exist #{TomIssuesInfo.exists?(issue_id: issue["id"])}"
+          # puts JSON.pretty_generate(issue)
+          if (!TomIssuesInfo.exists?(issue_id: issue["id"]))
+            newRow = TomIssuesInfo.new(
+              repoid: repo_info.repoid,
+              repo_fullname: repo_info.repo_fullname,
+              issue_id: issue["id"],
+              issue_number: issue["number"],
+              title: issue["title"],
+              created_by_ext: issue["user"]["login"],
+              labels_count: issue["labels"].length,
+              state: issue["state"],
+              asssigned_count: issue["assignees"].length,
+              milestone_title: !issue["milestone"].nil? ? issue["milestone"]["title"] : nil,
+              created_at_ext: !issue["created_at"].nil? ? DateTime.parse(issue["created_at"]) : nil,
+              updated_at_ext: !issue["updated_at"].nil? ? DateTime.parse(issue["updated_at"]) : nil,
+              closed_at_ext: !issue["closed_at"].nil? ? DateTime.parse(issue["closed_at"]) : nil,
+              comments_count: issue["comments"],
+              author_association: issue["author_association"],
+              body_length: !issue["body"].nil? ? issue["body"].length : 0,
+              reactions_count: issue["reactions"]["total_count"],
+            )
+
+            labels = []
+            issue["labels"].each do |l|
+              labels.push(l["id"])
+            end
+
+            newRow.labels = labels.join(",")
+
+            newRow.save
+          else
+            issue_info = TomIssuesInfo.where(issue_id: issue["id"]).first
+            # puts issue_info.inspect
+            # puts issue_info["title"]
+            issue_info.title = issue["title"]
+            issue_info.created_by_ext = issue["user"]["login"]
+            issue_info.labels_count = issue["labels"].length
+            issue_info.state = issue["state"]
+            issue_info.asssigned_count = issue["assignees"].length
+            issue_info.milestone_title = issue["milestone"].present? ? issue["milestone"]["title"] : nil
+            issue_info.updated_at_ext = !issue["updated_at"].nil? ? DateTime.parse(issue["updated_at"]) : nil
+            issue_info.closed_at_ext = !issue["closed_at"].nil? ? DateTime.parse(issue["closed_at"]) : nil
+            issue_info.comments_count = issue["comments"]
+            issue_info.body_length = !issue["body"].nil? ? issue["body"].length : 0
+            issue_info.reactions_count = issue["reactions"]["total_count"]
+            labels = []
+            issue["labels"].each do |l|
+              labels.push(l["id"])
+            end
+
+            issue_info.labels = labels.join(",")
+            issue_info.save
+          end
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+        break
+      end
+    end
+    return true
+  end
+
+  def get_pulls_info(settings, repo_info)
+    puts "getting pulls info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.pulls_info_url.dup
+
+    # Getting info about issues
+
+    puts "pulls_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    page_counter = 0
+    while true
+      page_counter += 1
+      puts "getting page pulls-> " + page_counter.to_s
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+      )
+      if response.code == 200
+        pulls_info = JSON.parse(response)
+
+        if pulls_info.length == 0
+          break
+        end
+
+        pulls_info.each do |pull|
+          if (!TomPullInfo.exists?(pull_id: pull["id"]))
+            newRow = TomPullInfo.new(
+              repoid: repo_info.repoid,
+              repo_fullname: repo_info.repo_fullname,
+              pull_id: pull["id"],
+              pull_number: pull["number"],
+              state: pull["state"],
+              title: pull["title"],
+              title_length: !pull["title"].nil? ? pull["title"].length : 0,
+              owner: pull["user"]["login"],
+              body_length: !pull["body"].nil? ? pull["body"].length : 0,
+              created_at_ext: !pull["created_at"].nil? ? DateTime.parse(pull["created_at"]) : nil,
+              updated_at_ext: !pull["updated_at"].nil? ? DateTime.parse(pull["updated_at"]) : nil,
+              closed_at_ext: !pull["closed_at"].nil? ? DateTime.parse(pull["closed_at"]) : nil,
+              merged_at_ext: !pull["merged_at"].nil? ? DateTime.parse(pull["merged_at"]) : nil,
+              asssigned_count: pull["assignees"].length,
+              req_review_count: pull["requested_reviewers"].length,
+              labels_count: pull["labels"].length,
+              milestone_title: !pull["milestone"].nil? ? pull["milestone"]["title"] : nil,
+              author_association: pull["author_association"],
+              head_commit_id: pull["head"]["sha"],
+              base_commit_id: pull["base"]["sha"],
+              commits_counts: pull["commits"],
+              is_locked: pull["locked"],
+            )
+
+            labels = []
+            pull["labels"].each do |l|
+              labels.push(l["id"])
+            end
+
+            newRow.labels = labels.join(",")
+            newRow.code_blocks_counter = 0
+            newRow.links_counter = 0
+
+            puts "getting comments info for -> " + repo_info.repo_fullname
+            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+              pull["comments_url"], json: {},
+            )
+            if response.code == 200
+              comments_pulls = JSON.parse(response)
+
+              comments_pulls.each do |c|
+                newRow.code_blocks_counter = newRow.code_blocks_counter + (c["body"].count("```") / 2)
+                newRow.links_counter = newRow.code_blocks_counter + c["body"].count("http")
+              end
+            end
+
+            newRow.save
+          else
+            pull_info = TomPullInfo.where(pull_id: pull["id"]).first
+
+            pull_info.state = pull["state"]
+            pull_info.title = pull["title"]
+            pull_info.title_length = !pull["title"].nil? ? pull["title"].length : 0
+            pull_info.body_length = !pull["body"].nil? ? pull["body"].length : 0
+            pull_info.updated_at_ext = !pull["updated_at"].nil? ? DateTime.parse(pull["updated_at"]) : nil
+            pull_info.closed_at_ext = !pull["closed_at"].nil? ? DateTime.parse(pull["closed_at"]) : nil
+            pull_info.merged_at_ext = !pull["merged_at"].nil? ? DateTime.parse(pull["merged_at"]) : nil
+            pull_info.asssigned_count = pull["assignees"].length
+            pull_info.req_review_count = pull["requested_reviewers"].length
+            pull_info.labels_count = pull["labels"].length
+            pull_info.milestone_title = !pull["milestone"].nil? ? pull["milestone"]["title"] : nil
+            pull_info.author_association = pull["author_association"]
+            pull_info.commits_counts = pull["commits"]
+            pull_info.is_locked = pull["locked"]
+
+            labels = []
+            pull["labels"].each do |l|
+              labels.push(l["id"])
+            end
+
+            pull_info.code_blocks_counter = 0
+            pull_info.links_counter = 0
+
+            puts "getting comments info for -> " + repo_info.repo_fullname
+            response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+              pull["comments_url"], json: {},
+            )
+            if response.code == 200
+              comments_pulls = JSON.parse(response)
+
+              comments_pulls.each do |c|
+                pull_info.code_blocks_counter = pull_info.code_blocks_counter + (c["body"].count("```") / 2)
+                pull_info.links_counter = pull_info.code_blocks_counter + c["body"].count("http")
+              end
+            end
+
+            pull_info.labels = labels.join(",")
+
+            pull_info.save
+          end
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+        break
+      end
+    end
+
+    return true
+  end
+
+  def get_release_info(settings, repo_info)
+    puts "getting releases info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.releases_info_url.dup
+
+    # Getting info about releases
+
+    puts "releases_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    page_counter = 0
+    while true
+      page_counter += 1
+      puts "getting page release -> " + page_counter.to_s
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+      )
+      if response.code == 200
+        releases_info = JSON.parse(response)
+
+        if releases_info.length == 0
+          break
+        end
+
+        releases_info.each do |release|
+          # puts JSON.pretty_generate(release)
+          if (!TomReleaseInfo.exists?(release_id: release["id"]))
+            newRow = TomReleaseInfo.new(
+              repoid: repo_info.repoid,
+              repo_fullname: repo_info.repo_fullname,
+              release_id: release["id"],
+              author: release["author"]["login"],
+              name: release["name"],
+              created_at_ext: !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil,
+              published_at_ext: !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil,
+              assets_count: release["assets"].length,
+              body_length: !release["body"].nil? ? release["body"].length : 0,
+              reactions_count: !release["reactions"].nil? ? release["reactions"]["total_count"] : 0,
+            )
+            newRow.save
+          else
+            rel = TomReleaseInfo.where(release_id: pull["id"]).first
+            rel.name = release["name"]
+            rel.created_at_ext = !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil
+            rel.published_at_ext = !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil
+            rel.assets_count = release["assets"].length
+            rel.body_length = !release["body"].nil? ? release["body"].length : 0
+            rel.reactions_count = !release["reactions"].nil? ? release["reactions"]["total_count"] : 0
+            rel.save
+          end
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+        break
+      end
+    end
+
+    return true
+  end
+
+  def get_workflows_info(settings, repo_info)
+    puts "getting workflows info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.workflows_info_url.dup
+
+    # Getting info about workflows
+
+    puts "workflows_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    page_counter = 0
+    while true
+      page_counter += 1
+      puts "getting page wf -> " + page_counter.to_s
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+      )
+      if response.code == 200
+        workflows_info = JSON.parse(response)
+        if workflows_info["workflow_runs"].length == 0
+          break
+        end
+
+        workflows_info["workflow_runs"].each do |w|
+          if (!TomWorkflowInfo.exists?(action_id: w["id"]))
+            newRow = TomWorkflowInfo.new(
+              repoid: repo_info.repoid,
+              repo_fullname: repo_info.repo_fullname,
+              action_id: w["id"],
+              name: w["name"],
+              action_number: w["run_number"],
+              event: w["event"],
+              status: w["status"],
+              conclusion: w["conclusion"],
+              workflow_id: w["workflow_id"],
+              run_attempt_count: w["run_attempt"],
+              created_at_ext: !w["created_at"].nil? ? DateTime.parse(w["created_at"]) : nil,
+              updated_at_ext: !w["updated_at"].nil? ? DateTime.parse(w["updated_at"]) : nil,
+              started_at_ext: !w["run_started_at"].nil? ? DateTime.parse(w["run_started_at"]) : nil,
+              actor: w["actor"]["login"],
+            )
+            newRow.save
+          else
+            wf = TomWorkflowInfo.where(action_id: w["id"]).first
+            wf.name = w["name"]
+            wf.action_number = w["run_number"]
+            wf.event = w["event"]
+            wf.status = w["status"]
+            wf.conclusion = w["conclusion"]
+            wf.workflow_id = w["workflow_id"]
+            wf.run_attempt_count = w["run_attempt"]
+            wf.created_at_ext = !w["created_at"].nil? ? DateTime.parse(w["created_at"]) : nil
+            wf.updated_at_ext = !w["updated_at"].nil? ? DateTime.parse(w["updated_at"]) : nil
+            wf.started_at_ext = !w["run_started_at"].nil? ? DateTime.parse(w["run_started_at"]) : nil
+            wf.actor = w["actor"]["login"]
+            wf.save
+          end
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+        break
+      end
+    end
+
+    return true
+  end
+
+  def get_repo_owner_info(settings, repo_info)
+    puts "getting repo owner info for -> " + repo_info.repo_fullname
+
+    info_url_template = settings.repos_info_url.dup
+
+    # Getting info about forks
+
+    puts "repos_info_url -> " + info_url_template
+
+    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+      request_url, json: {},
+    )
+    if response.code == 200
+      repo_info = JSON.parse(response)
+
+      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+        repo_info["owner"]["url"], json: {},
+      )
+      if response.code == 200
+        owner_info = JSON.parse(response)
+
+        if (!TomGitUserInfo.exists?(user_id: owner_info["id"]))
+          newRow = TomGitUserInfo.new(
+            user_id: owner_info["id"],
+            user_login: owner_info["login"],
+            followers_counter: owner_info["followers"],
+            following_counter: owner_info["following"],
+          )
+          response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+            owner_info["organizations_url"], json: {},
+          )
+          if response.code == 200
+            orgs_info = JSON.parse(response)
+            newRow.orgs_counter = orgs_info.length
+          else
+            newRow.orgs_counter = 0
+          end
+
+          newRow.save
+        else
+          owner = TomGitUserInfo.where(user_id: owner_info["id"]).first
+          owner.followers_counter = owner_info["followers"]
+          owner.following_counter = owner_info["following"]
+          response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+            owner_info["organizations_url"], json: {},
+          )
+          if response.code == 200
+            orgs_info = JSON.parse(response)
+            newRow.orgs_counter = orgs_info.length
+          else
+            newRow.orgs_counter = 0
+          end
+          owner.save
+        end
+      else
+        puts JSON.pretty_generate(response.parse)
+      end
+    else
+      puts JSON.pretty_generate(response.parse)
+    end
+
     return true
   end
 
@@ -515,398 +1048,398 @@ class GithubRadar < RadarBaseController
 
     contributors_list = nil
 
-    puts "getting forks info for -> " + repo_info.repo_fullname
-
-    info_url_template = settings.forks_info_url.dup
-
-    # Getting info about forks
-
-    puts "forks_info_url -> " + info_url_template
-
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
-
-    page_counter = 0
-    forks_list = []
-    while true
-      page_counter += 1
-      puts "getting page forks -> " + page_counter.to_s
-
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        forks_info = JSON.parse(response)
-
-        if forks_info.length == 0
-          break
-        end
-
-        forks_info.each do |f|
-          forks_list.push(f.dup)
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
-
-    if forks_list.length > 0
-      projectMetrics.forks_count = forks_list.length
-
-      # puts "forks_list -> " + forks_list.length.to_s
-
-      forks_grouped = forks_list.group_by { |f| DateTime.parse(f["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
-
-      if forks_grouped.length > 0
-        # puts "forks_grouped l -> " + forks_grouped.last[1].length.to_s
-
-        projectMetrics.forks_avg_max_per_day = forks_grouped.last[1].length.to_s
-        projectMetrics.forks_avg_per_day = forks_list.length / repo_age_days
-      else
-        projectMetrics.forks_avg_max_per_day = 0
-        projectMetrics.forks_avg_per_day = 0
-      end
-    else
-      projectMetrics.forks_count = 0
-      projectMetrics.forks_avg_max_per_day = 0
-      projectMetrics.forks_avg_per_day = 0
-    end
-
-    forks_list = nil
-
-    puts "getting issues info for -> " + repo_info.repo_fullname
-
-    info_url_template = settings.issues_info_url.dup
-
-    # Getting info about issues
-
-    puts "issues_info_url -> " + info_url_template
-
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
-
-    total_open = 0
-    total_closed = 0
-    labels = []
-    days_closing_time = 0
-    sum_title_length = 0
-    sum_body_length = 0
-    total_comments = 0
-    issues_list = []
-
-    page_counter = 0
-    while true
-      page_counter += 1
-      puts "getting page issues-> " + page_counter.to_s
-
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?state=all&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        issues_info = JSON.parse(response)
-
-        # puts "page count -> " + issues_info.length.to_s
-        if issues_info.length == 0
-          break
-        end
-
-        issues_info.each do |issue|
-          if issue["state"] == "open"
-            total_open += 1
-          end
-          issue["labels"].each do |l|
-            labels.push(l["id"])
-          end
-
-          if issue["state"] == "closed"
-            total_closed += 1
-            time_diff = DateTime.parse(issue["created_at"]) - DateTime.parse(issue["created_at"])
-            days_closing_time += (time_diff / 1.day).round
-          end
-
-          sum_title_length += issue["title"] ? issue["title"].length : 0
-          sum_body_length += issue["body"] ? issue["body"].length : 0
-          total_comments += issue["comments"]
-
-          issues_list.push(issue.dup)
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
-
-    if issues_list.length > 0
-      projectMetrics.issues_count = issues_list.length
-      projectMetrics.issues_open = total_open
-      projectMetrics.issues_avg_labels = (labels.length / issues_list.length)
-      labels.uniq #removing duplicated labels
-      projectMetrics.issues_labels = labels.length
-      projectMetrics.issues_avg_closing_time = total_closed > 0 ? (days_closing_time / total_closed) : 0
-      projectMetrics.issues_avg_title_length = (sum_title_length / issues_list.length)
-      projectMetrics.issues_avg_body_length = (sum_body_length / issues_list.length)
-      projectMetrics.issues_avg_comments = (total_comments / issues_list.length)
-
-      issues_grouped = issues_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
-
-      projectMetrics.issues_max_per_day = issues_grouped.last[1].length.to_s
-      projectMetrics.issues_avg_per_day = issues_list.length / repo_age_days
-      projectMetrics.issues_avg_per_day_real = issues_list.length / issues_grouped.length
-    else
-      projectMetrics.issues_count = 0
-      projectMetrics.issues_open = 0
-      projectMetrics.issues_avg_labels = 0
-      projectMetrics.issues_labels = 0
-      projectMetrics.issues_avg_closing_time = 0
-      projectMetrics.issues_avg_title_length = 0
-      projectMetrics.issues_avg_body_length = 0
-      projectMetrics.issues_avg_comments = 0
-      projectMetrics.issues_max_per_day = 0
-      projectMetrics.issues_avg_per_day = 0
-      projectMetrics.issues_avg_per_day_real = 0
-    end
-
-    labels = nil
-    issues_list = nil
-
-    info_url_template = settings.issues_Comments_info_url.dup
-
-    # Getting info about issues
-
-    puts "issues_Comments_info_url -> " + info_url_template
-
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
-
-    page_counter = 0
-    comments_counter = 0
-    comments_length = 0
-    last_comment_date = nil
-    comments_interval_counter_days = 0
-
-    while true
-      page_counter += 1
-      puts "getting page comments-> " + page_counter.to_s
-
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        issues_comments_info = JSON.parse(response)
-
-        if issues_comments_info.length == 0
-          break
-        end
-        comments_counter += issues_comments_info.length
-        issues_comments_info.each do |c|
-          comments_length += c["body"].length
-
-          if last_comment_date != nil
-            comments_interval_counter_days += ((DateTime.parse(c["created_at"]) - last_comment_date) / 1.day).round
-          end
-
-          last_comment_date = DateTime.parse(c["created_at"])
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
-    if comments_counter > 0
-      projectMetrics.issues_total_comments = comments_counter
-      projectMetrics.issues_avg_comment_time = (comments_interval_counter_days / comments_counter)
-      projectMetrics.issues_avg_comment_length = (comments_length / comments_counter)
-    else
-      projectMetrics.issues_total_comments = 0
-      projectMetrics.issues_avg_comment_time = 0
-      projectMetrics.issues_avg_comment_length = 0
-    end
-
-    puts "getting pulls info for -> " + repo_info.repo_fullname
-
-    info_url_template = settings.pulls_info_url.dup
-
-    # Getting info about issues
-
-    puts "pulls_info_url -> " + info_url_template
-
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
-
-    total_lines_added = 0
-    total_lines_removed = 0
-    days_closing_time = 0
-    total_comments = 0
-    total_review_comments = 0
-    total_commits = 0
-    total_body_length = 0
-    total_title_length = 0
-    total_files_changed = 0
-    total_labels = 0
-    total_closed = 0
-
-    pull_list = []
-
-    page_counter = 0
-    while true
-      page_counter += 1
-      puts "getting page pulls-> " + page_counter.to_s
-
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        pulls_info = JSON.parse(response)
-
-        if pulls_info.length == 0
-          break
-        end
-
-        pulls_info.each do |pull|
-          response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-            pull["url"], json: {},
-          )
-          if response.code == 200
-            p_info = JSON.parse(response)
-
-            total_lines_added += p_info["additions"]
-            total_lines_removed += p_info["deletions"]
-
-            total_comments += p_info["comments"]
-            total_review_comments += p_info["review_comments"]
-            total_commits += p_info["commits"]
-            total_body_length += p_info["body"] ? p_info["body"].length : 0
-            total_title_length += p_info["title"] ? p_info["title"].length : 0
-            total_files_changed += p_info["changed_files"]
-            total_labels += p_info["labels"].length
-            if p_info["state"] == "closed"
-              days_closing_time += (DateTime.parse(p_info["closed_at"]) - DateTime.parse(p_info["created_at"]) / 1.day).round
-              total_closed += 1
-            end
-
-            pull_list.push(p_info.dup)
-          else
-            puts JSON.pretty_generate(response.parse)
-          end
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
-
-    if pull_list.length > 0
-      projectMetrics.pulls_count = pull_list.length
-      projectMetrics.pulls_total_lines_added = total_lines_added
-      projectMetrics.pulls_total_lines_removed = total_lines_removed
-      projectMetrics.pulls_avg_lines_added = total_lines_added / pull_list.length
-      projectMetrics.pulls_avg_lines_removed = total_lines_removed / pull_list.length
-      projectMetrics.pulls_avg_closing_time = total_closed > 0 ? days_closing_time / total_closed : 0
-      projectMetrics.pulls_avg_comments = total_comments / pull_list.length
-      projectMetrics.pulls_avg_review_comments = total_review_comments / pull_list.length
-      projectMetrics.pulls_avg_Commits = total_commits / pull_list.length
-      projectMetrics.pulls_avg_body_length = total_body_length / pull_list.length
-      projectMetrics.pulls_avg_title_length = total_title_length / pull_list.length
-      projectMetrics.pulls_avg_files_changed = total_files_changed / pull_list.length
-      projectMetrics.pulls_avg_labels = total_labels / pull_list.length
-
-      pull_grouped = pull_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
-
-      projectMetrics.pulls_max_created_per_day = pull_grouped.last[1].length.to_s
-      projectMetrics.pulls_avg_created_per_day = pull_grouped.length / repo_age_days
-      projectMetrics.pulls_avg_created_per_day_real = pull_grouped.length / pull_grouped.length
-    else
-      projectMetrics.pulls_count = 0
-      projectMetrics.pulls_total_lines_added = 0
-      projectMetrics.pulls_total_lines_removed = 0
-      projectMetrics.pulls_avg_lines_added = 0
-      projectMetrics.pulls_avg_lines_removed = 0
-      projectMetrics.pulls_avg_closing_time = 0
-      projectMetrics.pulls_avg_comments = 0
-      projectMetrics.pulls_avg_review_comments = 0
-      projectMetrics.pulls_avg_Commits = 0
-      projectMetrics.pulls_avg_body_length = 0
-      projectMetrics.pulls_avg_title_length = 0
-      projectMetrics.pulls_avg_files_changed = 0
-      projectMetrics.pulls_avg_labels = 0
-
-      projectMetrics.pulls_max_created_per_day = 0
-      projectMetrics.pulls_avg_created_per_day = 0
-      projectMetrics.pulls_avg_created_per_day_real = 0
-    end
-
-    pull_list = nil
-
-    puts "getting releases info for -> " + repo_info.repo_fullname
-
-    info_url_template = settings.releases_info_url.dup
-
-    # Getting info about releases
-
-    puts "releases_info_url -> " + info_url_template
-
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
-
-    total_releases = 0
-    total_tags = 0
-    total_assets = 0
-    total_assets_downloads = 0
-    total_assets_size = 0
-    total_body_length = 0
-    total_title_length = 0
-
-    releases_list = []
-
-    page_counter = 0
-    while true
-      page_counter += 1
-      puts "getting page release -> " + page_counter.to_s
-
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        releases_info = JSON.parse(response)
-
-        if releases_info.length == 0
-          break
-        end
-        total_releases += releases_info.length
-        releases_info.each do |release|
-          total_assets += release["assets"].length
-          release["assets"].each do |a|
-            total_assets_downloads += a["download_count"]
-            total_assets_size += a["size"] ? a["size"] : 0
-          end
-          if release["tag_name"]
-            total_tags += 1
-          end
-          total_body_length += release["body"].length
-          total_title_length += release["name"].length
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
-
-    if total_releases > 0
-      projectMetrics.releases_count = total_releases
-      projectMetrics.releases_tags = total_tags
-      projectMetrics.releases_total_downloads = total_assets_downloads
-      projectMetrics.releases_avg_body_length = total_body_length / total_releases
-      projectMetrics.releases_avg_title_length = total_title_length / total_releases
-      projectMetrics.releases_avg_assets = total_assets / total_releases
-      projectMetrics.releases_avg_assets_downloads = total_assets > 0 ? total_assets_downloads / total_assets : 0
-      projectMetrics.releases_avg_assets_size = total_assets > 0 ? total_assets_size / total_assets : 0
-    else
-      projectMetrics.releases_count = 0
-      projectMetrics.releases_tags = 0
-      projectMetrics.releases_total_downloads = 0
-      projectMetrics.releases_avg_body_length = 0
-      projectMetrics.releases_avg_title_length = 0
-      projectMetrics.releases_avg_assets = 0
-      projectMetrics.releases_avg_assets_downloads = 0
-      projectMetrics.releases_avg_assets_size = 0
-    end
-    releases_list = nil
+    # puts "getting forks info for -> " + repo_info.repo_fullname
+
+    # info_url_template = settings.forks_info_url.dup
+
+    # # Getting info about forks
+
+    # puts "forks_info_url -> " + info_url_template
+
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    # page_counter = 0
+    # forks_list = []
+    # while true
+    #   page_counter += 1
+    #   puts "getting page forks -> " + page_counter.to_s
+
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     forks_info = JSON.parse(response)
+
+    #     if forks_info.length == 0
+    #       break
+    #     end
+
+    #     forks_info.each do |f|
+    #       forks_list.push(f.dup)
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
+
+    # if forks_list.length > 0
+    #   projectMetrics.forks_count = forks_list.length
+
+    #   # puts "forks_list -> " + forks_list.length.to_s
+
+    #   forks_grouped = forks_list.group_by { |f| DateTime.parse(f["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
+
+    #   if forks_grouped.length > 0
+    #     # puts "forks_grouped l -> " + forks_grouped.last[1].length.to_s
+
+    #     projectMetrics.forks_avg_max_per_day = forks_grouped.last[1].length.to_s
+    #     projectMetrics.forks_avg_per_day = forks_list.length / repo_age_days
+    #   else
+    #     projectMetrics.forks_avg_max_per_day = 0
+    #     projectMetrics.forks_avg_per_day = 0
+    #   end
+    # else
+    #   projectMetrics.forks_count = 0
+    #   projectMetrics.forks_avg_max_per_day = 0
+    #   projectMetrics.forks_avg_per_day = 0
+    # end
+
+    # forks_list = nil
+
+    # puts "getting issues info for -> " + repo_info.repo_fullname
+
+    # info_url_template = settings.issues_info_url.dup
+
+    # # Getting info about issues
+
+    # puts "issues_info_url -> " + info_url_template
+
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    # total_open = 0
+    # total_closed = 0
+    # labels = []
+    # days_closing_time = 0
+    # sum_title_length = 0
+    # sum_body_length = 0
+    # total_comments = 0
+    # issues_list = []
+
+    # page_counter = 0
+    # while true
+    #   page_counter += 1
+    #   puts "getting page issues-> " + page_counter.to_s
+
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?state=all&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     issues_info = JSON.parse(response)
+
+    #     # puts "page count -> " + issues_info.length.to_s
+    #     if issues_info.length == 0
+    #       break
+    #     end
+
+    #     issues_info.each do |issue|
+    #       if issue["state"] == "open"
+    #         total_open += 1
+    #       end
+    #       issue["labels"].each do |l|
+    #         labels.push(l["id"])
+    #       end
+
+    #       if issue["state"] == "closed"
+    #         total_closed += 1
+    #         time_diff = DateTime.parse(issue["created_at"]) - DateTime.parse(issue["created_at"])
+    #         days_closing_time += (time_diff / 1.day).round
+    #       end
+
+    #       sum_title_length += issue["title"] ? issue["title"].length : 0
+    #       sum_body_length += issue["body"] ? issue["body"].length : 0
+    #       total_comments += issue["comments"]
+
+    #       issues_list.push(issue.dup)
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
+
+    # if issues_list.length > 0
+    #   projectMetrics.issues_count = issues_list.length
+    #   projectMetrics.issues_open = total_open
+    #   projectMetrics.issues_avg_labels = (labels.length / issues_list.length)
+    #   labels.uniq #removing duplicated labels
+    #   projectMetrics.issues_labels = labels.length
+    #   projectMetrics.issues_avg_closing_time = total_closed > 0 ? (days_closing_time / total_closed) : 0
+    #   projectMetrics.issues_avg_title_length = (sum_title_length / issues_list.length)
+    #   projectMetrics.issues_avg_body_length = (sum_body_length / issues_list.length)
+    #   projectMetrics.issues_avg_comments = (total_comments / issues_list.length)
+
+    #   issues_grouped = issues_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
+
+    #   projectMetrics.issues_max_per_day = issues_grouped.last[1].length.to_s
+    #   projectMetrics.issues_avg_per_day = issues_list.length / repo_age_days
+    #   projectMetrics.issues_avg_per_day_real = issues_list.length / issues_grouped.length
+    # else
+    #   projectMetrics.issues_count = 0
+    #   projectMetrics.issues_open = 0
+    #   projectMetrics.issues_avg_labels = 0
+    #   projectMetrics.issues_labels = 0
+    #   projectMetrics.issues_avg_closing_time = 0
+    #   projectMetrics.issues_avg_title_length = 0
+    #   projectMetrics.issues_avg_body_length = 0
+    #   projectMetrics.issues_avg_comments = 0
+    #   projectMetrics.issues_max_per_day = 0
+    #   projectMetrics.issues_avg_per_day = 0
+    #   projectMetrics.issues_avg_per_day_real = 0
+    # end
+
+    # labels = nil
+    # issues_list = nil
+
+    # info_url_template = settings.issues_Comments_info_url.dup
+
+    # # Getting info about issues
+
+    # puts "issues_Comments_info_url -> " + info_url_template
+
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    # page_counter = 0
+    # comments_counter = 0
+    # comments_length = 0
+    # last_comment_date = nil
+    # comments_interval_counter_days = 0
+
+    # while true
+    #   page_counter += 1
+    #   puts "getting page comments-> " + page_counter.to_s
+
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     issues_comments_info = JSON.parse(response)
+
+    #     if issues_comments_info.length == 0
+    #       break
+    #     end
+    #     comments_counter += issues_comments_info.length
+    #     issues_comments_info.each do |c|
+    #       comments_length += c["body"].length
+
+    #       if last_comment_date != nil
+    #         comments_interval_counter_days += ((DateTime.parse(c["created_at"]) - last_comment_date) / 1.day).round
+    #       end
+
+    #       last_comment_date = DateTime.parse(c["created_at"])
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
+    # if comments_counter > 0
+    #   projectMetrics.issues_total_comments = comments_counter
+    #   projectMetrics.issues_avg_comment_time = (comments_interval_counter_days / comments_counter)
+    #   projectMetrics.issues_avg_comment_length = (comments_length / comments_counter)
+    # else
+    #   projectMetrics.issues_total_comments = 0
+    #   projectMetrics.issues_avg_comment_time = 0
+    #   projectMetrics.issues_avg_comment_length = 0
+    # end
+
+    # puts "getting pulls info for -> " + repo_info.repo_fullname
+
+    # info_url_template = settings.pulls_info_url.dup
+
+    # # Getting info about issues
+
+    # puts "pulls_info_url -> " + info_url_template
+
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    # total_lines_added = 0
+    # total_lines_removed = 0
+    # days_closing_time = 0
+    # total_comments = 0
+    # total_review_comments = 0
+    # total_commits = 0
+    # total_body_length = 0
+    # total_title_length = 0
+    # total_files_changed = 0
+    # total_labels = 0
+    # total_closed = 0
+
+    # pull_list = []
+
+    # page_counter = 0
+    # while true
+    #   page_counter += 1
+    #   puts "getting page pulls-> " + page_counter.to_s
+
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     pulls_info = JSON.parse(response)
+
+    #     if pulls_info.length == 0
+    #       break
+    #     end
+
+    #     pulls_info.each do |pull|
+    #       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #         pull["url"], json: {},
+    #       )
+    #       if response.code == 200
+    #         p_info = JSON.parse(response)
+
+    #         total_lines_added += p_info["additions"]
+    #         total_lines_removed += p_info["deletions"]
+
+    #         total_comments += p_info["comments"]
+    #         total_review_comments += p_info["review_comments"]
+    #         total_commits += p_info["commits"]
+    #         total_body_length += p_info["body"] ? p_info["body"].length : 0
+    #         total_title_length += p_info["title"] ? p_info["title"].length : 0
+    #         total_files_changed += p_info["changed_files"]
+    #         total_labels += p_info["labels"].length
+    #         if p_info["state"] == "closed"
+    #           days_closing_time += (DateTime.parse(p_info["closed_at"]) - DateTime.parse(p_info["created_at"]) / 1.day).round
+    #           total_closed += 1
+    #         end
+
+    #         pull_list.push(p_info.dup)
+    #       else
+    #         puts JSON.pretty_generate(response.parse)
+    #       end
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
+
+    # if pull_list.length > 0
+    #   projectMetrics.pulls_count = pull_list.length
+    #   projectMetrics.pulls_total_lines_added = total_lines_added
+    #   projectMetrics.pulls_total_lines_removed = total_lines_removed
+    #   projectMetrics.pulls_avg_lines_added = total_lines_added / pull_list.length
+    #   projectMetrics.pulls_avg_lines_removed = total_lines_removed / pull_list.length
+    #   projectMetrics.pulls_avg_closing_time = total_closed > 0 ? days_closing_time / total_closed : 0
+    #   projectMetrics.pulls_avg_comments = total_comments / pull_list.length
+    #   projectMetrics.pulls_avg_review_comments = total_review_comments / pull_list.length
+    #   projectMetrics.pulls_avg_Commits = total_commits / pull_list.length
+    #   projectMetrics.pulls_avg_body_length = total_body_length / pull_list.length
+    #   projectMetrics.pulls_avg_title_length = total_title_length / pull_list.length
+    #   projectMetrics.pulls_avg_files_changed = total_files_changed / pull_list.length
+    #   projectMetrics.pulls_avg_labels = total_labels / pull_list.length
+
+    #   pull_grouped = pull_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
+
+    #   projectMetrics.pulls_max_created_per_day = pull_grouped.last[1].length.to_s
+    #   projectMetrics.pulls_avg_created_per_day = pull_grouped.length / repo_age_days
+    #   projectMetrics.pulls_avg_created_per_day_real = pull_grouped.length / pull_grouped.length
+    # else
+    #   projectMetrics.pulls_count = 0
+    #   projectMetrics.pulls_total_lines_added = 0
+    #   projectMetrics.pulls_total_lines_removed = 0
+    #   projectMetrics.pulls_avg_lines_added = 0
+    #   projectMetrics.pulls_avg_lines_removed = 0
+    #   projectMetrics.pulls_avg_closing_time = 0
+    #   projectMetrics.pulls_avg_comments = 0
+    #   projectMetrics.pulls_avg_review_comments = 0
+    #   projectMetrics.pulls_avg_Commits = 0
+    #   projectMetrics.pulls_avg_body_length = 0
+    #   projectMetrics.pulls_avg_title_length = 0
+    #   projectMetrics.pulls_avg_files_changed = 0
+    #   projectMetrics.pulls_avg_labels = 0
+
+    #   projectMetrics.pulls_max_created_per_day = 0
+    #   projectMetrics.pulls_avg_created_per_day = 0
+    #   projectMetrics.pulls_avg_created_per_day_real = 0
+    # end
+
+    # pull_list = nil
+
+    # puts "getting releases info for -> " + repo_info.repo_fullname
+
+    # info_url_template = settings.releases_info_url.dup
+
+    # # Getting info about releases
+
+    # puts "releases_info_url -> " + info_url_template
+
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+
+    # total_releases = 0
+    # total_tags = 0
+    # total_assets = 0
+    # total_assets_downloads = 0
+    # total_assets_size = 0
+    # total_body_length = 0
+    # total_title_length = 0
+
+    # releases_list = []
+
+    # page_counter = 0
+    # while true
+    #   page_counter += 1
+    #   puts "getting page release -> " + page_counter.to_s
+
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     releases_info = JSON.parse(response)
+
+    #     if releases_info.length == 0
+    #       break
+    #     end
+    #     total_releases += releases_info.length
+    #     releases_info.each do |release|
+    #       total_assets += release["assets"].length
+    #       release["assets"].each do |a|
+    #         total_assets_downloads += a["download_count"]
+    #         total_assets_size += a["size"] ? a["size"] : 0
+    #       end
+    #       if release["tag_name"]
+    #         total_tags += 1
+    #       end
+    #       total_body_length += release["body"].length
+    #       total_title_length += release["name"].length
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
+
+    # if total_releases > 0
+    #   projectMetrics.releases_count = total_releases
+    #   projectMetrics.releases_tags = total_tags
+    #   projectMetrics.releases_total_downloads = total_assets_downloads
+    #   projectMetrics.releases_avg_body_length = total_body_length / total_releases
+    #   projectMetrics.releases_avg_title_length = total_title_length / total_releases
+    #   projectMetrics.releases_avg_assets = total_assets / total_releases
+    #   projectMetrics.releases_avg_assets_downloads = total_assets > 0 ? total_assets_downloads / total_assets : 0
+    #   projectMetrics.releases_avg_assets_size = total_assets > 0 ? total_assets_size / total_assets : 0
+    # else
+    #   projectMetrics.releases_count = 0
+    #   projectMetrics.releases_tags = 0
+    #   projectMetrics.releases_total_downloads = 0
+    #   projectMetrics.releases_avg_body_length = 0
+    #   projectMetrics.releases_avg_title_length = 0
+    #   projectMetrics.releases_avg_assets = 0
+    #   projectMetrics.releases_avg_assets_downloads = 0
+    #   projectMetrics.releases_avg_assets_size = 0
+    # end
+    # releases_list = nil
 
     puts "getting stars info for -> " + repo_info.repo_fullname
 
@@ -956,80 +1489,80 @@ class GithubRadar < RadarBaseController
 
     stars_list = nil
 
-    puts "getting workflows info for -> " + repo_info.repo_fullname
+    # puts "getting workflows info for -> " + repo_info.repo_fullname
 
-    info_url_template = settings.workflows_info_url.dup
+    # info_url_template = settings.workflows_info_url.dup
 
-    # Getting info about workflows
+    # # Getting info about workflows
 
-    puts "workflows_info_url -> " + info_url_template
+    # puts "workflows_info_url -> " + info_url_template
 
-    request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
+    # request_url = info_url_template.sub! "#repo_fullname", repo_info.repo_fullname
 
-    total_runs = 0
-    total_duration = 0
-    total_success_duration = 0
-    total_failure_duration = 0
-    workflows_success_list = []
-    workflows_fail_list = []
+    # total_runs = 0
+    # total_duration = 0
+    # total_success_duration = 0
+    # total_failure_duration = 0
+    # workflows_success_list = []
+    # workflows_fail_list = []
 
-    page_counter = 0
-    while true
-      page_counter += 1
-      puts "getting page wf -> " + page_counter.to_s
+    # page_counter = 0
+    # while true
+    #   page_counter += 1
+    #   puts "getting page wf -> " + page_counter.to_s
 
-      response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
-        request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
-      )
-      if response.code == 200
-        workflows_info = JSON.parse(response)
-        if workflows_info["workflow_runs"].length == 0
-          break
-        end
-        total_runs += workflows_info.length
-        workflows_info["workflow_runs"].each do |w|
-          if w["conclusion"] == "success"
-            workflows_success_list.push(w)
-            # time in seconds
-            total_success_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
-          else
-            workflows_fail_list.push(w)
-            # time in seconds
-            total_failure_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
-          end
-          total_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
-        end
-      else
-        puts JSON.pretty_generate(response.parse)
-        break
-      end
-    end
+    #   response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+    #     request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
+    #   )
+    #   if response.code == 200
+    #     workflows_info = JSON.parse(response)
+    #     if workflows_info["workflow_runs"].length == 0
+    #       break
+    #     end
+    #     total_runs += workflows_info.length
+    #     workflows_info["workflow_runs"].each do |w|
+    #       if w["conclusion"] == "success"
+    #         workflows_success_list.push(w)
+    #         # time in seconds
+    #         total_success_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+    #       else
+    #         workflows_fail_list.push(w)
+    #         # time in seconds
+    #         total_failure_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+    #       end
+    #       total_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+    #     end
+    #   else
+    #     puts JSON.pretty_generate(response.parse)
+    #     break
+    #   end
+    # end
 
-    if total_runs > 0
-      projectMetrics.wf_count = total_runs
-      projectMetrics.wf_avg_duration = total_duration / total_runs
-      projectMetrics.wf_avg_success_duration = total_success_duration / total_runs
-      projectMetrics.wf_avg_failure_duration = total_failure_duration / total_runs
-      success_grouped = workflows_success_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
-      projectMetrics.wf_avg_successes_per_day = (total_runs / repo_age_days)
-      if success_grouped.length > 0
-        projectMetrics.wf_avg_successes_per_day_real = (workflows_success_list.length / success_grouped.length)
-      else
-        projectMetrics.wf_avg_successes_per_day_real = 0
-      end
-      projectMetrics.wf_avg_fails_per_day = (workflows_fail_list.length / repo_age_days)
-    else
-      projectMetrics.wf_count = 0
-      projectMetrics.wf_avg_duration = 0
-      projectMetrics.wf_avg_success_duration = 0
-      projectMetrics.wf_avg_failure_duration = 0
-      projectMetrics.wf_avg_successes_per_day = 0
-      projectMetrics.wf_avg_successes_per_day_real = 0
-      projectMetrics.wf_avg_fails_per_day = 0
-    end
+    # if total_runs > 0
+    #   projectMetrics.wf_count = total_runs
+    #   projectMetrics.wf_avg_duration = total_duration / total_runs
+    #   projectMetrics.wf_avg_success_duration = total_success_duration / total_runs
+    #   projectMetrics.wf_avg_failure_duration = total_failure_duration / total_runs
+    #   success_grouped = workflows_success_list.group_by { |i| DateTime.parse(i["created_at"]).beginning_of_day }.sort_by { |x| x[1].length }
+    #   projectMetrics.wf_avg_successes_per_day = (total_runs / repo_age_days)
+    #   if success_grouped.length > 0
+    #     projectMetrics.wf_avg_successes_per_day_real = (workflows_success_list.length / success_grouped.length)
+    #   else
+    #     projectMetrics.wf_avg_successes_per_day_real = 0
+    #   end
+    #   projectMetrics.wf_avg_fails_per_day = (workflows_fail_list.length / repo_age_days)
+    # else
+    #   projectMetrics.wf_count = 0
+    #   projectMetrics.wf_avg_duration = 0
+    #   projectMetrics.wf_avg_success_duration = 0
+    #   projectMetrics.wf_avg_failure_duration = 0
+    #   projectMetrics.wf_avg_successes_per_day = 0
+    #   projectMetrics.wf_avg_successes_per_day_real = 0
+    #   projectMetrics.wf_avg_fails_per_day = 0
+    # end
 
-    workflows_success_list = nil
-    workflows_fail_list = nil
+    # workflows_success_list = nil
+    # workflows_fail_list = nil
 
     projectMetrics.save
   end

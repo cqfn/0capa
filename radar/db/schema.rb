@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_21_091749) do
+ActiveRecord::Schema.define(version: 2022_03_16_075924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,30 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
     t.index ["full_name"], name: "index_tom_commits_metrics_on_full_name"
   end
 
+  create_table "tom_fork_infos", force: :cascade do |t|
+    t.string "repoid"
+    t.string "repo_fullname"
+    t.string "folk_id"
+    t.string "folk_fullname"
+    t.string "owner"
+    t.string "is_private"
+    t.datetime "created_at_ext"
+    t.datetime "updated_at_ext"
+    t.datetime "pushed_at_ext"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tom_git_user_infos", force: :cascade do |t|
+    t.string "user_id"
+    t.string "user_login"
+    t.integer "followers_counter"
+    t.integer "following_counter"
+    t.integer "orgs_counter"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "tom_issues", force: :cascade do |t|
     t.string "issueid"
     t.string "repo_issueid"
@@ -69,6 +93,29 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
     t.integer "comments"
     t.datetime "closed_at_ext"
     t.string "closed_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tom_issues_infos", force: :cascade do |t|
+    t.string "repoid"
+    t.string "repo_fullname"
+    t.string "issue_id"
+    t.string "issue_number"
+    t.string "title"
+    t.string "created_by_ext"
+    t.string "labels"
+    t.integer "labels_count"
+    t.string "state"
+    t.integer "asssigned_count"
+    t.string "milestone_title"
+    t.datetime "created_at_ext"
+    t.datetime "updated_at_ext"
+    t.datetime "closed_at_ext"
+    t.integer "comments_count"
+    t.string "author_association"
+    t.integer "body_length"
+    t.integer "reactions_count"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -279,6 +326,36 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
     t.string "node_name"
   end
 
+  create_table "tom_pull_infos", force: :cascade do |t|
+    t.string "repoid"
+    t.string "repo_fullname"
+    t.string "pull_id"
+    t.string "pull_number"
+    t.string "state"
+    t.string "title"
+    t.string "title_length"
+    t.string "owner"
+    t.string "body_length"
+    t.datetime "created_at_ext"
+    t.datetime "updated_at_ext"
+    t.datetime "closed_at_ext"
+    t.datetime "merged_at_ext"
+    t.integer "asssigned_count"
+    t.integer "req_review_count"
+    t.string "labels"
+    t.integer "labels_count"
+    t.string "milestone_title"
+    t.string "author_association"
+    t.string "head_commit_id"
+    t.string "base_commit_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "commits_counts"
+    t.string "is_locked"
+    t.integer "code_blocks_counter"
+    t.string "links_counter"
+  end
+
   create_table "tom_push_infos", force: :cascade do |t|
     t.string "head_commit_id"
     t.string "full_name"
@@ -305,6 +382,21 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "request_body"
+  end
+
+  create_table "tom_release_infos", force: :cascade do |t|
+    t.string "repoid"
+    t.string "repo_fullname"
+    t.string "release_id"
+    t.string "author"
+    t.string "name"
+    t.datetime "created_at_ext"
+    t.datetime "published_at_ext"
+    t.integer "assets_count"
+    t.integer "body_length"
+    t.integer "reactions_count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "tom_settings", force: :cascade do |t|
@@ -343,6 +435,25 @@ ActiveRecord::Schema.define(version: 2022_02_21_091749) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "isactive", default: "Y"
+  end
+
+  create_table "tom_workflow_infos", force: :cascade do |t|
+    t.string "repoid"
+    t.string "repo_fullname"
+    t.string "action_id"
+    t.string "name"
+    t.string "action_number"
+    t.string "event"
+    t.string "status"
+    t.string "conclusion"
+    t.string "workflow_id"
+    t.integer "run_attempt_count"
+    t.datetime "created_at_ext"
+    t.datetime "updated_at_ext"
+    t.datetime "started_at_ext"
+    t.string "actor"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

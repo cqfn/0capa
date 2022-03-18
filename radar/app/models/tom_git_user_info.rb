@@ -1,0 +1,2 @@
+class TomGitUserInfo < ApplicationRecord
+end
