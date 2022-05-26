@@ -25,6 +25,6 @@ class CreatingGithubRadarSeed < ActiveRecord::Migration[6.1]
   end
 
   def down
-    # TomSettings.delete_all
+    TomSetting.delete_all
   end
 end
