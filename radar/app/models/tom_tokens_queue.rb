@@ -1,2 +1,0 @@
-class TomTokensQueue < ApplicationRecord
-end

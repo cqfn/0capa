@@ -35,4 +35,8 @@
 yarn-debug.log*
 .yarn-integrity
 .env
-/tmp_source_code/*
+
+tmp_source_code/*
+.scannerwork
+/coverage/*
+!/coverage/.resultset.json

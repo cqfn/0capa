@@ -1,2 +1,0 @@
-class TomProjectCapaPrediction < ApplicationRecord
-end

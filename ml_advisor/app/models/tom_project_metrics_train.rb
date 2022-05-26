@@ -1,2 +1,0 @@
-class TomProjectMetricsTrain < ApplicationRecord
-end

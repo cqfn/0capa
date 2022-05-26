@@ -1,2 +1,0 @@
-class TomCapaDictonary < ApplicationRecord
-end
