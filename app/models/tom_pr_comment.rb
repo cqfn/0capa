@@ -1,0 +1,2 @@
+class TomPrComment < ApplicationRecord
+end

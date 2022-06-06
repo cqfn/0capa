@@ -594,6 +594,57 @@ class GithubRadar < RadarBaseController
             issue_info.labels = labels.join(",")
             issue_info.save
           end
+
+          # TODO: Add issues comments store implemenation
+          page_comments_counter = 0
+
+          while true
+            page_comments_counter += 1
+            puts "getting page issues-> " + page_comments_counter.to_s
+
+            response_comments = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+              issue["comments_url"] + "?per_page=100&page=" + page_comments_counter.to_s, json: {},
+            )
+
+            if response.code == 200
+              comments_issue_info = JSON.parse(response)
+
+              if comments_issue_info.length == 0
+                break
+              end
+              comments_issue_info.each do |comment|
+                if (!TomIssuesComment.exists?(comment_ext_id: comment["id"], repoid: repo_info.repoid))
+                  newCommentRow = TomIssuesComment.new(
+                    repoid: repo_info.repoid,
+                    repo_fullname: repo_info.repo_fullname,
+                    comment_ext_id: comment["id"],
+                    comment_created_by: comment["user"]["login"],
+                    comment_created_at: !comment["created_at"].nil? ? DateTime.parse(comment["created_at"]) : nil,
+                    comment_updated_at: !comment["updated_at"].nil? ? DateTime.parse(comment["updated_at"]) : nil,
+                    author_association: comment["author_association"],
+                    body: comment["body"],
+                    body_len: !comment["body"].nil? ? comment["body"].length : 0,
+                    total_reactions_counter: comment["reactions"]["total_count"],
+                  )
+                  newRow.save
+                else
+                  comments_info = TomIssuesComment.where(comment_ext_id: comment["id"], repoid: repo_info.repoid).first
+
+                  comments_info.comment_created_by = comment["user"]["login"]
+                  comments_info.comment_created_at = !comment["created_at"].nil? ? DateTime.parse(comment["created_at"]) : nil
+                  comments_info.comment_updated_at = !comment["updated_at"].nil? ? DateTime.parse(comment["updated_at"]) : nil
+                  comments_info.author_association = comment["author_association"]
+                  comments_info.body = comment["body"]
+                  comments_info.body_len = !comment["body"].nil? ? comment["body"].length : 0
+                  comments_info.total_reactions_counter = comment["reactions"]["total_count"]
+
+                  comments_info.save
+                end
+              end
+            else
+              break
+            end
+          end
         end
       else
         puts JSON.pretty_generate(response.parse)
@@ -721,6 +772,57 @@ class GithubRadar < RadarBaseController
             pull_info.labels = labels.join(",")
 
             pull_info.save
+          end
+
+          # TODO: Add comments store implemenation
+          page_comments_counter = 0
+
+          while true
+            page_comments_counter += 1
+            puts "getting page issues-> " + page_comments_counter.to_s
+
+            response_comments = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
+              pull["comments_url"] + "?per_page=100&page=" + page_comments_counter.to_s, json: {},
+            )
+
+            if response.code == 200
+              comments_pr_info = JSON.parse(response)
+
+              if comments_pr_info.length == 0
+                break
+              end
+              comments_pr_info.each do |comment|
+                if (!TomPrComment.exists?(comment_ext_id: comment["id"], repoid: repo_info.repoid))
+                  newCommentRow = TomPrComment.new(
+                    repoid: repo_info.repoid,
+                    repo_fullname: repo_info.repo_fullname,
+                    comment_ext_id: comment["id"],
+                    comment_created_by: comment["user"]["login"],
+                    comment_created_at: !comment["created_at"].nil? ? DateTime.parse(comment["created_at"]) : nil,
+                    comment_updated_at: !comment["updated_at"].nil? ? DateTime.parse(comment["updated_at"]) : nil,
+                    author_association: comment["author_association"],
+                    body: comment["body"],
+                    body_len: !comment["body"].nil? ? comment["body"].length : 0,
+                    total_reactions_counter: comment["reactions"]["total_count"],
+                  )
+                  newRow.save
+                else
+                  comments_info = TomPrComment.where(comment_ext_id: comment["id"], repoid: repo_info.repoid).first
+
+                  comments_info.comment_created_by = comment["user"]["login"]
+                  comments_info.comment_created_at = !comment["created_at"].nil? ? DateTime.parse(comment["created_at"]) : nil
+                  comments_info.comment_updated_at = !comment["updated_at"].nil? ? DateTime.parse(comment["updated_at"]) : nil
+                  comments_info.author_association = comment["author_association"]
+                  comments_info.body = comment["body"]
+                  comments_info.body_len = !comment["body"].nil? ? comment["body"].length : 0
+                  comments_info.total_reactions_counter = comment["reactions"]["total_count"]
+
+                  comments_info.save
+                end
+              end
+            else
+              break
+            end
           end
         end
       else
