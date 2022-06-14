@@ -165,13 +165,15 @@ class GithubRadar < RadarBaseController
       agentname: SOURCE,
       host: host,
     }).order(node_name: :asc).first
-
+    puts "check_new_invitations 1"
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {},
     )
+    puts "check_new_invitations 2"
     puts JSON.pretty_generate(response.parse)
-
+    puts "check_new_invitations 3"
     if response.code == 200
+      puts "check_new_invitations 4"
       invitations = JSON.parse(response)
 
       invitations.each {
