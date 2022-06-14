@@ -166,6 +166,10 @@ class GithubRadar < RadarBaseController
       host: host,
     }).order(node_name: :asc).first
     puts "check_new_invitations 1"
+    puts "content_type -> " + settings.content_type
+    puts "apisecret -> " + settings.apisecret
+    puts "invitations_endpoint -> " + settings.invitations_endpoint
+
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {},
     )
