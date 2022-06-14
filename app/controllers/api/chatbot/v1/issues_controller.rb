@@ -7,7 +7,7 @@ module Api
   module Chatbot
     module V1
       class IssuesController < ApplicationController
-        skip_before_action :verify_authenticity_token
+        # skip_before_action :verify_authenticity_token
 
         @@Tokens = nil
         @@call_count = 0
