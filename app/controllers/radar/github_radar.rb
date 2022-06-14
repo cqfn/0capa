@@ -25,6 +25,7 @@ class GithubRadar < RadarBaseController
     puts "initializing radar..."
     @@External_threar_stop = false
     if @@Is_active_instance == false
+      puts "there is no active instance, setting up a new one..."
       @@Is_active_instance = true
       while true
         check_new_invitations()
@@ -158,6 +159,7 @@ class GithubRadar < RadarBaseController
   end
 
   def check_new_invitations()
+    puts "starting process check_new_invitations..."
     host = Socket.gethostname
     settings = TomSetting.where("agentname = :agentname and (node_name = :host or node_name is null) ", {
       agentname: SOURCE,
@@ -216,7 +218,9 @@ class GithubRadar < RadarBaseController
 
             project.save
           else
-            raise "It was a error accepting collaboration invitation."
+            puts "there was an error accepting the invitaion..."
+            return false
+            # raise "It was a error accepting collaboration invitation."
           end
         end
       }
