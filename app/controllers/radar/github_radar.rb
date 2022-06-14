@@ -16,12 +16,13 @@ class GithubRadar < RadarBaseController
   @@Is_active_instance = false
 
   def initialize
-    puts "initialize GithubRadar"
+    puts "initialize class GithubRadar"
     Initialize(SOURCE)
     get_tokens()
   end
 
   def start_radar
+    puts "initializing radar..."
     @@External_threar_stop = false
     if @@Is_active_instance == false
       @@Is_active_instance = true
@@ -51,6 +52,7 @@ class GithubRadar < RadarBaseController
         end
       end
     else
+      puts "there is already an instance runing..."
       return false
     end
   end
