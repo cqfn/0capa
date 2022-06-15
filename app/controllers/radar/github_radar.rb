@@ -546,12 +546,14 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page issues-> " + page_counter.to_s
+      puts "getting page issues 1-> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?state=all&page=" + page_counter.to_s, json: {},
       )
       if response.code == 200
+        # puts JSON.pretty_generate(response.parse)
+
         issues_info = JSON.parse(response)
 
         if issues_info.length == 0
@@ -619,14 +621,14 @@ class GithubRadar < RadarBaseController
 
           while true
             page_comments_counter += 1
-            puts "getting page issues-> " + page_comments_counter.to_s
+            puts "getting page issues 2-> " + page_comments_counter.to_s
 
             response_comments = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
               issue["comments_url"] + "?per_page=100&page=" + page_comments_counter.to_s, json: {},
             )
 
             if response.code == 200
-              comments_issue_info = JSON.parse(response)
+              comments_issue_info = JSON.parse(response_comments)
 
               if comments_issue_info.length == 0
                 break
@@ -798,14 +800,14 @@ class GithubRadar < RadarBaseController
 
           while true
             page_comments_counter += 1
-            puts "getting page issues-> " + page_comments_counter.to_s
+            puts "getting page issues 3-> " + page_comments_counter.to_s
 
             response_comments = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
               pull["comments_url"] + "?per_page=100&page=" + page_comments_counter.to_s, json: {},
             )
 
-            if response.code == 200
-              comments_pr_info = JSON.parse(response)
+            if response_comments.code == 200
+              comments_pr_info = JSON.parse(response_comments)
 
               if comments_pr_info.length == 0
                 break
@@ -1388,7 +1390,7 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page issues-> " + page_counter.to_s
+      puts "getting page issues 4-> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?state=all&page=" + page_counter.to_s, json: {},
