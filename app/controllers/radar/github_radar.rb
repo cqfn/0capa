@@ -161,6 +161,8 @@ class GithubRadar < RadarBaseController
   def check_new_invitations()
     puts "starting process check_new_invitations..."
     host = Socket.gethostname
+    puts "SOURCE -> " + SOURCE
+    puts "host -> " + host
     settings = TomSetting.where("agentname = :agentname and (node_name = :host or node_name is null) ", {
       agentname: SOURCE,
       host: host,
