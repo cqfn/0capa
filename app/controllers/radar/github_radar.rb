@@ -167,21 +167,22 @@ class GithubRadar < RadarBaseController
       agentname: SOURCE,
       host: host,
     }).order(node_name: :asc).first
-    puts "check_new_invitations 1"
-    puts "check_new_invitations 1/2"
-    puts "content_type -> " + settings.content_type
-    puts "check_new_invitations 1/3"
-    puts "apisecret -> " + settings.apisecret
-    puts "invitations_endpoint -> " + settings.invitations_endpoint
+
+    # puts "check_new_invitations 1"
+    # puts "check_new_invitations 1/2"
+    # puts "content_type -> " + settings.content_type
+    # puts "check_new_invitations 1/3"
+    # puts "apisecret -> " + settings.apisecret
+    # puts "invitations_endpoint -> " + settings.invitations_endpoint
 
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {},
     )
-    puts "check_new_invitations 2"
+    # puts "check_new_invitations 2"
     # puts JSON.pretty_generate(response.parse)
-    puts "check_new_invitations 3"
+    # puts "check_new_invitations 3"
     if response.code == 200
-      puts "check_new_invitations 4"
+      # puts "check_new_invitations 4"
       invitations = JSON.parse(response)
 
       invitations.each {
@@ -647,7 +648,7 @@ class GithubRadar < RadarBaseController
                     body_len: !comment["body"].nil? ? comment["body"].length : 0,
                     total_reactions_counter: comment["reactions"]["total_count"],
                   )
-                  newRow.save
+                  newCommentRow.save
                 else
                   comments_info = TomIssuesComment.where(comment_ext_id: comment["id"], repoid: repo_info.repoid).first
 
