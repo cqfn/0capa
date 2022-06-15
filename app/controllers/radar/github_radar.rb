@@ -166,7 +166,9 @@ class GithubRadar < RadarBaseController
       host: host,
     }).order(node_name: :asc).first
     puts "check_new_invitations 1"
+    puts "check_new_invitations 1/2"
     puts "content_type -> " + settings.content_type
+    puts "check_new_invitations 1/3"
     puts "apisecret -> " + settings.apisecret
     puts "invitations_endpoint -> " + settings.invitations_endpoint
 
@@ -235,6 +237,9 @@ class GithubRadar < RadarBaseController
       return false
     end
     return true
+  rescue => e
+    puts e
+    return false
   end
 
   def getQueueCounter()
