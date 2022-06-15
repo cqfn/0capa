@@ -827,7 +827,7 @@ class GithubRadar < RadarBaseController
                     body_len: !comment["body"].nil? ? comment["body"].length : 0,
                     total_reactions_counter: comment["reactions"]["total_count"],
                   )
-                  newRow.save
+                  newCommentRow.save
                 else
                   comments_info = TomPrComment.where(comment_ext_id: comment["id"], repoid: repo_info.repoid).first
 
