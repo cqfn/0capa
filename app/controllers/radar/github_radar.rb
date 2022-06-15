@@ -178,7 +178,7 @@ class GithubRadar < RadarBaseController
       settings.invitations_endpoint, json: {},
     )
     puts "check_new_invitations 2"
-    puts JSON.pretty_generate(response.parse)
+    # puts JSON.pretty_generate(response.parse)
     puts "check_new_invitations 3"
     if response.code == 200
       puts "check_new_invitations 4"
@@ -186,9 +186,9 @@ class GithubRadar < RadarBaseController
 
       invitations.each {
         |invitation|
-        puts JSON.pretty_generate(invitation)
-
         if invitation["expired"] != true
+          puts JSON.pretty_generate(invitation)
+
           project = TomProject.new(
             name: invitation["repository"]["name"],
             repo_fullname: invitation["repository"]["full_name"],
@@ -627,7 +627,7 @@ class GithubRadar < RadarBaseController
               issue["comments_url"] + "?per_page=100&page=" + page_comments_counter.to_s, json: {},
             )
 
-            if response.code == 200
+            if response_comments.code == 200
               comments_issue_info = JSON.parse(response_comments)
 
               if comments_issue_info.length == 0
