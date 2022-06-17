@@ -316,8 +316,8 @@ class GithubRadar < RadarBaseController
       agentname: SOURCE, host: host,
     }).order(node_name: :asc).first
 
-    puts Time.now.midnight
-    puts Time.now.midnight + 1.day
+    # puts Time.now.midnight
+    # puts Time.now.midnight + 1.day
 
     project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
       source: SOURCE,
@@ -1037,9 +1037,9 @@ class GithubRadar < RadarBaseController
           )
           if response.code == 200
             orgs_info = JSON.parse(response)
-            newRow.orgs_counter = orgs_info.length
+            owner.orgs_counter = orgs_info.length
           else
-            newRow.orgs_counter = 0
+            owner.orgs_counter = 0
           end
           owner.save
         end
