@@ -141,6 +141,18 @@ module Api
         def create_welcome_issue
           # here is general method for 0capa-bot
           # that creates welcome-info issue after invitation is granted
+
+          settings = TomSetting.find_by(agentname: 'github')
+          request_url = settings.issues_info_url.sub! '#repo_fullname'
+
+          issue_body = 'some-body'
+
+          response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+            request_url, json: { title: "Welcome issue over repo ##{prediction.repo_fullname}",
+                                 body: issue_body }
+          )
+
+          puts JSON.pretty_generate(response)
         end
 
         def getNextToken
