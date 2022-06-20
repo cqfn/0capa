@@ -67,3 +67,21 @@ gem "celluloid"
 
 # for ML advisor
 gem "kmeans-clusterer"
+
+
+gem 'codecov', '0.5.1'
+gem 'glogin', '0.7.0'
+gem 'haml', '5.2.1'
+gem 'mail', '2.7.1'
+gem 'mocha', '1.11.2', require: false
+gem 'octokit', '4.20.0'
+gem 'rack', '2.2.3'
+gem 'rack-test', '1.1.0'
+gem 'rake', '13.0.3', require: false
+gem 'rubocop', '0.69.0', require: false
+gem 'rubocop-rspec', '1.33.0', require: false
+gem 'sass', '3.7.4'
+gem 'sentry-raven', '3.1.1'
+gem 'sprockets', '4.0.2'
+gem 'test-unit', '3.4.0', require: false
+gem 'xcop', '0.6.2'

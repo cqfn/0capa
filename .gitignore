@@ -40,3 +40,12 @@ tmp_source_code/*
 .scannerwork
 /coverage/*
 !/coverage/.resultset.json
+target/
+coverage/
+.idea/
+*.gem
+.DS_Store
+rdoc/
+.sass-cache/
+*.iml
+.gitignore-s
