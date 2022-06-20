@@ -138,9 +138,12 @@ module Api
           render json: { message: 'Posting issues finished' }, status: 200
         end
 
+        # TODO: refer to this function in 0capa-bot logic-stuff
         def create_welcome_issue
-          # here is general method for 0capa-bot
+          # general method for 0capa-bot
           # that creates welcome-info issue after invitation is granted
+          # nothing specific just like a command reader
+          # in case somebody wants to run the analysis on-demand
 
           settings = TomSetting.find_by(agentname: 'github')
           request_url = settings.issues_info_url.sub! '#repo_fullname'
