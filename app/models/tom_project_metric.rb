@@ -1,0 +1,2 @@
+class TomProjectMetric < ApplicationRecord
+end

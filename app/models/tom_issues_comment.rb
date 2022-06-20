@@ -1,0 +1,2 @@
+class TomIssuesComment < ApplicationRecord
+end

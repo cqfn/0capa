@@ -1,0 +1,2 @@
+class TomAnalysis < ApplicationRecord
+end

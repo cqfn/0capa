@@ -1,0 +1,2 @@
+class TomCommitsMetric < ApplicationRecord
+end
