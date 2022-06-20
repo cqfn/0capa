@@ -152,7 +152,13 @@ module Api
                                  body: issue_body }
           )
 
-          puts JSON.pretty_generate(response)
+          if response.code == 201
+            puts 'Welcome issue submitted'
+          else
+            puts 'Error creating an ticket'
+            puts JSON.pretty_generate(response.parse)
+          end
+          puts response
         end
 
         def getNextToken
