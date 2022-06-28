@@ -138,32 +138,6 @@ module Api
           render json: { message: 'Posting issues finished' }, status: 200
         end
 
-        # TODO: refer to this function in 0capa-bot logic-stuff
-        def create_welcome_issue
-          # general method for 0capa-bot
-          # that creates welcome-info issue after invitation is granted
-          # nothing specific just like a command reader
-          # in case somebody wants to run the analysis on-demand
-
-          settings = TomSetting.find_by(agentname: 'github')
-          request_url = settings.issues_info_url.sub! '#repo_fullname'
-
-          issue_body = 'some-body'
-
-          response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-            request_url, json: { title: "Welcome issue over repo ##{prediction.repo_fullname}",
-                                 body: issue_body }
-          )
-
-          if response.code == 201
-            puts 'Welcome issue submitted'
-          else
-            puts 'Error creating an ticket'
-            puts JSON.pretty_generate(response.parse)
-          end
-          puts response
-        end
-
         def getNextToken
           @@call_count += 1
           next_token_index = (@@call_count % @@Tokens.length)
