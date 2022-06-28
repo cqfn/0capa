@@ -228,6 +228,8 @@ class GithubRadar < RadarBaseController
             end
 
             project.save
+
+            # TODO: code for welcome - invitation
           else
             puts "there was an error accepting the invitaion..."
             return false
