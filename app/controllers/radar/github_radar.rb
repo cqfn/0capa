@@ -228,6 +228,26 @@ class GithubRadar < RadarBaseController
             end
 
             project.save
+
+            # For every new `invitation`
+            # 0capa-bot sends welcome issue for initial checks
+            settings = TomSetting.find_by(agentname: 'github')
+            request_url = settings.issues_info_url.sub! '#repo_fullname'
+
+            issue_body = 'some-body'
+
+            response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+              request_url, json: { title: "Welcome issue over repo ##{prediction.repo_fullname}",
+                                   body: issue_body }
+            )
+
+            if response.code == 201
+              puts 'Welcome issue submitted'
+            else
+              puts 'Error creating an ticket'
+              puts JSON.pretty_generate(response.parse)
+            end
+            puts response
           else
             puts "there was an error accepting the invitaion..."
             return false
