@@ -1,5 +1,5 @@
 # Dockerfile.rails
-FROM ruby:2.7.0 AS rails-toolbox
+FROM ruby:2.6.8 AS rails-toolbox
 
 ARG USER_ID
 ARG GROUP_ID
@@ -9,8 +9,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.lis
 RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
 
 
-ENV DATABASE_URL #DATABASE_URL
-ENV TOM_DATABASE_PASSWORD #DATABASE_PASSWORD
+ENV DATABASE_URL jdbc:postgresql://localhost:5432/postgres
+ENV TOM_DATABASE_PASSWORD 1
 
 ENV INSTALL_PATH /opt/app
 RUN mkdir -p $INSTALL_PATH
@@ -20,7 +20,8 @@ WORKDIR $INSTALL_PATH
 COPY . .
 RUN gem install bundler:1.17.2
 RUN rm -rf node_modules vendor
-RUN gem install rails bundler
+RUN gem install rails --version 6.1.4
+RUN gem install bundler
 RUN bundle install
 RUN yarn install
 
