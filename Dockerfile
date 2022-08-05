@@ -9,8 +9,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.lis
 RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
 
 
-ENV DATABASE_URL jdbc:postgresql://localhost:5432/postgres
-ENV TOM_DATABASE_PASSWORD 1
+ENV DATABASE_URL #DATABASE_URL
+ENV TOM_DATABASE_PASSWORD #DATABASE_PASSWORD
 
 ENV INSTALL_PATH /opt/app
 RUN mkdir -p $INSTALL_PATH
