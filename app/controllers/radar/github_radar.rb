@@ -79,10 +79,13 @@ class GithubRadar < RadarBaseController
       agentname: SOURCE,
     }).order(node_name: :asc).first
 
-    puts "getting repos from -> " + url_query
+    # puts "getting repos from -> " + url_query
     # https://api.github.com/search/repositories?l=Ruby&q=stars%3A101..149+forks%3A51..99+size%3A%3C2100&type=Repositories
     # request_url = "https://api.github.com/search/repositories?q=stars:101..149+forks:51..99+size:%3C2100&type=Repositories"
-    request_url = "https://api.github.com/search/repositories?q=stars:101..199+forks:51..99+size:%3C2100+language:java&type=Repositories"
+    # request_url = "https://api.github.com/search/repositories?q=stars:101..199+forks:51..99+size:%3C2100+language:java&type=Repositories"
+    # request_url = "https://api.github.com/search/repositories?q=stars:101..199+forks:51..149+size:<2100+language:java+archived:true&type=Repositories"
+    # request_url = "https://api.github.com/search/repositories?q=stars:101..115+forks:51..99+size:<2100+archived:false&type=Repositories"
+    request_url = "https://api.github.com/search/repositories?q=stars:101..115+forks:51..99+size:<2100+archived:true&type=Repositories"
     # puts "getting repos 2 from  -> " + request_url
     page_counter = 0
     repos_counter = 0
@@ -108,22 +111,26 @@ class GithubRadar < RadarBaseController
             return true
           end
           puts "repos counter -> " + repos_counter.to_s + ", repo name -> " + r["full_name"]
-
-          project = TomProject.new(
-            name: r["name"],
-            repo_fullname: r["full_name"],
-            repoid: r["id"],
-            repo_url: r["url"],
-            # invitation_id: invitation["id"],
-            # inviter_login: invitation["inviter"]["login"],
-            # permissions: invitation["permissions"],
-            is_private: r["private"] == true ? "True" : "False",
-            owner_login: r["owner"]["login"],
-            repo_created_at: DateTime.parse(r["created_at"]),
-            source: SOURCE,
-            isactive: "Y",
-          )
-          project.save
+          if (!TomProject.exists?(repo_fullname: r["full_name"], source: SOURCE + "_exclution"))
+            if (!TomProject.exists?(repo_fullname: r["full_name"], source: SOURCE + "_list3"))
+              project = TomProject.new(
+                name: r["name"],
+                repo_fullname: r["full_name"],
+                repoid: r["id"],
+                repo_url: r["url"],
+                # invitation_id: invitation["id"],
+                # inviter_login: invitation["inviter"]["login"],
+                # permissions: invitation["permissions"],
+                is_private: r["private"] == true ? "True" : "False",
+                owner_login: r["owner"]["login"],
+                repo_created_at: DateTime.parse(r["created_at"]),
+                source: SOURCE + "_list3",
+                is_archived: r["archived"],
+                isactive: "Y",
+              )
+              project.save
+            end
+          end
           # puts r
           # if (!TomForkInfo.exists?(folk_id: f["id"]))
           #   newRow = TomForkInfo.new(
@@ -168,21 +175,11 @@ class GithubRadar < RadarBaseController
       host: host,
     }).order(node_name: :asc).first
 
-    # puts "check_new_invitations 1"
-    # puts "check_new_invitations 1/2"
-    # puts "content_type -> " + settings.content_type
-    # puts "check_new_invitations 1/3"
-    # puts "apisecret -> " + settings.apisecret
-    # puts "invitations_endpoint -> " + settings.invitations_endpoint
-
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {},
     )
-    # puts "check_new_invitations 2"
-    # puts JSON.pretty_generate(response.parse)
-    # puts "check_new_invitations 3"
+
     if response.code == 200
-      # puts "check_new_invitations 4"
       invitations = JSON.parse(response)
 
       invitations.each {
@@ -500,8 +497,9 @@ class GithubRadar < RadarBaseController
         end
 
         forks_info.each do |f|
-          if (!TomForkInfo.exists?(folk_id: f["id"]))
+          if (!TomForkInfo.exists?(folk_id: f["id"], repoid: repo_info.repoid))
             newRow = TomForkInfo.new(
+              folk_id: f["id"],
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
               folk_fullname: f["full_name"],
@@ -513,7 +511,7 @@ class GithubRadar < RadarBaseController
             )
             newRow.save
           else
-            fork = TomForkInfo.where(folk_id: f["id"]).first
+            fork = TomForkInfo.where(folk_id: f["id"], repoid: repo_info.repoid).first
 
             fork.folk_fullname = f["full_name"]
             fork.owner = f["owner"]["login"]
@@ -564,7 +562,7 @@ class GithubRadar < RadarBaseController
         issues_info.each do |issue|
           # puts "Issue id -> #{issue["id"]}, exist #{TomIssuesInfo.exists?(issue_id: issue["id"])}"
           # puts JSON.pretty_generate(issue)
-          if (!TomIssuesInfo.exists?(issue_id: issue["id"]))
+          if (!TomIssuesInfo.exists?(issue_id: issue["id"], repoid: repo_info.repoid))
             newRow = TomIssuesInfo.new(
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
@@ -594,7 +592,7 @@ class GithubRadar < RadarBaseController
 
             newRow.save
           else
-            issue_info = TomIssuesInfo.where(issue_id: issue["id"]).first
+            issue_info = TomIssuesInfo.where(issue_id: issue["id"], repoid: repo_info.repoid).first
             # puts issue_info.inspect
             # puts issue_info["title"]
             issue_info.title = issue["title"]
