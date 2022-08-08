@@ -22,6 +22,7 @@ class CreatingGithubRadarSeed < ActiveRecord::Migration[6.1]
       issues_Comments_info_url: "https://api.github.com/repos/#repo_fullname/issues/comments",
       node_name: "",
     )
+    TomSetting.save
   end
 
   def down
