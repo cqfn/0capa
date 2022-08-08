@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:14.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  tom-agent:
+    build:
+      context: .
+    volumes:
+      - ./app
+    links:
+      - postgres
+    ports:
+      - '8010:8010'
+volumes:
+  tom-postgres:
