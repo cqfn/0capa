@@ -238,6 +238,7 @@ class GithubRadar < RadarBaseController
     end
     return true
   rescue => e
+    puts 'error on check_new_invitations'
     puts e
     return false
   end
@@ -313,8 +314,8 @@ class GithubRadar < RadarBaseController
       agentname: SOURCE, host: host,
     }).order(node_name: :asc).first
 
-    puts Time.now.midnight
-    puts Time.now.midnight + 1.day
+    # puts Time.now.midnight
+    # puts Time.now.midnight + 1.day
 
     project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
       source: SOURCE,
@@ -868,7 +869,7 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page release -> " + page_counter.to_s
+      puts "getting page release 1 -> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
@@ -887,7 +888,7 @@ class GithubRadar < RadarBaseController
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
               release_id: release["id"],
-              author: release["author"]["login"],
+              author: !release["author"].nil? ? release["author"]["login"] : "",
               name: release["name"],
               created_at_ext: !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil,
               published_at_ext: !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil,
@@ -897,7 +898,8 @@ class GithubRadar < RadarBaseController
             )
             newRow.save
           else
-            rel = TomReleaseInfo.where(release_id: pull["id"]).first
+            rel = TomReleaseInfo.where(release_id: release["id"]).first
+            rel.author = !release["author"].nil? ? release["author"]["login"] : ""
             rel.name = release["name"]
             rel.created_at_ext = !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil
             rel.published_at_ext = !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil
@@ -930,7 +932,7 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page wf -> " + page_counter.to_s
+      puts "getting page wf 1 -> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
@@ -1035,9 +1037,9 @@ class GithubRadar < RadarBaseController
           )
           if response.code == 200
             orgs_info = JSON.parse(response)
-            newRow.orgs_counter = orgs_info.length
+            owner.orgs_counter = orgs_info.length
           else
-            newRow.orgs_counter = 0
+            owner.orgs_counter = 0
           end
           owner.save
         end
@@ -1194,9 +1196,8 @@ class GithubRadar < RadarBaseController
         projectMetrics.repo_readme_length = 0
       end
     else
-      puts "Error retriving data -> " + response.message
+      puts "Error retriving data -> "
       puts JSON.pretty_generate(response.parse)
-      raise StandardError.new "Error retriving data, " + response.message
     end
 
     puts "getting commits info for -> " + repo_info.repo_fullname
@@ -1650,7 +1651,7 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page release -> " + page_counter.to_s
+      puts "getting page release 2 -> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
@@ -1769,7 +1770,7 @@ class GithubRadar < RadarBaseController
     page_counter = 0
     while true
       page_counter += 1
-      puts "getting page wf -> " + page_counter.to_s
+      puts "getting page wf 2 -> " + page_counter.to_s
 
       response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken()}"].get(
         request_url + "?per_page=100&page=" + page_counter.to_s, json: {},
@@ -1784,13 +1785,25 @@ class GithubRadar < RadarBaseController
           if w["conclusion"] == "success"
             workflows_success_list.push(w)
             # time in seconds
+            begin
             total_success_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+            rescue Exception => e
+              total_success_duration += 0
+            end
           else
             workflows_fail_list.push(w)
             # time in seconds
+            begin
             total_failure_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+            rescue Exception => e
+              total_failure_duration += 0
+            end
           end
+          begin
           total_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+          rescue Exception => e
+            total_duration += 0
+          end
         end
       else
         puts JSON.pretty_generate(response.parse)
