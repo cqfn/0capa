@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_06_103552) do
+ActiveRecord::Schema.define(version: 2022_06_17_084859) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -354,6 +354,7 @@ ActiveRecord::Schema.define(version: 2022_06_06_103552) do
     t.string "last_analysis_time_elapsed"
     t.string "status"
     t.string "node_name"
+    t.string "is_archived"
   end
 
   create_table "tom_pull_infos", force: :cascade do |t|

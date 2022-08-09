@@ -28,11 +28,15 @@ class Api::Radar::V1::RadarController < ApplicationController
     radar_name = params[:source].capitalize
     query = params[:query_url]
     radar = FactoryClass.create("#{radar_name}Radar", nil)
-    if radar.get_repos_from_query(query)
-      render json: { message: "Call catched" }, status: 200
-    else
-      render json: { error: "Error Fetching the data" }, status: 400
-    end
+    # if radar.get_repos_from_query(query)
+    # radar.check_new_invitations()
+    radar.get_repos_full_update()
+    # if radar.check_new_invitations()
+    #   render json: { message: "Call catched" }, status: 200
+    # else
+    #   render json: { error: "Error Fetching the data" }, status: 400
+    # end
+    render json: { message: "Call catched" }, status: 200
   end
 
   def start_radar
