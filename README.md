@@ -25,7 +25,7 @@ After you have been solved the issue, you can tag our bot ([@0capa](https://gith
 ## Software requirements
  * Postgres 12+
  * Ruby 2.6.8
- * Posgres client for Ruby
+ * Postgres client for Ruby
  * Docker
 
 ## Installation using Docker
@@ -58,23 +58,24 @@ Once the app has been deploy and setting up process is completed, the rest is to
 
 * **TOM-Radar**
 > 1. http://your-server-ip/api/radar/v1/start-radar?source=[source_vcs]
-> 1. http://your-server-ip/api/radar/v1/stop-radar?source=[source_vcs]
+> 2. http://your-server-ip/api/radar/v1/stop-radar?source=[source_vcs]
 
 E.G
 > https://mydomain.com/api/radar/v1/start-radar?source=github
 
 * **TOM-Advisor**
 > 1. http://your-server-ip/api/advisor/v1/start-advisor?model=[prediction_model]
-> 1. http://your-server-ip/api/advisor/v1/stop-advisor?model=[prediction_model]
+> 2. http://your-server-ip/api/advisor/v1/stop-advisor?model=[prediction_model]
 
 E.G
-> https://mydomain.com/api/radar/v1/start-advisor?model=kmeans
+> https://mydomain.com/api/advisor/v1/start-advisor?model=kmeans
 * **TOM-Chatbot**
-> 1. http://your-server-ip/api/radar/v1/start-chatbot?source=[source_vcs]
-> 1. http://your-server-ip/api/radar/v1/stop-chatbot?source=[source_vcs]
+* is not implemented yet
+> 1. http://your-server-ip/api/chatbot/v1/start-chatbot?source=[source_vcs]
+> 2. http://your-server-ip/api/chatbot/v1/stop-chatbot?source=[source_vcs]
 
 E.G
-> https://mydomain.com/api/radar/v1/start-chatbot?source=github
+> https://mydomain.com/api/chatbot/v1/start-chatbot?source=github
 
 \
 Note: it's important to say that every component has endpoints to start and stop its own activity.
