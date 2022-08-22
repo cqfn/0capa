@@ -52,29 +52,32 @@ Once the services are properly deployed and the database has been created, the n
 At the moment **TOM** is composed by 3 different components, which are
 * **TOM-Radar**, is the responsible to collect the data from the different VCS.
 * **TOM-Advisor**, is the component aimed to analyze the data collected previously by the *Radar* to find some possible anomalies and produce a set of possible actions to fix it or to avoid it in the future.
-* **TOM-Chatbot**, and lately, the chatbot is the component which is in charge on posting issues to the repos and keep track of the actions taken.
+* **TOM-Chat-bot**, and lately, the chat-bot is the component which is in charge on posting issues to the repos and keep track of the actions taken.
 
 Once the app has been deploy and setting up process is completed, the rest is to start running the components of TOM.
 
 * **TOM-Radar**
 > 1. http://your-server-ip/api/radar/v1/start-radar?source=[source_vcs]
-> 1. http://your-server-ip/api/radar/v1/stop-radar?source=[source_vcs]
+> 2. http://your-server-ip/api/radar/v1/stop-radar?source=[source_vcs]
 
 E.G
 > https://mydomain.com/api/radar/v1/start-radar?source=github
 
 * **TOM-Advisor**
 > 1. http://your-server-ip/api/advisor/v1/start-advisor?model=[prediction_model]
-> 1. http://your-server-ip/api/advisor/v1/stop-advisor?model=[prediction_model]
+> 2. http://your-server-ip/api/advisor/v1/stop-advisor?model=[prediction_model]
 
 E.G
-> https://mydomain.com/api/radar/v1/start-advisor?model=kmeans
-* **TOM-Chatbot**
-> 1. http://your-server-ip/api/radar/v1/start-chatbot?source=[source_vcs]
-> 1. http://your-server-ip/api/radar/v1/stop-chatbot?source=[source_vcs]
+> https://mydomain.com/api/advisor/v1/start-advisor?model=kmeans
+
+// Chat-bot daemon is currently not supported.
+
+* **TOM-Chat-bot**
+> 1. http://your-server-ip/api/chatbot/v1/start-chatbot?source=[source_vcs]
+> 2. http://your-server-ip/api/chatbot/v1/stop-chatbot?source=[source_vcs]
 
 E.G
-> https://mydomain.com/api/radar/v1/start-chatbot?source=github
+> https://mydomain.com/api/chatbot/v1/start-chatbot?source=github
 
 \
 Note: it's important to say that every component has endpoints to start and stop its own activity.
