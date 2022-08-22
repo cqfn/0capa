@@ -8,10 +8,10 @@ class RadarBaseController
   def Initialize(radar_name)
     puts "Initializing radar -> #{radar_name}"
     @radar_seetings = TomSetting.find_by(agentname: radar_name)
-    puts "finishing Initialize"
+    puts 'finishing Initialize'
   end
 
-  def check_new_invitations()
+  def check_new_invitations
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
@@ -19,19 +19,19 @@ class RadarBaseController
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def getSourceCode()
+  def getSourceCode
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def getQueueCounter()
+  def getQueueCounter
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def start_radar()
+  def start_radar
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def stop_radar()
+  def stop_radar
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 

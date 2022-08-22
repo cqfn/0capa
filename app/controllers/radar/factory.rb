@@ -13,6 +13,6 @@ class FactoryClass
     # end
   rescue Exception => e
     puts "error -> #{e.message}"
-    raise "There is no radar implemented for the service that initiated the call."
+    raise 'There is no radar implemented for the service that initiated the call.'
   end
 end

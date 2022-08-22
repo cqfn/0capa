@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateTomCommitMetrics < ActiveRecord::Migration[6.1]
   def change
     add_column :tom_commits_metrics, :commit_datetime, :datetime
