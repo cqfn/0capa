@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 Rails.application.routes.draw do
+  root "report#index"
   namespace :api do
     get "endpoint/start"
     get "endpoint/stop"
-    # ML Advidor endpoints
+    # ML Advisor endpoints
     namespace :advisor do
       namespace :v1 do
         get "train-model", to: "advisor#train"
@@ -11,12 +12,14 @@ Rails.application.routes.draw do
         post "stop-advisor", to: "advisor#stop_advisor"
       end
     end
-    # Chatbot endpoints
+    # Chat bot endpoints
     namespace :chatbot do
       namespace :v1 do
         resources :issues, only: [:create]
         post "update_issue", to: "issues#update_issue"
         post "create_issue", to: "issues#create_github_issues"
+        post "start-chatbot", to: "chatbot#start_chatbot"
+        post "stop-chatbot", to: "chatbot#stop_chatbot"
       end
     end
     namespace :radar do
@@ -30,8 +33,5 @@ Rails.application.routes.draw do
         post "stop-radar", to: "radar#stop_radar"
       end
     end
-  end
-  namespace :web do
-    get "/", to: "tom_report#index"
   end
 end
