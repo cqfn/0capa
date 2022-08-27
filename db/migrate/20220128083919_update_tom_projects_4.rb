@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateTomProjects4 < ActiveRecord::Migration[6.1]
   def change
     add_column :tom_projects, :status, :string

@@ -1,21 +1,25 @@
-require_rel "../scheduler/"
+# frozen_string_literal: true
 
-class Api::EndpointController < ApplicationController
-  def start
-    manager = SchedulerManager.new
-    manager.async.start_process()
-    # manager.async.start_process2()
-    # manager.async.start_process2()
-  rescue => e
-    puts e
-    return ""
-  end
+require_rel '../scheduler/'
 
-  def stop
-    manager = SchedulerManager.new
-    manager.stop_process()
-  rescue => e
-    puts e
-    return ""
+module Api
+  class EndpointController < ApplicationController
+    def start
+      manager = SchedulerManager.new
+      manager.async.start_process
+      # manager.async.start_process2()
+      # manager.async.start_process2()
+    rescue StandardError => e
+      puts e
+      ''
+    end
+
+    def stop
+      manager = SchedulerManager.new
+      manager.stop_process
+    rescue StandardError => e
+      puts e
+      ''
+    end
   end
 end

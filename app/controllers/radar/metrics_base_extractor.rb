@@ -12,7 +12,7 @@ class MetricsBaseController
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def runAnalysis()
+  def runAnalysis
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
