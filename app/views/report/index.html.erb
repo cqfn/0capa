@@ -172,7 +172,7 @@
             </tr>
             </thead>
             <tbody>
-            <% @push_info.each do |push| %>
+            <% @push_info.all.each do |push| %>
               <tr class>
                 <td><%= push.created_at.strftime("%F %H:%M") %></td>
                 <td><%= push.open_issues_count %></td>
