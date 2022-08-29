@@ -146,7 +146,11 @@
       <h2>Pushes History</h2>
       <div class="card">
         <div class="card-header">
-          <div class="card-title text-bold">card-title text-bold</div>
+          <div class="card-title text-bold">/**
+            * @todo #234:15m/DEV This is something to do later
+            *  in one of the next releases. I can't figure out
+            *  how to implement it now, that's why the puzzle.
+            */ </div>
           <div class="card-subtitle text-gray">Action</div>
         </div>
       </div>
@@ -169,7 +173,7 @@
             </thead>
             <tbody>
             <% @push_info.each do |push| %>
-              <tr class='active'>
+              <tr class>
                 <td><%= push.created_at.strftime("%F %H:%M") %></td>
                 <td><%= push.open_issues_count %></td>
                 <td><%= push.size %></td>
