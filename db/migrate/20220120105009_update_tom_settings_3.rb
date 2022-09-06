@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateTomSettings3 < ActiveRecord::Migration[6.1]
   def change
     add_column :tom_settings, :commits_info_url, :string
