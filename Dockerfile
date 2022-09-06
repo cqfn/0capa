@@ -1,5 +1,5 @@
 # Dockerfile.rails
-FROM ruby:2.7.0 AS rails-toolbox
+FROM ruby:2.6.8 AS rails-toolbox
 
 ARG USER_ID
 ARG GROUP_ID
@@ -20,7 +20,8 @@ WORKDIR $INSTALL_PATH
 COPY . .
 RUN gem install bundler:1.17.2
 RUN rm -rf node_modules vendor
-RUN gem install rails bundler
+RUN gem install rails --version 6.1.4
+RUN gem install bundler
 RUN bundle install
 RUN yarn install
 
