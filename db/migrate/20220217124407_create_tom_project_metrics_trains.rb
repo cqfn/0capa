@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTomProjectMetricsTrains < ActiveRecord::Migration[6.1]
   def change
     create_table :tom_project_metrics_trains do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTomPrComments < ActiveRecord::Migration[6.1]
   def change
     create_table :tom_pr_comments do |t|

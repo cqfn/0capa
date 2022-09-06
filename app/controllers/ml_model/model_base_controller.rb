@@ -7,11 +7,11 @@ class ModelBaseController
     puts "Initializing model -> #{model_name}"
   end
 
-  def train()
+  def train
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
-  def predict()
+  def predict
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
