@@ -25,7 +25,7 @@ After you have been solved the issue, you can tag our bot ([@0capa](https://gith
 ## Software requirements
  * Postgres 12+
  * Ruby 2.6.8
- * Posgres client for Ruby
+ * Postgres client for Ruby
  * Docker
 
 ## Installation using Docker
