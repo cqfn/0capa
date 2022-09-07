@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tom Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css"/>
+  <link rel="canonical" href="https://picturepan2.github.io/spectre/experimentals/filters.html">
+  <style>
+      h1, h2 {
+          color: black;
+          font-weight: 700;
+          margin: 1em;
+      }
+
+      h1 {
+          font-size: 4em;
+          line-height: .9em;
+      }
+
+      h2 {
+          font-size: 2.2em;
+          line-height: .9em;
+      }
+
+      h3 {
+          color: white;
+          margin: 1em;
+          font-weight: 700;
+          font-size: 1.6em;
+          line-height: .9em;
+      }
+
+      h4 {
+          color: whitesmoke;
+          margin: 2em;
+          font-weight: 700;
+          font-size: 1em;
+      }
+
+      h5 {
+          color: darkgrey;
+          margin: 1em;
+          font-weight: 700;
+          font-size: .8em;
+      }
+
+      .tom {
+          background-color: #12131c;
+      }
+
+      .overview {
+          background-color: #f8f8f8;
+      }
+
+      .wrapper1 {
+          display: grid;
+          grid-template-columns: repeat(2, 280px);
+          grid-template-rows: repeat(2, 200px);
+          column-gap: 30px;
+          row-gap: 30px;
+          margin: 2em;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="columns">
+    <div class="tom">
+      <div class="column col-1">
+        <h3>Tom Dashboard</h3>
+        <ul class="nav">
+          <li class="nav-item active"><a href="#">Overview</a></li>
+          <li class="nav-item"><a href="#">Growth</a></li>
+          <li class="nav-item"><a href="#">Reports</a></li>
+          <li class="nav-item"><a href="#">About</a></li>
+          <li class="nav-item"><a href="#">Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="overview">
+      <div class="column col-5">
+        <h2>Overview</h2>
+        <div class="wrapper1">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title h1">1234</div>
+              <div class="card-subtitle text-gray">Total Commits Analysed</div>
+            </div>
+            <div class="card-body">
+              Card body
+            </div>
+            <div class="card-footer">
+              <div class="bar bar-sm">
+                <div class="bar-item" role="progressbar" style="width:80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title h1">1234</div>
+              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+            </div>
+            <div class="card-body">
+              Card body
+            </div>
+            <div class="card-footer">
+              <div class="bar bar-sm">
+                <div class="bar-item" role="progressbar" style="width:40%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title h1">1234</div>
+              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+            </div>
+            <div class="card-body">
+              Card body
+            </div>
+            <div class="card-footer">
+              <div class="bar bar-sm">
+                <div class="bar-item" role="progressbar" style="width:70%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title h1">1234</div>
+              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+            </div>
+            <div class="card-body">
+              Card body
+            </div>
+            <div class="card-footer">
+              <div class="bar bar-sm">
+                <div class="bar-item" role="progressbar" style="width:25%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- .column .col-3 -->
+    </div>
+    <!-- RIGHT COLUMN -->
+    <div class="column col-6">
+      <h2>Pushes History</h2>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title text-bold">/**
+            * @todo #234:15m/DEV This is something to do later
+            *  in one of the next releases. I can't figure out
+            *  how to implement it now, that's why the puzzle.
+            */ </div>
+          <div class="card-subtitle text-gray">Action</div>
+        </div>
+      </div>
+      <h2>Metrics Histogram</h2>
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Open issues</th>
+              <th>Size</th>
+              <th>Language</th>
+              <th>Commits count</th>
+              <th>Added</th>
+              <th>Removed</th>
+              <th>Changed</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @push_info.all.each do |push| %>
+              <tr class>
+                <td><%= push.created_at.strftime("%F %H:%M") %></td>
+                <td><%= push.open_issues_count %></td>
+                <td><%= push.size %></td>
+                <td><%= push.language %></td>
+                <td><%= push.commits_count %></td>
+                <td><%= push.total_files_added %></td>
+                <td><%= push.total_files_removed %></td>
+                <td><%= push.total_files_changed %></td>
+                <td><%= @status_label[push.status] %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
