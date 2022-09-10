@@ -74,7 +74,7 @@ class GithubRadar < RadarBaseController
     TomTokensQueue.where(source: SOURCE).where(isactive: 'Y')
   end
 
-  def get_repos_from_query(url_query)
+  def get_repos_from_query(_url_query)
     settings = TomSetting.where('agentname = :agentname', {
                                   agentname: SOURCE
                                 }).order(node_name: :asc).first
@@ -85,7 +85,7 @@ class GithubRadar < RadarBaseController
     # request_url = "https://api.github.com/search/repositories?q=stars:101..199+forks:51..99+size:%3C2100+language:java&type=Repositories"
     # request_url = "https://api.github.com/search/repositories?q=stars:101..199+forks:51..149+size:<2100+language:java+archived:true&type=Repositories"
     # request_url = "https://api.github.com/search/repositories?q=stars:101..115+forks:51..99+size:<2100+archived:false&type=Repositories"
-    request_url = "https://api.github.com/search/repositories?q=stars:101..115+forks:51..99+size:<2100+archived:true&type=Repositories"
+    request_url = 'https://api.github.com/search/repositories?q=stars:101..115+forks:51..99+size:<2100+archived:true&type=Repositories'
     # puts "getting repos 2 from  -> " + request_url
     page_counter = 0
     repos_counter = 0
@@ -105,30 +105,30 @@ class GithubRadar < RadarBaseController
 
         repos_info['items'].each do |r|
           repos_counter += 1
-          if repos_counter > 1000
-            return true
-          end
-          puts "repos counter -> " + repos_counter.to_s + ", repo name -> " + r["full_name"]
-          if (!TomProject.exists?(repo_fullname: r["full_name"], source: SOURCE + "_exclution"))
-            if (!TomProject.exists?(repo_fullname: r["full_name"], source: SOURCE + "_list3"))
-              project = TomProject.new(
-                name: r["name"],
-                repo_fullname: r["full_name"],
-                repoid: r["id"],
-                repo_url: r["url"],
-                # invitation_id: invitation["id"],
-                # inviter_login: invitation["inviter"]["login"],
-                # permissions: invitation["permissions"],
-                is_private: r["private"] == true ? "True" : "False",
-                owner_login: r["owner"]["login"],
-                repo_created_at: DateTime.parse(r["created_at"]),
-                source: SOURCE + "_list3",
-                is_archived: r["archived"],
-                isactive: "Y",
-              )
-              project.save
-            end
-          end
+          return true if repos_counter > 1000
+
+          puts "repos counter -> #{repos_counter}, repo name -> #{r['full_name']}"
+          next unless !TomProject.exists?(repo_fullname: r['full_name'],
+                                          source: "#{SOURCE}_exclution") && !TomProject.exists?(
+                                            repo_fullname: r['full_name'], source: "#{SOURCE}_list3"
+                                          )
+
+          project = TomProject.new(
+            name: r['name'],
+            repo_fullname: r['full_name'],
+            repoid: r['id'],
+            repo_url: r['url'],
+            # invitation_id: invitation["id"],
+            # inviter_login: invitation["inviter"]["login"],
+            # permissions: invitation["permissions"],
+            is_private: r['private'] == true ? 'True' : 'False',
+            owner_login: r['owner']['login'],
+            repo_created_at: DateTime.parse(r['created_at']),
+            source: "#{SOURCE}_list3",
+            is_archived: r['archived'],
+            isactive: 'Y'
+          )
+          project.save
           # puts r
           # if (!TomForkInfo.exists?(folk_id: f["id"]))
           #   newRow = TomForkInfo.new(
@@ -506,9 +506,9 @@ class GithubRadar < RadarBaseController
         break if forks_info.length.zero?
 
         forks_info.each do |f|
-          if (!TomForkInfo.exists?(folk_id: f["id"], repoid: repo_info.repoid))
+          if !TomForkInfo.exists?(folk_id: f['id'], repoid: repo_info.repoid)
             newRow = TomForkInfo.new(
-              folk_id: f["id"],
+              folk_id: f['id'],
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
               folk_fullname: f['full_name'],
@@ -520,14 +520,14 @@ class GithubRadar < RadarBaseController
             )
             newRow.save
           else
-            fork = TomForkInfo.where(folk_id: f["id"], repoid: repo_info.repoid).first
+            fork = TomForkInfo.where(folk_id: f['id'], repoid: repo_info.repoid).first
 
-            fork.folk_fullname = f["full_name"]
-            fork.owner = f["owner"]["login"]
-            fork.is_private = f["private"]
-            fork.created_at_ext = !f["created_at"].nil? ? DateTime.parse(f["created_at"]) : nil
-            fork.updated_at_ext = !f["updated_at"].nil? ? DateTime.parse(f["updated_at"]) : nil
-            fork.pushed_at_ext = !f["pushed_at"].nil? ? DateTime.parse(f["pushed_at"]) : nil
+            fork.folk_fullname = f['full_name']
+            fork.owner = f['owner']['login']
+            fork.is_private = f['private']
+            fork.created_at_ext = !f['created_at'].nil? ? DateTime.parse(f['created_at']) : nil
+            fork.updated_at_ext = !f['updated_at'].nil? ? DateTime.parse(f['updated_at']) : nil
+            fork.pushed_at_ext = !f['pushed_at'].nil? ? DateTime.parse(f['pushed_at']) : nil
             fork.save
           end
         end
@@ -569,7 +569,7 @@ class GithubRadar < RadarBaseController
         issues_info.each do |issue|
           # puts "Issue id -> #{issue["id"]}, exist #{TomIssuesInfo.exists?(issue_id: issue["id"])}"
           # puts JSON.pretty_generate(issue)
-          if (!TomIssuesInfo.exists?(issue_id: issue["id"], repoid: repo_info.repoid))
+          if !TomIssuesInfo.exists?(issue_id: issue['id'], repoid: repo_info.repoid)
             newRow = TomIssuesInfo.new(
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
@@ -599,7 +599,7 @@ class GithubRadar < RadarBaseController
 
             newRow.save
           else
-            issue_info = TomIssuesInfo.where(issue_id: issue["id"], repoid: repo_info.repoid).first
+            issue_info = TomIssuesInfo.where(issue_id: issue['id'], repoid: repo_info.repoid).first
             # puts issue_info.inspect
             # puts issue_info["title"]
             issue_info.title = issue['title']
@@ -887,25 +887,25 @@ class GithubRadar < RadarBaseController
             newRow = TomReleaseInfo.new(
               repoid: repo_info.repoid,
               repo_fullname: repo_info.repo_fullname,
-              release_id: release["id"],
-              author: !release["author"].nil? ? release["author"]["login"] : "",
-              name: release["name"],
-              created_at_ext: !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil,
-              published_at_ext: !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil,
-              assets_count: release["assets"].length,
-              body_length: !release["body"].nil? ? release["body"].length : 0,
-              reactions_count: !release["reactions"].nil? ? release["reactions"]["total_count"] : 0,
+              release_id: release['id'],
+              author: !release['author'].nil? ? release['author']['login'] : '',
+              name: release['name'],
+              created_at_ext: !release['created_at'].nil? ? DateTime.parse(release['created_at']) : nil,
+              published_at_ext: !release['published_at'].nil? ? DateTime.parse(release['published_at']) : nil,
+              assets_count: release['assets'].length,
+              body_length: !release['body'].nil? ? release['body'].length : 0,
+              reactions_count: !release['reactions'].nil? ? release['reactions']['total_count'] : 0
             )
             newRow.save
           else
-            rel = TomReleaseInfo.where(release_id: release["id"]).first
-            rel.author = !release["author"].nil? ? release["author"]["login"] : ""
-            rel.name = release["name"]
-            rel.created_at_ext = !release["created_at"].nil? ? DateTime.parse(release["created_at"]) : nil
-            rel.published_at_ext = !release["published_at"].nil? ? DateTime.parse(release["published_at"]) : nil
-            rel.assets_count = release["assets"].length
-            rel.body_length = !release["body"].nil? ? release["body"].length : 0
-            rel.reactions_count = !release["reactions"].nil? ? release["reactions"]["total_count"] : 0
+            rel = TomReleaseInfo.where(release_id: release['id']).first
+            rel.author = !release['author'].nil? ? release['author']['login'] : ''
+            rel.name = release['name']
+            rel.created_at_ext = !release['created_at'].nil? ? DateTime.parse(release['created_at']) : nil
+            rel.published_at_ext = !release['published_at'].nil? ? DateTime.parse(release['published_at']) : nil
+            rel.assets_count = release['assets'].length
+            rel.body_length = !release['body'].nil? ? release['body'].length : 0
+            rel.reactions_count = !release['reactions'].nil? ? release['reactions']['total_count'] : 0
             rel.save
           end
         end
@@ -1776,7 +1776,7 @@ class GithubRadar < RadarBaseController
             workflows_success_list.push(w)
             # time in seconds
             begin
-            total_success_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+              total_success_duration += DateTime.parse(w['updated_at']) - DateTime.parse(w['run_started_at'])
             rescue Exception => e
               total_success_duration += 0
             end
@@ -1784,13 +1784,13 @@ class GithubRadar < RadarBaseController
             workflows_fail_list.push(w)
             # time in seconds
             begin
-            total_failure_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+              total_failure_duration += DateTime.parse(w['updated_at']) - DateTime.parse(w['run_started_at'])
             rescue Exception => e
               total_failure_duration += 0
             end
           end
           begin
-          total_duration += DateTime.parse(w["updated_at"]) - DateTime.parse(w["run_started_at"])
+            total_duration += DateTime.parse(w['updated_at']) - DateTime.parse(w['run_started_at'])
           rescue Exception => e
             total_duration += 0
           end

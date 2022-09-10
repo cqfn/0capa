@@ -1,7 +1,15 @@
-require "test_helper"
+# frozen_string_literal: true
 
-class Api::Chatbot::V1::ChatbotControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+require 'test_helper'
+
+module Api
+  module Chatbot
+    module V1
+      class ChatbotControllerTest < ActionDispatch::IntegrationTest
+        # test "the truth" do
+        #   assert true
+        # end
+      end
+    end
+  end
 end

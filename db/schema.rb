@@ -12,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_17_084859) do
-
+ActiveRecord::Schema.define(version: 20_220_617_084_859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -335,28 +334,28 @@ ActiveRecord::Schema.define(version: 2022_06_17_084859) do
     t.string 'data_label'
   end
 
-  create_table "tom_projects", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.string "isactive"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "repo_fullname"
-    t.string "repo_url"
-    t.string "repoid"
-    t.string "invitation_id"
-    t.string "inviter_login"
-    t.string "permissions"
-    t.string "is_private"
-    t.string "owner_login"
-    t.string "last_commit_id"
-    t.datetime "last_scanner_date"
-    t.string "source"
-    t.datetime "repo_created_at"
-    t.string "last_analysis_time_elapsed"
-    t.string "status"
-    t.string "node_name"
-    t.string "is_archived"
+  create_table 'tom_projects', force: :cascade do |t|
+    t.string 'name'
+    t.string 'description'
+    t.string 'isactive'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.string 'repo_fullname'
+    t.string 'repo_url'
+    t.string 'repoid'
+    t.string 'invitation_id'
+    t.string 'inviter_login'
+    t.string 'permissions'
+    t.string 'is_private'
+    t.string 'owner_login'
+    t.string 'last_commit_id'
+    t.datetime 'last_scanner_date'
+    t.string 'source'
+    t.datetime 'repo_created_at'
+    t.string 'last_analysis_time_elapsed'
+    t.string 'status'
+    t.string 'node_name'
+    t.string 'is_archived'
   end
 
   create_table 'tom_pull_infos', force: :cascade do |t|
