@@ -1,5 +1,6 @@
 class Api::Chatbot::V1::ChatbotController < ApplicationController
-  def start_chatbot
+
+  def welcome_issue
     connection_xargs = TomSetting.find_by(agentname: 'github')
     basic_url = connection_xargs.issues_info_url.sub! '#repo_fullname'
 
@@ -14,6 +15,13 @@ class Api::Chatbot::V1::ChatbotController < ApplicationController
       puts 'Error creating an ticket'
       puts JSON.pretty_generate(response.parse)
       render json: { message: 'Something went wrong' }, status: 404
+    end
+  end
+
+  def start_chatbot
+    welcome_issue
+    while true:
+      # тут спамим ишьюсами получается
     end
   end
 

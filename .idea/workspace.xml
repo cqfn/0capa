@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c5a64f5-8d33-46b9-93e0-9c1002ecabb6" name="Changes" comment="[#31] - minor edits">
-      <change afterPath="$PROJECT_DIR$/app/controllers/report_controller.rb" afterDir="false" />
+    <list default="true" id="7c5a64f5-8d33-46b9-93e0-9c1002ecabb6" name="Changes" comment="[#31] - chat bot basic impl">
+      <change beforePath="$PROJECT_DIR$/.idea/0capa.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/0capa.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/issues_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/issues_controller.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,16 +37,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;ruby.rails.projectView.checked&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "nodejs_package_manager_path": "yarn",
+    "ruby.rails.projectView.checked": "true",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.ruby.settings.RubyActiveModuleSdkConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/views/report" />
@@ -292,6 +295,7 @@
       <workItem from="1661764421174" duration="3834000" />
       <workItem from="1662459470055" duration="2264000" />
       <workItem from="1662815102438" duration="183000" />
+      <workItem from="1662815313228" duration="4320000" />
     </task>
     <task id="LOCAL-00001" summary="[#31] - codegen default route with tom reports">
       <created>1661531422962</created>
@@ -342,7 +346,28 @@
       <option name="project" value="LOCAL" />
       <updated>1661773142455</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="[#31] - fix ruby.exe deps bug">
+      <created>1662816220911</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1662816220911</updated>
+    </task>
+    <task id="LOCAL-00009" summary="[#31] - added chatbot generated daemon files">
+      <created>1662816288179</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1662816288179</updated>
+    </task>
+    <task id="LOCAL-00010" summary="[#31] - chat bot basic impl">
+      <created>1662825330989</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1662825330989</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -370,7 +395,10 @@
     <MESSAGE value="[#31] - refactor report page" />
     <MESSAGE value="[#31] - application controller" />
     <MESSAGE value="[#31] - minor edits" />
-    <option name="LAST_COMMIT_MESSAGE" value="[#31] - minor edits" />
+    <MESSAGE value="[#31] - fix ruby.exe deps bug" />
+    <MESSAGE value="[#31] - added chatbot generated daemon files" />
+    <MESSAGE value="[#31] - chat bot basic impl" />
+    <option name="LAST_COMMIT_MESSAGE" value="[#31] - chat bot basic impl" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1661770569155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />

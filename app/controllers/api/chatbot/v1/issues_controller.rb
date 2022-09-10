@@ -76,7 +76,7 @@ module Api
             # myIssue.closed_by = json["issue"]["comments"]
             myIssue.closed_at_ext = json['issue']['closed_at']
             if myIssue.save
-              render json: { message: 'Call catched' }, status: 201
+              render json: { message: 'Call caught' }, status: 201
             else
               render json: { error: 'Error processing the data' }, status: 400
             end
