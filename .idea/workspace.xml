@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c5a64f5-8d33-46b9-93e0-9c1002ecabb6" name="Changes" comment="[#31] - chat bot basic impl">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/ml_model/v2_model.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/ml_model/v2_model.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/radar/gitlab_radar.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/gitlab_radar.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrate/20220617084859_adding_archived_flag.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrate/20220617084859_adding_archived_flag.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/seeds.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/seeds.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/controllers/api/chatbot/v1/chatbot_controller_test.rb" beforeDir="false" afterPath="$PROJECT_DIR$/test/controllers/api/chatbot/v1/chatbot_controller_test.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,7 +298,7 @@
       <workItem from="1661764421174" duration="3834000" />
       <workItem from="1662459470055" duration="2264000" />
       <workItem from="1662815102438" duration="183000" />
-      <workItem from="1662815313228" duration="4760000" />
+      <workItem from="1662815313228" duration="4995000" />
     </task>
     <task id="LOCAL-00001" summary="[#31] - codegen default route with tom reports">
       <created>1661531422962</created>
