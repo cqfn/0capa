@@ -18,6 +18,8 @@ Rails.application.routes.draw do
         resources :issues, only: [:create]
         post 'update_issue', to: 'issues#update_issue'
         post 'create_issue', to: 'issues#create_github_issues'
+        post 'start-chatbot', to: 'chatbot#start_chatbot'
+        post 'stop-chatbot', to: 'chatbot#stop_chatbot'
       end
     end
     namespace :radar do
