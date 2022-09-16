@@ -1,0 +1,12 @@
+docker:
+  image:
+assets:
+  config.yml:
+  id_rsa:
+  id_rsa.pub:
+install:
+release:
+  sensitive:
+  script:
+merge:
+  script:
