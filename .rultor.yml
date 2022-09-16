@@ -1,10 +1,18 @@
-docker:
-  image:
+architect:
+  - xavzelada
+  - Doldrums
+# sensitive information, not intended to be accessible
+# by all programmers stored into another private Github repository
 assets:
-  config.yml:
-  id_rsa:
-  id_rsa.pub:
-install:
+  secret.xml: "Doldrums/secret-repo#assets/settings.xml"
+docker:
+  as_root: true
+  image: "ubuntu:12.10"
+install:  |-
+  git config --global user.email "server@0capa.com"
+  git config --global user.name "0capa.com"
+  sudo gem install bundler
+  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
   sensitive:
   script:
