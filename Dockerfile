@@ -1,6 +1,13 @@
 # Dockerfile.rails
 FROM ruby:2.6.8 AS rails-toolbox
 
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
+WORKDIR /myapp
+COPY Gemfile /myapp/Gemfile
+COPY Gemfile.lock /myapp/Gemfile.lock
+RUN gem install bundler:2.3.19
+RUN bundle install
+
 ARG USER_ID
 ARG GROUP_ID
 
@@ -25,6 +32,14 @@ RUN gem install bundler
 RUN bundle install
 RUN yarn install
 
+# Add a script to be executed every time the container starts.
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 3000
 
-USER $USER_ID
-CMD bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
+#USER $USER_ID
+#CMD bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
+
+# Configure the main process to run when running the image
+CMD ["rails", "server", "-b", "0.0.0.0"]
