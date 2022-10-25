@@ -40,10 +40,11 @@ release:
             git commit -m 'config.yml'
   #    bundle exec ruby test/creds.rb
             git push -f dokku $(git symbolic-ref --short HEAD):master
+            curl -f --connect-timeout 15 -k --retry 5 --retry-delay 30 https://www.0capa.com > /dev/null
 merge:
   script: |-
     pdd -f /dev/null
-    bundle exec rake
+#    bundle exec rake
 deploy:
   script: |-
     echo 'There is nothing to deploy'
