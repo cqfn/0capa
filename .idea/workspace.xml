@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c5a64f5-8d33-46b9-93e0-9c1002ecabb6" name="Changes" comment="[#31] - chat bot basic impl">
+    <list default="true" id="7c5a64f5-8d33-46b9-93e0-9c1002ecabb6" name="Changes" comment="-rultor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/ml_model/v2_model.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/ml_model/v2_model.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -323,6 +322,7 @@
       <workItem from="1663080470519" duration="743000" />
       <workItem from="1663155361878" duration="398000" />
       <workItem from="1663333044843" duration="907000" />
+      <workItem from="1666728733090" duration="1541000" />
     </task>
     <task id="LOCAL-00001" summary="[#31] - codegen default route with tom reports">
       <created>1661531422962</created>
