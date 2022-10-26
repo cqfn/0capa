@@ -1,25 +1,17 @@
 version: "3.9"
-
 services:
-
-  postgres:
-    image: postgres:14.2
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-    ports:
-      - '5432:5432'
+      POSTGRES_PASSWORD: password
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - postgres:/var/lib/postgresql/data
-
-  tom-agent:
-    build:
-      context: .
-    volumes:
-      - ./app
-    links:
-      - postgres
+      - .:/myapp
     ports:
-      - '8010:8010'
-volumes:
-  tom-postgres:
+      - "3000:3000"
+    depends_on:
+      - db
