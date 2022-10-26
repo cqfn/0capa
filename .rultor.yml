@@ -1,0 +1,50 @@
+readers:
+  - "urn:github:526301"
+  - "urn:github:38398999"
+assets:
+  config.yml: yegor256/home#assets/0capa/config.yml
+  id_rsa: yegor256/home#assets/heroku-key
+  id_rsa.pub: yegor256/home#assets/heroku-key.pub
+install: |-
+  sudo gem install pdd -v 0.20.5
+  git config --global user.email "server@0capa.com"
+  git config --global user.name "0capa.com"
+  export GEM_HOME=~/.ruby
+  export GEM_PATH=$GEM_HOME:$GEM_PATH
+  ruby -v
+  bundle install --no-color
+release:
+  sensitive:
+    - config.yml
+  script: |-
+            pdd -f /dev/null
+            bundle exec rake
+            git remote add dokku dokku@dokku.0capa.com:capa
+            rm -rf ~/.ssh
+            mkdir ~/.ssh
+            mv ../id_rsa ../id_rsa.pub ~/.ssh
+            chmod -R 600 ~/.ssh/*
+            echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
+            git fetch
+            sed -i "s/BUILD/${tag}/g" ./version.rb
+            git add ./version.rb
+            git commit -m 'build number set'
+  #   Ex.:       config.yml content is following
+  #   pgsql:
+  #     user: capa
+  #     password: 0Plfs...
+  #     url: "jdbc:postgresql://pgsql.0capa.com:5432/capa?user=capa"
+  #   Once everything is saved, we can access it via Rails.application.secrets.pgsql
+            cp ../config.yml config/secrets.yml
+            git add .
+            git commit -m 'config.yml'
+  #    bundle exec ruby test/creds.rb
+            git push -f dokku $(git symbolic-ref --short HEAD):master
+            curl -f --connect-timeout 15 -k --retry 5 --retry-delay 30 https://www.0capa.com > /dev/null
+merge:
+  script: |-
+    pdd -f /dev/null
+#    bundle exec rake
+deploy:
+  script: |-
+    echo 'There is nothing to deploy'
