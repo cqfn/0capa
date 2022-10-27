@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: implement the class methods
 require 'json'
 require 'kmeans-clusterer'
 require_relative 'model_base_controller'
