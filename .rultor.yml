@@ -48,4 +48,3 @@ merge:
 deploy:
   script: |-
     echo 'There is nothing to deploy'
-    exit -1
