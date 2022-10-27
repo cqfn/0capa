@@ -35,7 +35,7 @@
 yarn-debug.log*
 .yarn-integrity
 .env
-
+.idea
 tmp_source_code/*
 .scannerwork
 /coverage/*
