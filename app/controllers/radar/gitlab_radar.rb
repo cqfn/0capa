@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: implement the class methods
 require 'json'
 require_relative 'radar_base_controller'
 

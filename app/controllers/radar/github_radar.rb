@@ -621,8 +621,6 @@ class GithubRadar < RadarBaseController
             issue_info.labels = labels.join(',')
             issue_info.save
           end
-
-          # TODO: Add issues comments store implemenation
           page_comments_counter = 0
 
           loop do
@@ -798,7 +796,6 @@ class GithubRadar < RadarBaseController
             pull_info.save
           end
 
-          # TODO: Add comments store implemenation
           page_comments_counter = 0
 
           loop do
