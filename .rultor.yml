@@ -38,6 +38,11 @@ release:
 merge:
   script: |-
     pdd -f /dev/null
+    bundle exec rubocop
+    bundle exec bundle-audit check — update
+    bundle exec license_finder
+    bundle exec rspec spec
+    bundle exec cane — gte ‘coverage/.last_run.json,95’ — no-abc
 deploy:
   script: |-
     echo 'There is nothing to deploy'
