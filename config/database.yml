@@ -1,18 +1,23 @@
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
-  timeout: 5000
-
 development:
-  <<: *default
-  database: db/development.postgresql
+  adapter: postgresql
+  encoding: utf8
+      <% if Rails.application.secrets[:pgsql].present? %>
+    host: <%= Rails.application.secrets[:pgsql][:url]%>
+    username: <%= Rails.application.secrets[:pgsql][:user]%>
+    password: <%= Rails.application.secrets[:pgsql][:password]%>
+      <% end %>
 
 test:
-  <<: *default
-  database: db/test.postgres
+  adapter: postgresql
+  encoding: utf8
+    <% if Rails.application.secrets[:pgsql].present? %>
+    host: <%= Rails.application.secrets[:pgsql][:url]%>
+    username: <%= Rails.application.secrets[:pgsql][:user]%>
+    password: <%= Rails.application.secrets[:pgsql][:password]%>
+    <% end %>
 
 production:
+  adapter: postgresql
   encoding: utf8
   <% if Rails.application.secrets[:pgsql].present? %>
     host: <%= Rails.application.secrets[:pgsql][:url]%>
