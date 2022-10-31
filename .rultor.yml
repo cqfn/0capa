@@ -29,6 +29,7 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config/secrets.yml
+    cp ../config.yml config/config.yml
     bundle exec rake
     git add .
     git commit -m 'config.yml'
