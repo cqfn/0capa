@@ -250,6 +250,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
+  ruby
   x64-mingw32
   x86_64-darwin-22
   x86_64-linux
@@ -282,7 +283,7 @@ DEPENDENCIES
   webpacker (~> 5.0)
 
 RUBY VERSION
-   ruby 2.6.8p205
+   ruby 2.7.0p0
 
 BUNDLED WITH
    2.2.28

@@ -13,6 +13,10 @@ install: |-
   export GEM_PATH=$GEM_HOME:$GEM_PATH
   ruby -v
   bundle install --no-color
+  sudo apt update
+  sudo apt install postgresql postgresql-contrib libpq-dev
+  sudo -u postgres createuser -s 0capa -P
+  sudo -u postgres psql
 release:
   sensitive:
     - config.yml
