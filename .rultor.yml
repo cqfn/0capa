@@ -14,7 +14,6 @@ install: |-
   ruby -v
   bundle install --no-color
   sudo apt update
-  sudo apt install postgresql postgresql-contrib libpq-dev
 release:
   sensitive:
     - config.yml
@@ -43,12 +42,6 @@ merge:
     pdd -f /dev/null
     bundle exec rubocop
     bundle exec bundle-audit check — update
-    bundle exec license_finder
-    bundle exec rspec spec
-    bundle exec cane — gte ‘coverage/.last_run.json,95’ — no-abc
-    cat > /etc/postgresql/*/main/pg_hba.conf <<-EOF
-    local   all   postgres   trust
-    EOF
     service postgresql restart
     bundle install
     bundle exec rails db:create:all
