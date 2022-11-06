@@ -64,6 +64,7 @@ gem 'http'
 gem 'nokogiri'
 gem 'pivot_table'
 gem 'time'
+gem 'rubocop'
 
 # for ML advisor
 gem 'kmeans-clusterer'
