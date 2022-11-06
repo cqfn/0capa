@@ -13,6 +13,7 @@ install: |-
   export GEM_PATH=$GEM_HOME:$GEM_PATH
   ruby -v
   bundle install --no-color
+  sudo apt update
 release:
   sensitive:
     - config.yml
@@ -37,7 +38,16 @@ release:
     curl -f --connect-timeout 15 -k --retry 5 --retry-delay 30 https://www.0capa.com > /dev/null
 merge:
   script: |-
+    set -e
     pdd -f /dev/null
+    bundle exec rubocop
+    bundle exec bundle-audit check — update
+    service postgresql restart
+    bundle install
+    bundle exec rails db:create:all
+    bundle exec rails db:migrate
+    bundle exec rails test
+    bundle exec rake
 deploy:
   script: |-
     echo 'There is nothing to deploy'
