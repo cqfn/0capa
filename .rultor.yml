@@ -40,7 +40,7 @@ merge:
   script: |-
     set -e
     pdd -f /dev/null
-    bundle exec rubocop
+#    bundle exec rubocop
     bundle exec bundle-audit check — update
     service postgresql restart
     bundle install
