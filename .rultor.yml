@@ -40,7 +40,6 @@ merge:
   script: |-
     set -e
     pdd -f /dev/null
-    bundle exec bundle-audit check — update
     service postgresql restart
     bundle install
     bundle exec rails db:create:all
