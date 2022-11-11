@@ -40,7 +40,7 @@ merge:
   script: |-
     set -e
     pdd -f /dev/null
-    service postgresql restart
+    sudo service postgresql restart
     bundle install
     bundle exec rails db:create:all
     bundle exec rails db:migrate
