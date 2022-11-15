@@ -5,11 +5,13 @@ default: &default
 
 development:
   <<: *default
+  database: rultor
   username: rultor
   password: rultor
 
 test:
   <<: *default
+  database: rultor
   username: rultor
   password: rultor
 
