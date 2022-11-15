@@ -1,24 +1,22 @@
-development:
+default: &default
   adapter: postgresql
   encoding: utf8
-      <% if Rails.application.secrets[:pgsql].present? %>
-    host: <%= Rails.application.secrets[:pgsql][:url]%>
-    username: <%= Rails.application.secrets[:pgsql][:user]%>
-    password: <%= Rails.application.secrets[:pgsql][:password]%>
-      <% end %>
+  pool: 5
+
+development:
+  <<: *default
+  database: rultor
+  username: rultor
+  password: rultor
 
 test:
-  adapter: postgresql
-  encoding: utf8
-    <% if Rails.application.secrets[:pgsql].present? %>
-    host: <%= Rails.application.secrets[:pgsql][:url]%>
-    username: <%= Rails.application.secrets[:pgsql][:user]%>
-    password: <%= Rails.application.secrets[:pgsql][:password]%>
-    <% end %>
+  <<: *default
+  database: rultor
+  username: rultor
+  password: rultor
 
 production:
-  adapter: postgresql
-  encoding: utf8
+  <<: *default
   <% if Rails.application.secrets[:pgsql].present? %>
     host: <%= Rails.application.secrets[:pgsql][:url]%>
     username: <%= Rails.application.secrets[:pgsql][:user]%>
