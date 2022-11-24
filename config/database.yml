@@ -7,13 +7,14 @@ default: &default
 development:
   <<: *default
   username: postgres
-  password:
+  password: 12345
 
 test:
   <<: *default
   username: postgres
-  password:
+  password: 12345
 
 production:
   <<: *default
   username: postgres
+  password: 12345
