@@ -63,8 +63,8 @@ gem 'git'
 gem 'http'
 gem 'nokogiri'
 gem 'pivot_table'
-gem 'time'
 gem 'rubocop'
+gem 'time'
 
 # for ML advisor
 gem 'kmeans-clusterer'
