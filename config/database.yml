@@ -1,26 +1,19 @@
-development:
+default: &default
+  database: postgres
   adapter: postgresql
-  encoding: utf8
-      <% if Rails.application.secrets[:pgsql].present? %>
-    host: <%= Rails.application.secrets[:pgsql][:url]%>
-    username: <%= Rails.application.secrets[:pgsql][:user]%>
-    password: <%= Rails.application.secrets[:pgsql][:password]%>
-      <% end %>
+  encoding: unicode
+  host: localhost
+
+development:
+  <<: *default
+  username: postgres
+  password:
 
 test:
-  adapter: postgresql
-  encoding: utf8
-    <% if Rails.application.secrets[:pgsql].present? %>
-    host: <%= Rails.application.secrets[:pgsql][:url]%>
-    username: <%= Rails.application.secrets[:pgsql][:user]%>
-    password: <%= Rails.application.secrets[:pgsql][:password]%>
-    <% end %>
+  <<: *default
+  username: postgres
+  password:
 
 production:
-  adapter: postgresql
-  encoding: utf8
-  <% if Rails.application.secrets[:pgsql].present? %>
-    host: <%= Rails.application.secrets[:pgsql][:url]%>
-    username: <%= Rails.application.secrets[:pgsql][:user]%>
-    password: <%= Rails.application.secrets[:pgsql][:password]%>
-  <% end %>
+  <<: *default
+  username: postgres
