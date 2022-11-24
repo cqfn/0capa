@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="666bd0c6-5019-4d47-a6bb-99310d65df9c" name="Changes" comment="[#51] - updated rultor config">
+      <change beforePath="$PROJECT_DIR$/.idea/0capa.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/0capa.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/application.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/application.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/database.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ruby-version" beforeDir="false" afterPath="$PROJECT_DIR$/.ruby-version" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/report/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/report/index.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,7 +331,7 @@
       <workItem from="1663333044843" duration="907000" />
       <workItem from="1669212241614" duration="707000" />
       <workItem from="1669214513697" duration="271000" />
-      <workItem from="1669290374589" duration="1158000" />
+      <workItem from="1669290374589" duration="5240000" />
     </task>
     <task id="LOCAL-00001" summary="[#31] - codegen default route with tom reports">
       <created>1661531422962</created>
@@ -439,6 +444,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="[#31] - chat bot basic impl" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1661770569155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
+    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1669297570382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
   </component>
 </project>
