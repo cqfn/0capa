@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+include ActionController::Cookies
 
 class ReportController < ApplicationController
   def index
