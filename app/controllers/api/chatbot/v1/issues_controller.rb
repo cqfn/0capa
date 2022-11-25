@@ -19,10 +19,10 @@ module Api
         end
 
         def get_tokens
-          if @@Tokens.nil?
-            puts 'Getting token list!!'
-            @@Tokens = TomTokensQueue.where(source: 'github').where(isactive: 'Y')
-          end
+          return unless @@Tokens.nil?
+
+          puts 'Getting token list!!'
+          @@Tokens = TomTokensQueue.where(source: 'github').where(isactive: 'Y')
         end
 
         def create

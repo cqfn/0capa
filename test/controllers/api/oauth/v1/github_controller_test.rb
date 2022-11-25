@@ -1,7 +1,15 @@
-require "test_helper"
+# frozen_string_literal: true
 
-class Api::Oauth::V1::GithubControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+require 'test_helper'
+
+module Api
+  module Oauth
+    module V1
+      class GithubControllerTest < ActionDispatch::IntegrationTest
+        # test "the truth" do
+        #   assert true
+        # end
+      end
+    end
+  end
 end

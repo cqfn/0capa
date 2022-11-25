@@ -85,44 +85,43 @@ class GitlabRadar < RadarBaseController
                                       source: SOURCE
                                     }).limit(1)
 
-    if project_list.length.positive?
-      project_list.update(node_name: host, status: 'L')
+    return false unless project_list.length.positive?
 
-      project_list = TomProject.where('source = :source and node_name = :host and status = :status', {
-                                        source: SOURCE,
-                                        host: host,
-                                        status: 'L'
-                                      }).each do |project|
-        puts "using node -> #{host}"
-        t1 = Time.now.to_f
-        puts "repo_fullname -> #{project.repo_fullname}"
-        # get_commits_info(settings, project)
-        # get_forks_info(settings, project)
-        # get_issues_info(settings, project)
-        # get_pulls_info(settings, project)
-        # get_release_info(settings, project)
-        # get_workflows_info(settings, project)
-        get_repo_owner_info(settings, project)
-        # get_daily_report(settings, project)
-        t2 = Time.now.to_f
-        delta = t2 - t1
-        puts "time used -> #{delta}"
-        project.last_analysis_time_elapsed = delta.to_s
-        # project.last_scanner_date = Time.current.iso8601
-        project.status = 'W'
-      rescue StandardError => e
-        project.last_scanner_date = Time.current.iso8601
-        project.last_analysis_time_elapsed = "Error -> #{e}"
-        puts "caught exception #{e}!"
-        project.status = 'E'
-      ensure
-        project.node_name = nil
-        project.status = 'W'
-        project.save
-      end
-    else
-      return false
+    project_list.update(node_name: host, status: 'L')
+
+    project_list = TomProject.where('source = :source and node_name = :host and status = :status', {
+                                      source: SOURCE,
+                                      host: host,
+                                      status: 'L'
+                                    }).each do |project|
+      puts "using node -> #{host}"
+      t1 = Time.now.to_f
+      puts "repo_fullname -> #{project.repo_fullname}"
+      # get_commits_info(settings, project)
+      # get_forks_info(settings, project)
+      # get_issues_info(settings, project)
+      # get_pulls_info(settings, project)
+      # get_release_info(settings, project)
+      # get_workflows_info(settings, project)
+      get_repo_owner_info(settings, project)
+      # get_daily_report(settings, project)
+      t2 = Time.now.to_f
+      delta = t2 - t1
+      puts "time used -> #{delta}"
+      project.last_analysis_time_elapsed = delta.to_s
+      # project.last_scanner_date = Time.current.iso8601
+      project.status = 'W'
+    rescue StandardError => e
+      project.last_scanner_date = Time.current.iso8601
+      project.last_analysis_time_elapsed = "Error -> #{e}"
+      puts "caught exception #{e}!"
+      project.status = 'E'
+    ensure
+      project.node_name = nil
+      project.status = 'W'
+      project.save
     end
+
     true
   end
 
@@ -334,42 +333,40 @@ class GitlabRadar < RadarBaseController
               "#{issue['_links']['notes']}?per_page=100&page=#{page_comments_counter}", json: {}
             )
 
-            if response_comments.code == 200
-              comments_issue_info = JSON.parse(response_comments)
+            break unless response_comments.code == 200
 
-              break if comments_issue_info.length.zero?
+            comments_issue_info = JSON.parse(response_comments)
 
-              comments_issue_info.each do |comment|
-                if !TomIssuesComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
-                  newCommentRow = TomIssuesComment.new(
-                    repoid: repo_info.repoid,
-                    repo_fullname: repo_info.repo_fullname,
-                    comment_ext_id: comment['id'],
-                    comment_created_by: comment['author']['username'],
-                    comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
-                    comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
-                    # author_association: comment["author_association"], # not supported by gitlab
-                    body: comment['body'],
-                    body_len: !comment['body'].nil? ? comment['body'].length : 0
-                    # total_reactions_counter: comment["reactions"]["total_count"],
-                  )
-                  newCommentRow.save
-                else
-                  comments_info = TomIssuesComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
+            break if comments_issue_info.length.zero?
 
-                  comments_info.comment_created_by = comment['author']['username']
-                  comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
-                  comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
-                  # comments_info.author_association = comment["author_association"] # not supported by gitlab
-                  comments_info.body = comment['body']
-                  comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
-                  # comments_info.total_reactions_counter = comment["reactions"]["total_count"] # not supported by gitlab
+            comments_issue_info.each do |comment|
+              if !TomIssuesComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
+                newCommentRow = TomIssuesComment.new(
+                  repoid: repo_info.repoid,
+                  repo_fullname: repo_info.repo_fullname,
+                  comment_ext_id: comment['id'],
+                  comment_created_by: comment['author']['username'],
+                  comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
+                  comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
+                  # author_association: comment["author_association"], # not supported by gitlab
+                  body: comment['body'],
+                  body_len: !comment['body'].nil? ? comment['body'].length : 0
+                  # total_reactions_counter: comment["reactions"]["total_count"],
+                )
+                newCommentRow.save
+              else
+                comments_info = TomIssuesComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
 
-                  comments_info.save
-                end
+                comments_info.comment_created_by = comment['author']['username']
+                comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
+                comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
+                # comments_info.author_association = comment["author_association"] # not supported by gitlab
+                comments_info.body = comment['body']
+                comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
+                # comments_info.total_reactions_counter = comment["reactions"]["total_count"] # not supported by gitlab
+
+                comments_info.save
               end
-            else
-              break
             end
           end
         end
@@ -694,10 +691,10 @@ class GitlabRadar < RadarBaseController
   end
 
   def get_tokens
-    if @@tokens.nil?
-      puts 'Getting token list!!'
-      @@tokens = TomTokensQueue.where(source: SOURCE).where(isactive: 'Y')
-    end
+    return unless @@tokens.nil?
+
+    puts 'Getting token list!!'
+    @@tokens = TomTokensQueue.where(source: SOURCE).where(isactive: 'Y')
   end
 
   def start_radar

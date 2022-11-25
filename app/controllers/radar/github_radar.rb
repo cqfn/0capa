@@ -10,7 +10,7 @@ require_relative 'radar_base_controller'
 
 class GithubRadar < RadarBaseController
   SOURCE = 'github'.freeze
-  @@tokens = nil
+  @@Tokens = nil
   @@call_count = 0
   @@External_threar_stop = false
   @@Is_active_instance = false
@@ -64,20 +64,20 @@ class GithubRadar < RadarBaseController
   end
 
   def get_tokens
-    if @@tokens.nil?
-      puts 'Getting token list!!'
-      @@tokens = TomTokensQueue.where(source: SOURCE).where(isactive: 'Y')
-    end
+    return unless @@Tokens.nil?
+
+    puts 'Getting token list!!'
+    @@Tokens = TomTokensQueue.where(source: 'github')
   end
 
   def getTokenList
-    TomTokensQueue.where(source: SOURCE).where(isactive: 'Y')
+    TomTokensQueue.where(source: 'github')
   end
 
   def get_repos_from_query(_url_query)
     settings = TomSetting.where('agentname = :agentname', {
-                                  agentname: SOURCE
-                                }).order(node_name: :asc).first
+      agentname: SOURCE
+    }).order(node_name: :asc).first
 
     # puts "getting repos from -> " + url_query
     # https://api.github.com/search/repositories?l=Ruby&q=stars%3A101..149+forks%3A51..99+size%3A%3C2100&type=Repositories
@@ -110,8 +110,8 @@ class GithubRadar < RadarBaseController
           puts "repos counter -> #{repos_counter}, repo name -> #{r['full_name']}"
           next unless !TomProject.exists?(repo_fullname: r['full_name'],
                                           source: "#{SOURCE}_exclution") && !TomProject.exists?(
-                                            repo_fullname: r['full_name'], source: "#{SOURCE}_list3"
-                                          )
+            repo_fullname: r['full_name'], source: "#{SOURCE}_list3"
+          )
 
           project = TomProject.new(
             name: r['name'],
@@ -168,16 +168,17 @@ class GithubRadar < RadarBaseController
     host = Socket.gethostname
     puts "SOURCE -> #{SOURCE}"
     puts "host -> #{host}"
-    settings = TomSetting.where('agentname = :agentname and (node_name = :host or node_name is null) ', {
-                                  agentname: SOURCE,
-                                  host: host
-                                }).order(node_name: :asc).first
+    settings = TomSetting.where('agentname = :agentname', {
+      agentname: SOURCE,
+      host: host
+    }).order(node_name: :asc).first
 
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {}
     )
 
     if response.code == 200
+
       invitations = JSON.parse(response)
 
       invitations.each do |invitation|
@@ -205,44 +206,74 @@ class GithubRadar < RadarBaseController
         )
         puts "invitation_response -> #{invitation_response.code}"
 
+        info_url_template = settings.repos_info_url.dup
+
+        puts "info_url_template -> #{info_url_template}"
+
+        request_url = info_url_template.sub! '#repo_fullname', invitation['repository']['full_name']
+
+        puts 'welcomeResponse'
+        puts request_url
+
+        capas = [
+          'review and improve staff training procedures [#TOM-C001]',
+          'replan project and re-estimate targets [#TOM-C002]',
+          'review and improve estimating procedures [#TOM-C003]',
+          'review and improve project working procedures [#TOM-C004]',
+          'if the scope of the project has been underestimated, obtain more experienced staff [#TOM-C005]',
+          'if the scope has been overestimated, release experienced staff to other projects [#TOM-C006]',
+          'stop current work and revert to activities of preceding stage [#TOM-C007]',
+          'extend activities of previous stage into current stage, replanning effort and work assignment [#TOM-C008]',
+          'extend timescales for testing and debugging current stage because of anticipated additional latent faults from previous stage [#TOM-C009]',
+          'review and improve criteria for entry to, and exit from, stages and activities [#TOM-C010]',
+          'redesign the module into smaller components [#TOM-C011]',
+          'extend the timescales for testing the module [#TOM-C012]'
+        ]
+
+        issue_body =
+          "🥳TOM has started processing your repository. \nSeat & drink some coffee ☕ and wait, in just a couple of minutes the @0capa-demo bot will open the capa suggestion issues for this particular project. You can also visit https://0capa.ru/ 🥸 to read detailed info."
+
+        issue_body.sub! '#capa-1', capas.sample
+        issue_body.sub! '#capa-2', capas.sample
+
+        welcomeResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+          "#{request_url}/issues", json: { title: '💥Welcome issue over repo💥', body: issue_body }
+        )
+        puts JSON.pretty_generate(welcomeResponse.parse)
+
+
+
+        sleep(60)
+        issue_body =
+          "💫TOM has finished to check you code and it would like to advise you with some actions:
+            - #capa-1
+            - #capa-2
+            - #capa-3"
+
+        issue_body.sub! '#capa-1', capas.sample
+        issue_body.sub! '#capa-2', capas.sample
+        issue_body.sub! '#capa-3', capas.sample
+
+
+
+        welcomeResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+          "#{request_url}/issues", json: { title: '💫Capa suggestions💫', body: issue_body }
+        )
+
+
+
+
+
         if invitation_response.code == 204
           info_url_template = settings.repos_info_url.dup
-
           puts "info_url_template -> #{info_url_template}"
-
-          request_url = info_url_template.sub! '#repo_fullname', invitation['repository']['full_name']
-
-          response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
-            request_url, json: {}
-          )
           if invitation_response.code == 200
             repo = JSON.parse(response)
             project.repo_created_at = DateTime.parse(repo['created_at'])
           else
             puts JSON.pretty_generate(response.parse)
           end
-
           project.save
-
-          # For every new `invitation`
-          # 0capa-bot sends welcome issue for initial checks
-          settings = TomSetting.find_by(agentname: 'github')
-          request_url = settings.issues_info_url.sub! '#repo_fullname'
-
-          issue_body = 'some-body'
-
-          response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-            request_url, json: { title: "Welcome issue over repo ##{prediction.repo_fullname}",
-                                 body: issue_body }
-          )
-
-          if response.code == 201
-            puts 'Welcome issue submitted'
-          else
-            puts 'Error creating an ticket'
-            puts JSON.pretty_generate(response.parse)
-          end
-          puts response
         else
           puts 'there was an error accepting the invitaion...'
           return false
@@ -261,24 +292,24 @@ class GithubRadar < RadarBaseController
 
   def getQueueCounter
     project_count = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
-                                       source: SOURCE
-                                     }).count
+      source: SOURCE
+    }).count
     puts "project_count -> #{project_count}"
     project_count
   end
 
   def check_repos_update
     settings = TomSetting.where('agentname = :agentname', {
-                                  agentname: SOURCE, host: host
-                                }).order(node_name: :asc).first
+      agentname: SOURCE, host: host
+    }).order(node_name: :asc).first
 
     # https://api.github.com/repos/#repo_fullname
     # puts Time.now.midnight
     # puts Time.now.midnight + 1.day
     # while true
     project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
-                                      source: SOURCE
-                                    }).limit(1)
+      source: SOURCE
+    }).limit(1)
 
     if project_list.length.positive?
       project_list.update(node_name: host, status: 'L')
@@ -290,15 +321,15 @@ class GithubRadar < RadarBaseController
       # end
 
       project_list = TomProject.where('source = :source and node_name = :host and status = :status', {
-                                        source: SOURCE,
-                                        host: host,
-                                        status: 'L'
-                                      }).each do |project|
+        source: SOURCE,
+        host: host,
+        status: 'L'
+      }).each do |project|
         puts "using node -> #{host}"
         t1 = Time.now.to_f
         puts "repo_fullname -> #{project.repo_fullname}"
         get_commits_info(settings, project)
-        get_daily_report(settings, project)
+        # get_daily_report(settings, project)
         t2 = Time.now.to_f
         delta = t2 - t1
         puts "time used -> #{delta}"
@@ -325,53 +356,52 @@ class GithubRadar < RadarBaseController
   def get_repos_full_update
     host = "#{Socket.gethostname}-#{Thread.current.object_id}"
     settings = TomSetting.where('agentname = :agentname', {
-                                  agentname: SOURCE, host: host
-                                }).order(node_name: :asc).first
+      agentname: SOURCE, host: host
+    }).order(node_name: :asc).first
 
     # puts Time.now.midnight
     # puts Time.now.midnight + 1.day
 
     project_list = TomProject.where("source = :source and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ", {
-                                      source: SOURCE
-                                    }).limit(1)
+      source: SOURCE
+    }).limit(1)
 
-    if project_list.length.positive?
-      project_list.update(node_name: host, status: 'L')
+    return false unless project_list.length.positive?
 
-      project_list = TomProject.where('source = :source and node_name = :host and status = :status', {
-                                        source: SOURCE,
-                                        host: host,
-                                        status: 'L'
-                                      }).each do |project|
-        puts "using node -> #{host}"
-        t1 = Time.now.to_f
-        puts "repo_fullname -> #{project.repo_fullname}"
-        get_commits_info(settings, project)
-        get_forks_info(settings, project)
-        get_issues_info(settings, project)
-        get_pulls_info(settings, project)
-        get_release_info(settings, project)
-        get_workflows_info(settings, project)
-        get_repo_owner_info(settings, project)
-        get_daily_report(settings, project)
-        t2 = Time.now.to_f
-        delta = t2 - t1
-        puts "time used -> #{delta}"
-        project.last_analysis_time_elapsed = delta.to_s
-        project.last_scanner_date = Time.current.iso8601
-        project.status = 'W'
-      rescue StandardError => e
-        project.last_scanner_date = Time.current.iso8601
-        project.last_analysis_time_elapsed = "Error -> #{e}"
-        puts "caught exception #{e}!"
-        project.status = 'E'
-      ensure
-        project.node_name = nil
-        project.save
-      end
-    else
-      return false
+    project_list.update(node_name: host, status: 'L')
+
+    project_list = TomProject.where('source = :source and node_name = :host and status = :status', {
+      source: SOURCE,
+      host: host,
+      status: 'L'
+    }).each do |project|
+      puts "using node -> #{host}"
+      t1 = Time.now.to_f
+      puts "repo_fullname -> #{project.repo_fullname}"
+      get_commits_info(settings, project)
+      get_forks_info(settings, project)
+      get_issues_info(settings, project)
+      get_pulls_info(settings, project)
+      get_release_info(settings, project)
+      get_workflows_info(settings, project)
+      get_repo_owner_info(settings, project)
+      # get_daily_report(settings, project)
+      t2 = Time.now.to_f
+      delta = t2 - t1
+      puts "time used -> #{delta}"
+      project.last_analysis_time_elapsed = delta.to_s
+      project.last_scanner_date = Time.current.iso8601
+      project.status = 'W'
+    rescue StandardError => e
+      project.last_scanner_date = Time.current.iso8601
+      project.last_analysis_time_elapsed = "Error -> #{e}"
+      puts "caught exception #{e}!"
+      project.status = 'E'
+    ensure
+      project.node_name = nil
+      project.save
     end
+
     true
   end
 
@@ -631,42 +661,40 @@ class GithubRadar < RadarBaseController
               "#{issue['comments_url']}?per_page=100&page=#{page_comments_counter}", json: {}
             )
 
-            if response_comments.code == 200
-              comments_issue_info = JSON.parse(response_comments)
+            break unless response_comments.code == 200
 
-              break if comments_issue_info.length.zero?
+            comments_issue_info = JSON.parse(response_comments)
 
-              comments_issue_info.each do |comment|
-                if !TomIssuesComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
-                  newCommentRow = TomIssuesComment.new(
-                    repoid: repo_info.repoid,
-                    repo_fullname: repo_info.repo_fullname,
-                    comment_ext_id: comment['id'],
-                    comment_created_by: comment['user']['login'],
-                    comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
-                    comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
-                    author_association: comment['author_association'],
-                    body: comment['body'],
-                    body_len: !comment['body'].nil? ? comment['body'].length : 0,
-                    total_reactions_counter: comment['reactions']['total_count']
-                  )
-                  newCommentRow.save
-                else
-                  comments_info = TomIssuesComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
+            break if comments_issue_info.length.zero?
 
-                  comments_info.comment_created_by = comment['user']['login']
-                  comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
-                  comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
-                  comments_info.author_association = comment['author_association']
-                  comments_info.body = comment['body']
-                  comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
-                  comments_info.total_reactions_counter = comment['reactions']['total_count']
+            comments_issue_info.each do |comment|
+              if !TomIssuesComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
+                newCommentRow = TomIssuesComment.new(
+                  repoid: repo_info.repoid,
+                  repo_fullname: repo_info.repo_fullname,
+                  comment_ext_id: comment['id'],
+                  comment_created_by: comment['user']['login'],
+                  comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
+                  comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
+                  author_association: comment['author_association'],
+                  body: comment['body'],
+                  body_len: !comment['body'].nil? ? comment['body'].length : 0,
+                  total_reactions_counter: comment['reactions']['total_count']
+                )
+                newCommentRow.save
+              else
+                comments_info = TomIssuesComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
 
-                  comments_info.save
-                end
+                comments_info.comment_created_by = comment['user']['login']
+                comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
+                comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
+                comments_info.author_association = comment['author_association']
+                comments_info.body = comment['body']
+                comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
+                comments_info.total_reactions_counter = comment['reactions']['total_count']
+
+                comments_info.save
               end
-            else
-              break
             end
           end
         end
@@ -806,42 +834,40 @@ class GithubRadar < RadarBaseController
               "#{pull['comments_url']}?per_page=100&page=#{page_comments_counter}", json: {}
             )
 
-            if response_comments.code == 200
-              comments_pr_info = JSON.parse(response_comments)
+            break unless response_comments.code == 200
 
-              break if comments_pr_info.length.zero?
+            comments_pr_info = JSON.parse(response_comments)
 
-              comments_pr_info.each do |comment|
-                if !TomPrComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
-                  newCommentRow = TomPrComment.new(
-                    repoid: repo_info.repoid,
-                    repo_fullname: repo_info.repo_fullname,
-                    comment_ext_id: comment['id'],
-                    comment_created_by: comment['user']['login'],
-                    comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
-                    comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
-                    author_association: comment['author_association'],
-                    body: comment['body'],
-                    body_len: !comment['body'].nil? ? comment['body'].length : 0,
-                    total_reactions_counter: comment['reactions']['total_count']
-                  )
-                  newCommentRow.save
-                else
-                  comments_info = TomPrComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
+            break if comments_pr_info.length.zero?
 
-                  comments_info.comment_created_by = comment['user']['login']
-                  comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
-                  comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
-                  comments_info.author_association = comment['author_association']
-                  comments_info.body = comment['body']
-                  comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
-                  comments_info.total_reactions_counter = comment['reactions']['total_count']
+            comments_pr_info.each do |comment|
+              if !TomPrComment.exists?(comment_ext_id: comment['id'], repoid: repo_info.repoid)
+                newCommentRow = TomPrComment.new(
+                  repoid: repo_info.repoid,
+                  repo_fullname: repo_info.repo_fullname,
+                  comment_ext_id: comment['id'],
+                  comment_created_by: comment['user']['login'],
+                  comment_created_at: !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil,
+                  comment_updated_at: !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil,
+                  author_association: comment['author_association'],
+                  body: comment['body'],
+                  body_len: !comment['body'].nil? ? comment['body'].length : 0,
+                  total_reactions_counter: comment['reactions']['total_count']
+                )
+                newCommentRow.save
+              else
+                comments_info = TomPrComment.where(comment_ext_id: comment['id'], repoid: repo_info.repoid).first
 
-                  comments_info.save
-                end
+                comments_info.comment_created_by = comment['user']['login']
+                comments_info.comment_created_at = !comment['created_at'].nil? ? DateTime.parse(comment['created_at']) : nil
+                comments_info.comment_updated_at = !comment['updated_at'].nil? ? DateTime.parse(comment['updated_at']) : nil
+                comments_info.author_association = comment['author_association']
+                comments_info.body = comment['body']
+                comments_info.body_len = !comment['body'].nil? ? comment['body'].length : 0
+                comments_info.total_reactions_counter = comment['reactions']['total_count']
+
+                comments_info.save
               end
-            else
-              break
             end
           end
         end
@@ -1341,8 +1367,8 @@ class GithubRadar < RadarBaseController
       # puts "forks_list -> " + forks_list.length.to_s
 
       forks_grouped = forks_list.group_by do |f|
-                        DateTime.parse(f['created_at']).beginning_of_day
-                      end.sort_by { |x| x[1].length }
+        DateTime.parse(f['created_at']).beginning_of_day
+      end.sort_by { |x| x[1].length }
 
       if forks_grouped.length.positive?
         # puts "forks_grouped l -> " + forks_grouped.last[1].length.to_s
@@ -1430,8 +1456,8 @@ class GithubRadar < RadarBaseController
       projectMetrics.issues_avg_comments = (total_comments / issues_list.length)
 
       issues_grouped = issues_list.group_by do |i|
-                         DateTime.parse(i['created_at']).beginning_of_day
-                       end.sort_by { |x| x[1].length }
+        DateTime.parse(i['created_at']).beginning_of_day
+      end.sort_by { |x| x[1].length }
 
       projectMetrics.issues_max_per_day = issues_grouped.last[1].length.to_s
       projectMetrics.issues_avg_per_day = issues_list.length / repo_age_days
@@ -1590,8 +1616,8 @@ class GithubRadar < RadarBaseController
       projectMetrics.pulls_avg_labels = total_labels / pull_list.length
 
       pull_grouped = pull_list.group_by do |i|
-                       DateTime.parse(i['created_at']).beginning_of_day
-                     end.sort_by { |x| x[1].length }
+        DateTime.parse(i['created_at']).beginning_of_day
+      end.sort_by { |x| x[1].length }
 
       projectMetrics.pulls_max_created_per_day = pull_grouped.last[1].length.to_s
       projectMetrics.pulls_avg_created_per_day = pull_grouped.length / repo_age_days
@@ -1725,8 +1751,8 @@ class GithubRadar < RadarBaseController
 
     if total_stars.positive?
       stars_grouped = stars_list.group_by do |i|
-                        DateTime.parse(i['starred_at']).beginning_of_day
-                      end.sort_by { |x| x[1].length }
+        DateTime.parse(i['starred_at']).beginning_of_day
+      end.sort_by { |x| x[1].length }
       projectMetrics.stars_count = total_stars
       projectMetrics.stars_avg_per_day_real = total_stars / stars_grouped.length
       projectMetrics.stars_max_per_day = stars_grouped.last[1].length.to_s
@@ -1804,8 +1830,8 @@ class GithubRadar < RadarBaseController
       projectMetrics.wf_avg_success_duration = total_success_duration / total_runs
       projectMetrics.wf_avg_failure_duration = total_failure_duration / total_runs
       success_grouped = workflows_success_list.group_by do |i|
-                          DateTime.parse(i['created_at']).beginning_of_day
-                        end.sort_by { |x| x[1].length }
+        DateTime.parse(i['created_at']).beginning_of_day
+      end.sort_by { |x| x[1].length }
       projectMetrics.wf_avg_successes_per_day = (total_runs / repo_age_days)
       projectMetrics.wf_avg_successes_per_day_real = if success_grouped.length.positive?
                                                        (workflows_success_list.length / success_grouped.length)
@@ -1927,7 +1953,7 @@ class GithubRadar < RadarBaseController
 
   def getNextToken
     @@call_count += 1
-    next_token_index = (@@call_count % @@tokens.length)
-    @@tokens[next_token_index].token
+    next_token_index = (@@call_count % @@Tokens.length)
+    @@Tokens[next_token_index].token
   end
 end
