@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module Chatbot
     module V1
@@ -18,16 +20,15 @@ module Api
 
         def start_chatbot
           create
-          #welcome_issue
-
+          # welcome_issue
         end
 
         def welcome_issue
           issue_body = 'some-body'
 
           response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-            'https://api.github.com/repos/xavzelada/repo_test/issues', json: { title: "Welcome issue over repo",
-                                                                               body: "some body" }
+            'https://api.github.com/repos/xavzelada/repo_test/issues', json: { title: 'Welcome issue over repo',
+                                                                               body: 'some body' }
           )
 
           if response.code == 201

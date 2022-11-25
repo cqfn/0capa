@@ -39,19 +39,19 @@ class SonarqubeExtractor < MetricsBaseController
                           url
                         )
 
-        if response.code == 200
-          json = JSON.parse(response)
-          sonar_project = json['project']
+        raise 'It was a error creating sonarqube project by TOM' unless response.code == 200
 
-          url = "http://188.130.155.202:7000/api/webhooks/create?name=wh_#{pushInfo.full_name}&project=#{pushInfo.full_name}&url=https://tom-radar.herokuapp.com/api/v1/webhook?source=sonarqube"
-          response = HTTP["Content-Type": 'JSON', "Content-Language": 'en-US',
-                          "Authorization": "Basic #{@extractor_seetings.apisecret}"].post(
-                            url
-                          )
-        else
-          # error in project creation
-          raise 'It was a error creating sonarqube project by TOM'
-        end
+        json = JSON.parse(response)
+        sonar_project = json['project']
+
+        url = "http://188.130.155.202:7000/api/webhooks/create?name=wh_#{pushInfo.full_name}&project=#{pushInfo.full_name}&url=https://tom-radar.herokuapp.com/api/v1/webhook?source=sonarqube"
+        response = HTTP["Content-Type": 'JSON', "Content-Language": 'en-US',
+                        "Authorization": "Basic #{@extractor_seetings.apisecret}"].post(
+                          url
+                        )
+
+        # error in project creation
+
       end
 
       puts JSON.pretty_generate(sonar_project)
