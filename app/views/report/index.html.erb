@@ -67,9 +67,14 @@
 <div class="container">
   <div class="columns">
     <div class="tom">
-      <div class="column col-1">
+      <div class="">
         <h3>Tom Dashboard</h3>
         <ul class="nav">
+          <% if @logged %>
+            <li class="nav-item"><a href="https://github.com/<%= @username %>"><%= @username %></a></li>
+          <% else %>
+            <li class="nav-item"> <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468">Authorize via GitHub</a></li>
+          <% end %>
           <li class="nav-item active"><a href="#">Overview</a></li>
           <li class="nav-item"><a href="#">Growth</a></li>
           <li class="nav-item"><a href="#">Reports</a></li>
