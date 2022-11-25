@@ -7,27 +7,23 @@ module Api
         @base_uri = 'https://api.github.com/repos/xavzelada/repo_test/issues'
 
         def initialize
-          puts 'initialize GithubRadar'
+          puts 'initialize ChatBot controller'
           get_tokens
         end
 
         def get_tokens
-          puts 'Getting token list!!'
+          puts 'Getting token list..'
           @@Tokens = TomTokensQueue.where(source: 'github')
         end
 
         def start_chatbot
-          #create
-          welcome_issue
+          create
+          #welcome_issue
 
         end
 
         def welcome_issue
           issue_body = 'some-body'
-
-          # response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-          #   @basic_url, json: { title: "Welcome issue over repo", body: issue_body }
-          # )
 
           response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
             'https://api.github.com/repos/xavzelada/repo_test/issues', json: { title: "Welcome issue over repo",
@@ -44,8 +40,8 @@ module Api
         end
 
         def create
+          puts 'Working..'
           settings = TomSetting.find_by(agentname: 'github')
-
           TomRadarActivation.where(status: 'Pending').each do |activation|
             puts activation.id
             response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
@@ -64,13 +60,12 @@ module Api
                 repo_issueid: json['number'],
                 created_at_ext: json['created_at']
               )
-
               myIssue.save
             else
               print('Error creating an ticket')
               puts JSON.pretty_generate(response.parse)
             end
-            # puts response
+            puts response
           end
 
           render json: { message: 'Posting issues finished' }, status: 200

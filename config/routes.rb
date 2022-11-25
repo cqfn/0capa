@@ -34,5 +34,10 @@ Rails.application.routes.draw do
         post 'stop-radar', to: 'radar#stop_radar'
       end
     end
+    namespace :oauth do
+      namespace :v1 do
+        get 'github', to: 'github#index'
+      end
+    end
   end
 end

@@ -16,5 +16,6 @@ module Tom
     config.api_only = true
     config.autoloader = :classic
     config.hosts << "0capa.ru"
+    config.middleware.use ActionDispatch::Cookies
   end
 end
