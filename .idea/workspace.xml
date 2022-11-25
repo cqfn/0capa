@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="666bd0c6-5019-4d47-a6bb-99310d65df9c" name="Changes" comment="[#51] - updated rultor config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controllers/report_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/report_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/report/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/report/index.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/application.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/application.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -331,7 +327,7 @@
       <workItem from="1669214513697" duration="271000" />
       <workItem from="1669290374589" duration="5240000" />
       <workItem from="1669325264059" duration="2895000" />
-      <workItem from="1669329430335" duration="5076000" />
+      <workItem from="1669329430335" duration="5457000" />
     </task>
     <task id="LOCAL-00001" summary="[#31] - codegen default route with tom reports">
       <created>1661531422962</created>
