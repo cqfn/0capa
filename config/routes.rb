@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         # radar endpoints
         resources :webhook, only: %i[index create destroy]
         resources :notications_handler, only: %i[index create destroy]
+        resource :github_webhooks, only: :create, defaults: { formats: :json }
         get 'radar_hostname', to: 'radar#get_host'
         get 'radar_repos_json', to: 'radar#repos_from_json'
         post 'start-radar', to: 'radar#start_radar'
@@ -39,5 +40,6 @@ Rails.application.routes.draw do
         get 'github', to: 'github#index'
       end
     end
+
   end
 end

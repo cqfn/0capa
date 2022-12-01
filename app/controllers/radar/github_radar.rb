@@ -241,7 +241,11 @@ class GithubRadar < RadarBaseController
         )
         puts JSON.pretty_generate(welcomeResponse.parse)
 
-
+        puts 'Github WebHook'
+        hook = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+          "#{request_url}/hooks", json: { name: 'web', active: true, events: ['issue_comment'], config: { url: 'https://0capa.ru/api/radar/v1/github_webhooks', content_type: 'json', insecure_ssl: '0', secret: 'GITHUB_WEBHOOK_SECRET' } }
+        )
+        puts JSON.pretty_generate(hook.parse)
 
         sleep(60)
         issue_body =
@@ -253,15 +257,6 @@ class GithubRadar < RadarBaseController
         issue_body.sub! '#capa-1', capas.sample
         issue_body.sub! '#capa-2', capas.sample
         issue_body.sub! '#capa-3', capas.sample
-
-
-
-        welcomeResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-          "#{request_url}/issues", json: { title: '💫Capa suggestions💫', body: issue_body }
-        )
-
-
-
 
 
         if invitation_response.code == 204
