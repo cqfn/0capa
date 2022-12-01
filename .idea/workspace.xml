@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="666bd0c6-5019-4d47-a6bb-99310d65df9c" name="Changes" comment="[#51] - updated rultor config">
+    <list default="true" id="666bd0c6-5019-4d47-a6bb-99310d65df9c" name="Changes" comment="[#51] - updated 0capa stats">
+      <change afterPath="$PROJECT_DIR$/app/models/tom_project_capa_predictions.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/chatbot_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/issues_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/chatbot/v1/issues_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/api/oauth/v1/github_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/api/oauth/v1/github_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/radar/gitlab_radar.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/gitlab_radar.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/radar/sonarqube_extractor.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/sonarqube_extractor.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controllers/report_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/report_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/application.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/application.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/environments/development.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/environments/development.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/report/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/report/index.html.erb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/controllers/api/oauth/v1/github_controller_test.rb" beforeDir="false" afterPath="$PROJECT_DIR$/test/controllers/api/oauth/v1/github_controller_test.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/creds.rb" beforeDir="false" afterPath="$PROJECT_DIR$/test/creds.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/version.rb" beforeDir="false" afterPath="$PROJECT_DIR$/version.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Ruby File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -452,6 +450,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="[#31] - chat bot basic impl" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1669382573605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
+    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1669889241315" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
   </component>
 </project>

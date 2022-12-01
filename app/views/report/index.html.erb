@@ -73,7 +73,9 @@
           <% if @logged %>
             <li class="nav-item"><a href="https://github.com/<%= @username %>"><%= @username %></a></li>
           <% else %>
-            <li class="nav-item"> <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468">Authorize via GitHub</a></li>
+            <li class="nav-item">
+              <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468">Authorize via GitHub</a>
+            </li>
           <% end %>
           <li class="nav-item active"><a href="#">Overview</a></li>
           <li class="nav-item"><a href="#">Growth</a></li>
@@ -89,11 +91,12 @@
         <div class="wrapper1">
           <div class="card">
             <div class="card-header">
-              <div class="card-title h1">1234</div>
+              <div class="card-title h1"><%= @commit_metrics %></div>
               <div class="card-subtitle text-gray">Total Commits Analysed</div>
             </div>
             <div class="card-body">
-              Card body
+              The identified anomalies and CAPAS will be generated through the information that we can obtain through
+              the github api.
             </div>
             <div class="card-footer">
               <div class="bar bar-sm">
@@ -103,11 +106,11 @@
           </div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title h1">1234</div>
-              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+              <div class="card-title h1"><%= @repos_metrics %></div>
+              <div class="card-subtitle text-gray">Total Repos Analysed</div>
             </div>
             <div class="card-body">
-              Card body
+              TOM has the history of the metrics collected from each yours repository individually.
             </div>
             <div class="card-footer">
               <div class="bar bar-sm">
@@ -117,11 +120,13 @@
           </div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title h1">1234</div>
-              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+              <div class="card-title h1"><%= @issues_metrics %></div>
+              <div class="card-subtitle text-gray">Total Issues proceeded</div>
             </div>
             <div class="card-body">
-              Card body
+              Once TOM has generated the list of CAPAs for your repository, a bot will create an issue within your
+              repository, indicating each of the anomalies that were identified and the actions to take in
+              consideration.
             </div>
             <div class="card-footer">
               <div class="bar bar-sm">
@@ -131,11 +136,12 @@
           </div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title h1">1234</div>
-              <div class="card-subtitle text-gray">Total Issues Analysed</div>
+              <div class="card-title h1"><%= @capas_predicted.length %></div>
+              <div class="card-subtitle text-gray">Total Capas Predicted</div>
             </div>
             <div class="card-body">
-              Card body
+              A component based on ML is in charge of processing this data in order to identify a list of possible
+              anomalies, on which the list of LAYERS that best suit the particular case.
             </div>
             <div class="card-footer">
               <div class="bar bar-sm">
@@ -151,51 +157,63 @@
       <h2>Pushes History</h2>
       <div class="card">
         <div class="card-header">
-          <div class="card-title text-bold">/**
-            * @todo #234:15m/DEV This is something to do later
-            *  in one of the next releases. I can't figure out
-            *  how to implement it now, that's why the puzzle.
-            */ </div>
-          <div class="card-subtitle text-gray">Action</div>
+          <figure class="avatar avatar-xl" data-initial="0" style="background-color: #5755d9;">
+            <img src="<%= "logo-256.png" %>" alt="">
+          </figure>
+          <div class="card-title text-bold"> 0capa-bot Beta</div>
+          <div class="card-body">TOM (stands for Theoretically Objective Measurements of Software Development Projects)
+            is a set of services that are in charge of helping developers or teams in the process of identifying
+            anomilies within their software development process, and providing a list of preventive or corrective
+            actions (aka CAPAS) that positively impact the process. and in this way to improve the quality of the final
+            product and its development process.
+          </div>
         </div>
       </div>
-      <h2>Metrics Histogram</h2>
+      <h2>Capas Histogram</h2>
       <div class="card">
         <div class="card-body">
           <table class="table table-striped table-hover">
             <thead>
             <tr>
-              <th>Date</th>
-              <th>Open issues</th>
-              <th>Size</th>
-              <th>Language</th>
-              <th>Commits count</th>
-              <th>Added</th>
-              <th>Removed</th>
-              <th>Changed</th>
+              <th>Analysis Id</th>
+              <th>Repository</th>
+              <th>Created at</th>
+              <th>Updated at</th>
+              <th>Label</th>
               <th>Status</th>
             </tr>
             </thead>
             <tbody>
-            <% @push_info.all.each do |push| %>
-              <tr class>
-                <td><%= push.created_at.strftime("%F %H:%M") %></td>
-                <td><%= push.open_issues_count %></td>
-                <td><%= push.size %></td>
-                <td><%= push.language %></td>
-                <td><%= push.commits_count %></td>
-                <td><%= push.total_files_added %></td>
-                <td><%= push.total_files_removed %></td>
-                <td><%= push.total_files_changed %></td>
-                <td><%= @status_label[push.status] %></td>
+            <% @capas_predicted.all.each do |capa| %>
+              <tr class onclick="document.getElementById('modal-id-<%= capa.analysis_id %>"').classList.add('active')">
+                <td><%= capa.analysis_id %></td>
+                <td><%= capa.repo_fullname %></td>
+                <td><%= capa.created_at.strftime("%F %H:%M") %></td>
+                <td><%= capa.updated_at.strftime("%F %H:%M") %></td>
+                <td><%= capa.label %></td>
+                <td><%= capa.status %></td>
               </tr>
+              <div class="modal" id="modal-id-<%= capa.analysis_id %>">
+                <a href="#close" class="modal-overlay" aria-label="Close"></a>
+                <div class="modal-container">
+                  <div class="modal-header">
+                    <a href="#close" class="btn btn-clear float-right" aria-label="Close"></a>
+                    <div class="modal-title h5"><%= capa.repo_fullname %></div>
+                  </div>
+                  <div class="modal-body">
+                    <div class="content">
+                      и тута будет инфа о капе
+                    </div>
+                  </div>
+                </div>
+              </div>
             <% end %>
             </tbody>
           </table>
         </div>
       </div>
 
-      <h2>Projects Histogram</h2>
+      <h2>Projects</h2>
       <div class="card">
         <div class="card-body">
           <table class="table table-striped table-hover">
@@ -210,7 +228,7 @@
             </thead>
             <tbody>
             <% @project_list.all.each do |project| %>
-              <tr class>
+              <tr class onclick="document.location.href = '<%= project.repo_url %>'">
                 <td><%= project.id %></td>
                 <td><%= project.name %></td>
                 <td><%= project.isactive %></td>
