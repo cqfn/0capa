@@ -68,3 +68,5 @@ gem 'time'
 
 # for ML advisor
 gem 'kmeans-clusterer'
+# for Github issue comments tracking
+gem 'github_webhook', '~> 1.4'
