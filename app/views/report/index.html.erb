@@ -186,7 +186,7 @@
             </thead>
             <tbody>
             <% @capas_predicted.each do |capa| %>
-              <tr class onclick="document.location.hash='modal-id-<%= capa.analyysis_id %>'">
+              <tr class onclick="document.location.hash='modal-id-<%= capa.analysis_id %>'">
                 <td><%= capa.analysis_id %></td>
                 <td><%= capa.repo_fullname %></td>
                 <td><%= capa.created_at.strftime("%F %H:%M") %></td>
