@@ -156,10 +156,12 @@
       <h2>Pushes History</h2>
       <div class="card">
         <div class="card-header">
-          <figure class="avatar avatar-xl" data-initial="0" style="background-color: #5755d9;">
-            <img src="<%= "logo-256.png" %>" alt="">
-          </figure>
-          <div class="card-title text-bold"> 0capa-bot Beta</div>
+          <div class="card-title text-bold"> 
+            <figure class="avatar avatar-xl" data-initial="0" style="background-color: #5755d9;">
+              <img src="<%= "logo-256.png" %>" alt="">
+            </figure>
+            0capa-bot Beta
+          </div>
           <div class="card-body">TOM (stands for Theoretically Objective Measurements of Software Development Projects)
             is a set of services that are in charge of helping developers or teams in the process of identifying
             anomilies within their software development process, and providing a list of preventive or corrective
@@ -184,7 +186,7 @@
             </thead>
             <tbody>
             <% @capas_predicted.each do |capa| %>
-              <tr class onclick="document.getElementById('modal-id-<%= capa.analysis_id %>').classList.add('active')">
+              <tr class onclick="document.location.hash='modal-id-<%= capa.analyysis_id %>'">
                 <td><%= capa.analysis_id %></td>
                 <td><%= capa.repo_fullname %></td>
                 <td><%= capa.created_at.strftime("%F %H:%M") %></td>
