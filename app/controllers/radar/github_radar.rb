@@ -171,8 +171,8 @@ class GithubRadar < RadarBaseController
     settings = TomSetting.where('agentname = :agentname', {
       agentname: SOURCE,
       host: host
-    }).order(node_name: :asc).first
-
+    })
+    puts "settings -> #{settings}"
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {}
     )
