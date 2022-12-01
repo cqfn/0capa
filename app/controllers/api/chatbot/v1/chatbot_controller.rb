@@ -7,6 +7,9 @@ module Api
         @@Tokens = nil
         @@call_count = 0
         @base_uri = 'https://api.github.com/repos/xavzelada/repo_test/issues'
+        @@External_threar_stop = false
+        @@Is_active_instance = false
+        @@capas_mode = 'random'
 
         def initialize
           puts 'initialize ChatBot controller'
@@ -21,6 +24,30 @@ module Api
         def start_chatbot
           create
           # welcome_issue
+          puts 'initializing chatbot...'
+          @@External_threar_stop = false
+          if @@Is_active_instance == false
+            puts 'there is no active instance, setting up a new one...'
+            @@Is_active_instance = true
+            loop do
+              check_new_invitations
+              puts 'Processing new capas...'
+              sleep(60)
+
+              next unless @@External_threar_stop == true
+              puts 'signal stop catched...'
+              @@Is_active_instance = false
+              return true
+            end
+          else
+            puts 'there is already an instance runing...'
+            false
+          end
+        end
+
+        def stop_chatbot
+          @@External_threar_stop = true
+          puts 'signal stop sent...'
         end
 
         def welcome_issue

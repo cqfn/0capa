@@ -195,6 +195,34 @@
         </div>
       </div>
 
+      <h2>Projects Histogram</h2>
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>is Active</th>
+              <th>Created at</th>
+              <th>is Private</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @project_list.all.each do |project| %>
+              <tr class>
+                <td><%= project.id %></td>
+                <td><%= project.name %></td>
+                <td><%= project.isactive %></td>
+                <td><%= project.created_at.strftime("%F %H:%M") %></td>
+                <td><%= project.is_private %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
