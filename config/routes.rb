@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     namespace :chatbot do
       namespace :v1 do
         resources :issues, only: [:create]
+        resource :github_webhooks, only: :create, defaults: { formats: :json } 
+        get 'setup_webhook', to: 'setup_webhook#index'
         post 'update_issue', to: 'issues#update_issue'
         post 'create_issue', to: 'issues#create_github_issues'
         post 'start-chatbot', to: 'chatbot#start_chatbot'
@@ -28,7 +30,6 @@ Rails.application.routes.draw do
         # radar endpoints
         resources :webhook, only: %i[index create destroy]
         resources :notications_handler, only: %i[index create destroy]
-        resource :github_webhooks, only: :create, defaults: { formats: :json }
         get 'radar_hostname', to: 'radar#get_host'
         get 'radar_repos_json', to: 'radar#repos_from_json'
         post 'start-radar', to: 'radar#start_radar'

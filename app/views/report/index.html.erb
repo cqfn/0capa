@@ -73,7 +73,7 @@
             <li class="nav-item"><a href="https://github.com/<%= @username %>"><%= @username %></a></li>
           <% else %>
             <li class="nav-item">
-              <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468">Authorize via GitHub</a>
+              <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468&scope=repo,admin:repo_hook">Authorize via GitHub</a>
             </li>
           <% end %>
           <li class="nav-item active"><a href="#">Overview</a></li>
@@ -225,6 +225,7 @@
               <th>is Active</th>
               <th>Created at</th>
               <th>is Private</th>
+              <th>Webhook</th>
             </tr>
             </thead>
             <tbody>
@@ -235,6 +236,11 @@
                 <td><%= project.isactive %></td>
                 <td><%= project.created_at.strftime("%F %H:%M") %></td>
                 <td><%= project.is_private %></td>
+                <% if project.webhook_active == 'N' %>
+                  <td><a class="btn btn-primary" href="/api/chatbot/v1/setup_webhook?project_id=<%= project.id %>">Add Webhook</a></td>
+                <% else %>
+                  <td><%= project.webhook_active %></td>
+                <% end %>
               </tr>
             <% end %>
             </tbody>

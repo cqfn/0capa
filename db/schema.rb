@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_17_084859) do
+ActiveRecord::Schema.define(version: 2022_12_01_182555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -355,6 +355,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_084859) do
     t.string "status"
     t.string "node_name"
     t.string "is_archived"
+    t.string "webhook_active", default: "N"
   end
 
   create_table "tom_pull_infos", force: :cascade do |t|
@@ -455,8 +456,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_084859) do
     t.string "releases_info_url"
     t.string "stars_info_url"
     t.string "workflows_info_url"
-    t.string "issues_Comments_info_url"
     t.string "node_name"
+    t.string "issues_Comments_info_url"
   end
 
   create_table "tom_tokens_queues", force: :cascade do |t|

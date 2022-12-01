@@ -1,23 +1,33 @@
-class GithubWebhooksController < ActionController::Base
-  include GithubWebhook::Processor
+# frozen_string_literal: true
 
-  # Handle issue comment event
-  def github_issue_comment(payload)
-    puts payload
-    if payload.comment.match(/switch/)
-      if payload.comment.match(/Random/)
-        puts 'скорее всего нас попросили свитчнуться в рандом мод'
+module Api
+  module Chatbot
+    module V1
+      class GithubWebhooksController < ActionController::Base
+        skip_forgery_protection
+        include GithubWebhook::Processor
 
-      elsif payload.comment.match(/ML/)
-        puts 'скорее всего нас попросили свитчнуться в мл мод'
+        # Handle issue comment event
+        def github_issue_comment(payload)
+          return unless payload['action'] == "created"
 
+          if payload['comment']['body'].match(/switch/)
+            if payload['comment']['body'].match(/Random/)
+              puts 'скорее всего нас попросили свитчнуться в рандом мод'
+
+            elsif payload['comment']['body'].match(/ML/)
+              puts 'скорее всего нас попросили свитчнуться в мл мод'
+
+            end
+          end
+        end
+
+        private
+
+        def webhook_secret(payload)
+          'GITHUB_WEBHOOK_SECRET'
+        end
       end
-    end
-
-    private
-
-    def webhook_secret(payload)
-      'GITHUB_WEBHOOK_SECRET'
     end
   end
 end

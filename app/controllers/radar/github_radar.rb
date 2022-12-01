@@ -170,8 +170,7 @@ class GithubRadar < RadarBaseController
     puts "host -> #{host}"
     settings = TomSetting.where('agentname = :agentname', {
       agentname: SOURCE,
-      host: host
-    })
+    }).order(node_name: :asc).first
     puts "settings -> #{settings}"
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {}
@@ -240,12 +239,6 @@ class GithubRadar < RadarBaseController
           "#{request_url}/issues", json: { title: '💥Welcome issue over repo💥', body: issue_body }
         )
         puts JSON.pretty_generate(welcomeResponse.parse)
-
-        puts 'Github WebHook'
-        hook = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-          "#{request_url}/hooks", json: { name: 'web', active: true, events: ['issue_comment'], config: { url: 'https://0capa.ru/api/radar/v1/github_webhooks', content_type: 'json', insecure_ssl: '0', secret: 'GITHUB_WEBHOOK_SECRET' } }
-        )
-        puts JSON.pretty_generate(hook.parse)
 
         sleep(60)
         issue_body =
