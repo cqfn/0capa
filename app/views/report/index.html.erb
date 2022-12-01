@@ -184,7 +184,7 @@
             </thead>
             <tbody>
             <% @capas_predicted.each do |capa| %>
-              <tr class onclick="document.getElementById('modal-id-<%= capa.analysis_id %>"').classList.add('active')">
+              <tr class onclick="document.getElementById('modal-id-<%= capa.analysis_id %>').classList.add('active')">
                 <td><%= capa.analysis_id %></td>
                 <td><%= capa.repo_fullname %></td>
                 <td><%= capa.created_at.strftime("%F %H:%M") %></td>
@@ -227,7 +227,7 @@
             </thead>
             <tbody>
             <% @project_list.each do |project| %>
-              <tr class onclick="document.location.href = '<%= project.repo_url %>'">
+              <tr class onclick="document.location.href='<%= project.repo_url %>'">
                 <td><%= project.id %></td>
                 <td><%= project.name %></td>
                 <td><%= project.isactive %></td>
