@@ -227,7 +227,7 @@
             </tr>
             </thead>
             <tbody>
-            <% @project_list.all.each do |project| %>
+            <% @project_list.each do |project| %>
               <tr class onclick="document.location.href = '<%= project.repo_url %>'">
                 <td><%= project.id %></td>
                 <td><%= project.name %></td>
