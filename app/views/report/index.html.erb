@@ -184,7 +184,7 @@
             </tr>
             </thead>
             <tbody>
-            <% @capas_predicted.all.each do |capa| %>
+            <% @capas_predicted.each do |capa| %>
               <tr class onclick="document.getElementById('modal-id-<%= capa.analysis_id %>"').classList.add('active')">
                 <td><%= capa.analysis_id %></td>
                 <td><%= capa.repo_fullname %></td>
