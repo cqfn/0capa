@@ -1,4 +1,4 @@
-<img src="/logo.svg" width="64px"/>
+<img src="https://github.com/cqfn/0capa/blob/master/public/logo-256.png" width="64px"/>
 
 [![Hits-of-Code](https://hitsofcode.com/github/xavzelada/tom?branch=master)](https://hitsofcode.com/github/xavzelada/tom/view?branch=master)
 
