@@ -456,8 +456,8 @@ ActiveRecord::Schema.define(version: 2022_12_01_182555) do
     t.string "releases_info_url"
     t.string "stars_info_url"
     t.string "workflows_info_url"
-    t.string "node_name"
     t.string "issues_Comments_info_url"
+    t.string "node_name"
   end
 
   create_table "tom_tokens_queues", force: :cascade do |t|
