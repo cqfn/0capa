@@ -1,4 +1,10 @@
 # frozen_string_literal: true
+#
+# Паттерн 5 - капа 0
+# Паттерн 11 - капа 1
+# Паттерн 12 - капа 0
+# Паттерн 13 - капа 0
+# Паттерн 14 - капа 1
 
 module Api
   module Chatbot
@@ -8,7 +14,6 @@ module Api
         @@call_count = 0
         @@External_threar_stop = false
         @@Is_active_instance = false
-        @@capas_mode = 'random'
         SOURCE = 'github'
 
         def initialize
@@ -62,12 +67,12 @@ module Api
             'redesign the module into smaller components [#TOM-C011]',
             'extend the timescales for testing the module [#TOM-C012]'
           ]
-          issue_body = if @@capas_mode=='random'
+          issue_body = if $capas_mode == "Random"
             "💫TOM has finished to check you code and it would like to advise you with some actions:
             - #{capas.sample}"
           else
             "💫TOM has finished to check you code and it would like to advise you with some actions:
-            - чото другое"
+            - чото другое на основе паттернов"
                        end
           capaResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
             "#{request_url}/issues", json: { title: '🦥Capa suggestion', body: issue_body }
