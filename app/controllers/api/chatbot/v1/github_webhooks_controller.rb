@@ -11,14 +11,19 @@ module Api
         def github_issue_comment(payload)
           return unless payload['action'] == "created"
 
-          if payload['comment']['body'].match(/switch/)
-            if payload['comment']['body'].match(/Random/)
-              puts 'скорее всего нас попросили свитчнуться в рандом мод'
+          return unless payload['comment']['body'].match(/switch/)
 
-            elsif payload['comment']['body'].match(/ML/)
-              puts 'скорее всего нас попросили свитчнуться в мл мод'
+          case payload['comment']['body']
+          when /Random/
+            puts 'скорее всего нас попросили свитчнуться в рандом мод'
 
-            end
+          when /ML/
+            puts 'скорее всего нас попросили свитчнуться в мл мод'
+            model_name = 'Kmeans'
+            ml_model = FactoryClass.create("#{model_name}Model", nil)
+            ml_model.async.start_advisor
+          else
+            # type code here
           end
         end
 
