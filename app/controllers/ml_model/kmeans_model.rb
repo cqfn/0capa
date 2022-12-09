@@ -15,8 +15,6 @@ class KmeansModel < ModelBaseController
     Initialize('kmeans')
   end
 
-  def start_advisor; end
-
   def start_advisor
     @@External_threar_stop = false
     if @@Is_active_instance == false
