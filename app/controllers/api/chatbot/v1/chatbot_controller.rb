@@ -6,10 +6,10 @@ module Api
       class ChatbotController < ApplicationController
         @@Tokens = nil
         @@call_count = 0
-        @base_uri = 'https://api.github.com/repos/xavzelada/repo_test/issues'
         @@External_threar_stop = false
         @@Is_active_instance = false
         @@capas_mode = 'random'
+        SOURCE = 'github'
 
         def initialize
           puts 'initialize ChatBot controller'
@@ -22,27 +22,57 @@ module Api
         end
 
         def start_chatbot
-          create
-          # welcome_issue
           puts 'initializing chatbot...'
           @@External_threar_stop = false
           if @@Is_active_instance == false
             puts 'there is no active instance, setting up a new one...'
             @@Is_active_instance = true
             loop do
-              check_new_invitations
-              puts 'Processing new capas...'
-              sleep(60)
-
+              puts 'Processing repos...'
+              TomProject.where('source = :source and status = :status', {
+                source: SOURCE,
+                status: 'W'
+              }).each do |project|
+                capa(project.repo_url)
+              end
+              sleep(3600)
               next unless @@External_threar_stop == true
               puts 'signal stop catched...'
               @@Is_active_instance = false
               return true
             end
           else
-            puts 'there is already an instance runing...'
+            puts 'there is already an instance running...'
             false
           end
+        end
+
+        def capa(request_url)
+          capas = [
+            'review and improve staff training procedures [#TOM-C001]',
+            'replan project and re-estimate targets [#TOM-C002]',
+            'review and improve estimating procedures [#TOM-C003]',
+            'review and improve project working procedures [#TOM-C004]',
+            'if the scope of the project has been underestimated, obtain more experienced staff [#TOM-C005]',
+            'if the scope has been overestimated, release experienced staff to other projects [#TOM-C006]',
+            'stop current work and revert to activities of preceding stage [#TOM-C007]',
+            'extend activities of previous stage into current stage, replanning effort and work assignment [#TOM-C008]',
+            'extend timescales for testing and debugging current stage because of anticipated additional latent faults from previous stage [#TOM-C009]',
+            'review and improve criteria for entry to, and exit from, stages and activities [#TOM-C010]',
+            'redesign the module into smaller components [#TOM-C011]',
+            'extend the timescales for testing the module [#TOM-C012]'
+          ]
+          issue_body = if @@capas_mode=='random'
+            "💫TOM has finished to check you code and it would like to advise you with some actions:
+            - #{capas.sample}"
+          else
+            "💫TOM has finished to check you code and it would like to advise you with some actions:
+            - чото другое"
+                       end
+          capaResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+            "#{request_url}/issues", json: { title: '🦥Capa suggestion', body: issue_body }
+          )
+          puts JSON.pretty_generate(capaResponse.parse)
         end
 
         def stop_chatbot
@@ -184,6 +214,15 @@ module Api
           next_token_index = (@@call_count % @@Tokens.length)
           @@Tokens[next_token_index].token
         end
+
+        def getQueueCounter
+          project_count = TomProject.where('source = :source', {
+                                             source: SOURCE
+                                           }).count
+          puts "project_count -> #{project_count}"
+          project_count
+        end
+        
       end
     end
   end
