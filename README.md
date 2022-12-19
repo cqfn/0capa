@@ -138,7 +138,7 @@ The mnemo of the command here is status. All the rest is ignored. You can achiev
 ```
 Here is a full list of all commands, in alphabetic order.
 #### Hello
-Sort of a "ping". Post `@0capa-beta hello` and expect an immediate answer from Rultor (well, within 60 seconds). If you don't get an answer, there is something wrong with Rultor. Feel free to post a bug to our issue tracker.
+Sort of a "ping". Post `@0capa-beta hello` and expect an immediate answer from 0capa (well, within 60 seconds). If you don't get an answer, there is something wrong with Rultor. Feel free to post a bug to our issue tracker.
 
 #### Status
 Checks the status of currently running analyze in project. Just post `@0capa-beta status` and see what 0capa says, like detailed information about mode;
