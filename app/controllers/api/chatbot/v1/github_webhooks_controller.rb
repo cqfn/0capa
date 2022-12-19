@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+$capas_mode = "Random"
 module Api
   module Chatbot
     module V1
@@ -16,12 +16,10 @@ module Api
           case payload['comment']['body']
           when /Random/
             puts 'скорее всего нас попросили свитчнуться в рандом мод'
-
+            $capas_mode = "Random"
           when /ML/
             puts 'скорее всего нас попросили свитчнуться в мл мод'
-            model_name = 'Kmeans'
-            ml_model = FactoryClass.create("#{model_name}Model", nil)
-            ml_model.async.start_advisor
+            $capas_mode = "Patterns"
           else
             # type code here
           end
