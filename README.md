@@ -34,7 +34,7 @@ After you have been solved the issue, you can tag our bot ([@0capa](https://gith
   - Step 2: On the Dockerfile, set the database URI (#DATABASE_URL) and password (#DATABASE_PASSWORD)
   - Step 3: Build the docker imagen (e.g.: docker build . -t tom-agent)
   - Step 4: Create the docker container based on the image created previously (e.g.: docker run --name tom-agent -p 3000:3000 -d tom-agent)
-  - Step 6: Log into the docker container to run the database migraions
+  - Step 5: Log into the docker container to run the database migraions
     - Run rake db:setup to initialize the database (only in the first instalation)
      -Run rake db:migrate to create the tom database structure
 ```
