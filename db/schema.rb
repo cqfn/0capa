@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_01_182555) do
+ActiveRecord::Schema.define(version: 2022_12_16_133937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "generated_capas", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "patterns", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.integer "window"
+    t.float "threshold"
+    t.float "consensus_pattern", default: [], array: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "tom_analyses", force: :cascade do |t|
     t.string "extractor_id"
@@ -356,6 +374,8 @@ ActiveRecord::Schema.define(version: 2022_12_01_182555) do
     t.string "node_name"
     t.string "is_archived"
     t.string "webhook_active", default: "N"
+    t.string "total_analyse_state", default: "N"
+    t.string "last_commit_analyse_hash", default: "none"
   end
 
   create_table "tom_pull_infos", force: :cascade do |t|
