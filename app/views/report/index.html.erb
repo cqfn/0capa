@@ -120,7 +120,7 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title h1"><%= @issues_metrics %></div>
-              <div class="card-subtitle text-gray">Total Issues proceeded</div>
+              <div class="card-subtitle text-gray">Total Patterns evaluated</div>
             </div>
             <div class="card-body">
               Once TOM has generated the list of CAPAs for your repository, a bot will create an issue within your
@@ -135,7 +135,7 @@
           </div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title h1"><%= @capas_predicted.length %></div>
+              <div class="card-title h1"><%= @capas_predicted_count %></div>
               <div class="card-subtitle text-gray">Total Capas Predicted</div>
             </div>
             <div class="card-body">
@@ -177,37 +177,23 @@
             <thead>
             <tr>
               <th>Analysis Id</th>
-              <th>Repository</th>
+              <th>Testimonial</th>
+              <th>Suggestion</th>
               <th>Created at</th>
               <th>Updated at</th>
-              <th>Label</th>
               <th>Status</th>
             </tr>
             </thead>
             <tbody>
             <% @capas_predicted.each do |capa| %>
-              <tr class onclick="document.location.hash='modal-id-<%= capa.analysis_id %>'">
-                <td><%= capa.analysis_id %></td>
-                <td><%= capa.repo_fullname %></td>
+              <tr class onclick="document.location.hash='modal-id-<%= capa.id %>'">
+                <td><%= capa.id %></td>
+                <td><%= capa.title %></td>
+                <td><%= capa.body %></td>
                 <td><%= capa.created_at.strftime("%F %H:%M") %></td>
                 <td><%= capa.updated_at.strftime("%F %H:%M") %></td>
-                <td><%= capa.label %></td>
                 <td><%= capa.status %></td>
               </tr>
-              <div class="modal" id="modal-id-<%= capa.analysis_id %>">
-                <a href="#close" class="modal-overlay" aria-label="Close"></a>
-                <div class="modal-container">
-                  <div class="modal-header">
-                    <a href="#close" class="btn btn-clear float-right" aria-label="Close"></a>
-                    <div class="modal-title h5"><%= capa.repo_fullname %></div>
-                  </div>
-                  <div class="modal-body">
-                    <div class="content">
-                      и тута будет инфа о капе
-                    </div>
-                  </div>
-                </div>
-              </div>
             <% end %>
             </tbody>
           </table>

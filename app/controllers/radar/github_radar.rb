@@ -167,7 +167,9 @@ class GithubRadar < RadarBaseController
 
   def euclideanDistance(p, q)
     p, q = [p].flatten, [q].flatten
-    sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last) ** 2 })
+    result = Math.sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last) ** 2 })
+    puts "EUCLIDIAN DISTANCE data: #{p}, consensus: #{q} => #{result}"
+    result
   end
 
   def getQueueCounter
@@ -182,10 +184,12 @@ class GithubRadar < RadarBaseController
 
     if repos_for_preliminary_analyse.length.positive?
       repos_for_preliminary_analyse.each do |repo|
-        repo.update(total_analyse_state: 'Y')
-        repo.save
+        # repo.update(total_analyse_state: 'Y')
+        # repo.save
         puts "Starting proceed preliminary analyse.. "
-        proceed_preliminary_analyse(repo.repo_url)
+        puts repo.repo_url
+        proceed_preliminary_analyse repo.repo_url
+        puts "Ending proceed preliminary analyse.. "
       end
     else
       repos_for_ordinary_analyse = TomProject.where("source = :source and (total_analyse_state ='Y') ", {
@@ -198,96 +202,94 @@ class GithubRadar < RadarBaseController
 
       end
     end
+  end
 
-    def proceed_ordinary_analyse(repo_url, last_commit_hash)
-      settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
-      commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
-        "#{repo_url}/commits", json: {}
-      )
-      if commits_history_response.code == 200
-        commits_history = JSON.parse(commits_history_response)
-        commits_history.each do |commit|
+  def proceed_ordinary_analyse(repo_url, last_commit_hash)
+    settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
+    commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
+      "#{repo_url}/commits", json: {}
+    )
+    if commits_history_response.code == 200
+      commits_history = JSON.parse(commits_history_response)
+      commits_history.each do |commit|
 
-        end
-
-      else
-        puts JSON.pretty_generate(response.parse)
       end
+
+    else
+      puts JSON.pretty_generate(response.parse)
     end
+  end
 
-    def sliding_window
-
-    end
-
-    def proceed_preliminary_analyse(repo_url)
-      settings = TomSetting.where(agentname: 'github').first
-      commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
-        "#{repo_url}/commits", json: {}
-      )
-      puts "commits_history_response #{commits_history_response}"
-      commits = []
-      if commits_history_response.code == 200
-        commits_history = JSON.parse(commits_history_response)
-        commits_history.each do |commit|
-          commits.push(commit['url'])
-        end
-        puts "commits #{commits}"
-        commits.each_with_index do |url, index|
-          puts "STEP: #{index} -- commit_diff #{commit_diff}"
-          puts "STEP: #{index} -- commit_additions #{commit_additions}"
-          puts "STEP: #{index} -- commit_deletions #{commit_deletions}"
-          commit_diff = []
-          commit_additions = []
-          commit_deletions = []
-          details_commits_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
-            url, json: {}
-          )
-          if index % 14 < 14
-            puts "Slide window////--"
-            commit_diff.push(details_commits_response['stats']['total'])
-            commit_additions.push(details_commits_response['stats']['additions'])
-            commit_deletions.push(details_commits_response['stats']['deletions'])
-          else
-            pattern0 = Pattern.where('id = 0') # total_added pattern
-            pattern1 = Pattern.where('id = 1') # total_changed_pattern
-            pattern2 = Pattern.where('id = 2') # total removed pattern
-            if euclideanDistance(commit_additions, pattern0.consensus_pattern) <= pattern0.threshold
-              puts "GeneratedCapa.new("
-              capa = GeneratedCapa.new(
-                title: 'For current progress suggested CAPA0',
-                body: 'Consider code style checking. Run linter',
-                status: 'N'
-              )
-              capa.save
-            end
-            if euclideanDistance(commit_diff, pattern1.consensus_pattern) <= pattern1.threshold
-              puts "GeneratedCapa.new("
-              capa = GeneratedCapa.new(
-                title: 'For current progress suggested CAPA1',
-                body: 'The high probability of bugs within the new code. Increase test coverage',
-                status: 'N'
-              )
-              capa.save
-            end
-            if euclideanDistance(commit_deletions, pattern2.consensus_pattern) <= pattern2.threshold
-              puts "GeneratedCapa.new("
-              capa = GeneratedCapa.new(
-                title: 'For current progress suggested CAPA0',
-                body: 'Consider code style checking. Run linter',
-                status: 'N'
-              )
-              capa.save
-            end
-            commit_diff.clear
-            commit_additions.clear
-            commit_deletions.clear
+  def proceed_preliminary_analyse(repo_url)
+    puts "Starting.. "
+    settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
+    puts 'proceed_preliminary_analyse: #{repo_url}'
+    commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
+      "#{repo_url}/commits", json: {}
+    )
+    puts "commits_history_response code : #{commits_history_response.code}"
+    commits = []
+    if commits_history_response.code == 200
+      commits_history = JSON.parse(commits_history_response)
+      commits_history.each do |commit|
+        commits.push(commit['url'])
+      end
+      commit_diff = []
+      commit_additions = []
+      commit_deletions = []
+      puts "commits #{commits.length}"
+      commits.each_with_index do |url, index|
+        # puts "STEP: #{index} -- commit_diff #{commit_diff}"
+        # puts "STEP: #{index} -- commit_additions #{commit_additions}"
+        # puts "STEP: #{index} -- commit_deletions #{commit_deletions}"
+        details_commits_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
+          url, json: {}
+        )
+        details = JSON.parse(details_commits_response)
+        if commit_diff.length < 14
+          # puts "Slide window////--"
+          commit_diff.push(details['stats']['total'])
+          commit_additions.push(details['stats']['additions'])
+          commit_deletions.push(details['stats']['deletions'])
+        else
+          puts 'Generating....'
+          pattern0 = Pattern.where(id: 1).first # total_added pattern
+          pattern1 = Pattern.where(id: 2).first # total_changed_pattern
+          pattern2 = Pattern.where(id: 3).first # total removed pattern
+          if euclideanDistance(commit_additions, pattern0.consensus_pattern) <= 200
+            puts "GeneratedCapa.new("
+            capa = GeneratedCapa.new(
+              title: 'For current progress suggested CAPA0',
+              body: 'Consider code style checking. Run linter',
+              status: 'N'
+            )
+            capa.save
+          elsif euclideanDistance(commit_diff, pattern1.consensus_pattern) <= 300
+            puts "GeneratedCapa.new("
+            capa = GeneratedCapa.new(
+              title: 'For current progress suggested CAPA1',
+              body: 'The high probability of bugs within the new code. Increase test coverage',
+              status: 'N'
+            )
+            capa.save
+          elsif euclideanDistance(commit_deletions, pattern2.consensus_pattern) <= 400
+            puts "GeneratedCapa.new("
+            capa = GeneratedCapa.new(
+              title: 'For current progress suggested CAPA0',
+              body: 'Consider code style checking. Run linter',
+              status: 'N'
+            )
+            capa.save
           end
-
+          commit_diff.clear
+          commit_additions.clear
+          commit_deletions.clear
         end
 
-      else
-        puts JSON.pretty_generate(response.parse)
       end
+
+    else
+      puts JSON.pretty_generate(response.parse)
     end
   end
 end

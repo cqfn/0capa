@@ -34,13 +34,12 @@ module Api
             @@Is_active_instance = true
             loop do
               puts 'Processing repos...'
-              TomProject.where('source = :source and status = :status', {
+              TomProject.where('source = :source', {
                 source: SOURCE,
-                status: 'W'
-              }).each do |project|
+              }).first(5).each do |project|
                 capa(project.repo_url)
               end
-              sleep(3600)
+              sleep(2.hours)
               next unless @@External_threar_stop == true
               puts 'signal stop catched...'
               @@Is_active_instance = false
@@ -72,7 +71,7 @@ module Api
             - #{capas.sample}"
           else
             "💫TOM has finished to check you code and it would like to advise you with some actions:
-            - чото другое на основе паттернов"
+            - #{GeneratedCapa.where(status: 'N').first.body}"
                        end
           capaResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
             "#{request_url}/issues", json: { title: '🦥Capa suggestion', body: issue_body }

@@ -11,6 +11,9 @@ class ReportController < ApplicationController
     @repos_metrics = 0
     @issues_metrics = 0
     @capas_predicted = []
+    @capas_predicted_count = 0
+
+
 
     unless cookies[:github_token].nil?
       @logged = true
@@ -25,7 +28,9 @@ class ReportController < ApplicationController
                                        })
       @repos_metrics = @project_list.length
       @commit_metrics = TomCommitsMetric.all.length
-      @capas_predicted = TomProjectCapaPredictions.all
+      @capas_predicted = GeneratedCapa.all
+      @capas_predicted_count = GeneratedCapa.count
+      @issues_metrics = Pattern.all.length
 
     end
   end
