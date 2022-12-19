@@ -14,6 +14,12 @@ class GithubRadar < RadarBaseController
   @@External_threar_stop = false
   @@Is_active_instance = false
 
+  def getNextToken
+    @@call_count += 1
+    next_token_index = (@@call_count % @@Tokens.length)
+    @@Tokens[next_token_index].token
+  end
+
   def initialize
     puts 'initialize class GithubRadar'
     Initialize(SOURCE)
@@ -24,15 +30,16 @@ class GithubRadar < RadarBaseController
     puts 'initializing radar...'
     @@External_threar_stop = false
     if @@Is_active_instance == false
-      PrettyLogger.highlight("There is no active instance, setting up a new one...")
+      puts "There is no active instance, setting up a new one..."
       @@Is_active_instance = true
       loop do
         check_new_invitations
-        PrettyLogger.highlight("Processing new invitations...")
+        puts "Processing new invitations..."
         _limit = getQueueCounter # count of projects that was not analyzed for the last 15 days
+        puts "_limit #{_limit}"
         if _limit.positive?
           [*1.._limit].each do |p|
-            PrettyLogger.highlight("Invitations for now #{_limit}")
+            puts "Invitations for now #{_limit}"
             check_repos_update
             sleep(2)
             next unless @@External_threar_stop == true
@@ -43,19 +50,19 @@ class GithubRadar < RadarBaseController
           sleep(60)
         end
         next unless @@External_threar_stop == true
-        PrettyLogger.highlight("signal stop catched..")
+        puts "signal stop catched.."
         @@Is_active_instance = false
         return true
       end
     else
-      PrettyLogger.highlight("There is already an instance runing...")
+      puts "There is already an instance runing..."
       false
     end
   end
 
   def stop_radar
     @@External_threar_stop = true
-    PrettyLogger.highlight("Signal stop sent...")
+    puts "Signal stop sent..."
   end
 
   def get_tokens
@@ -71,7 +78,7 @@ class GithubRadar < RadarBaseController
 
   def check_new_invitations
     puts 'starting process check_new_invitations...'
-    settings = TomSetting.where('agentname = github',).order(node_name: :asc).first
+    settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
     response = HTTP[accept: settings.content_type, Authorization: "token #{settings.apisecret}"].get(
       settings.invitations_endpoint, json: {}
     )
@@ -165,22 +172,20 @@ class GithubRadar < RadarBaseController
   end
 
   def getQueueCounter
-    project_count = TomProject.where("source = github and node_name is null and  (last_scanner_date is null or not( last_scanner_date between (now() - INTERVAL '15 DAY') and now())) and (status ='W' or status is null) ",).count
+    project_count = TomProject.where(sourse: 'github').count
     project_count
   end
 
   def check_repos_update
-    repos_for_preliminary_analyse = TomProject.where("source = :source and (total_analyse_state ='N') ", {
-      source: SOURCE
-    })
+    repos_for_preliminary_analyse = TomProject.where(sourse: 'github')
 
-    PrettyLogger.highlight("repos_for_preliminary_analyse #{repos_for_preliminary_analyse}")
+    puts "repos_for_preliminary_analyse #{repos_for_preliminary_analyse}"
 
     if repos_for_preliminary_analyse.length.positive?
       repos_for_preliminary_analyse.update(total_analyse_state: 'Y')
       repos_for_preliminary_analyse.save
       repos_for_preliminary_analyse.each do |repo|
-        PrettyLogger.highlight("Starting proceed preliminary analyse.. ")
+        puts "Starting proceed preliminary analyse.. "
         proceed_preliminary_analyse(repo.repo_url)
       end
     else
@@ -196,7 +201,7 @@ class GithubRadar < RadarBaseController
     end
 
     def proceed_ordinary_analyse(repo_url, last_commit_hash)
-      settings = TomSetting.where('agentname = github',).order(node_name: :asc).first
+      settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
       commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
         "#{repo_url}/commits", json: {}
       )
@@ -216,22 +221,22 @@ class GithubRadar < RadarBaseController
     end
 
     def proceed_preliminary_analyse(repo_url)
-      settings = TomSetting.where('agentname = github',).order(node_name: :asc).first
+      settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
       commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
         "#{repo_url}/commits", json: {}
       )
-      PrettyLogger.highlight("commits_history_response #{commits_history_response}")
+      puts "commits_history_response #{commits_history_response}"
       commits = []
       if commits_history_response.code == 200
         commits_history = JSON.parse(commits_history_response)
         commits_history.each do |commit|
           commits.push(commit['url'])
         end
-        PrettyLogger.highlight("commits #{commits}")
+        puts "commits #{commits}"
         commits.each_with_index do |url, index|
-          PrettyLogger.highlight("STEP: #{index} -- commit_diff #{commit_diff}")
-          PrettyLogger.highlight("STEP: #{index} -- commit_additions #{commit_additions}")
-          PrettyLogger.highlight("STEP: #{index} -- commit_deletions #{commit_deletions}")
+          puts "STEP: #{index} -- commit_diff #{commit_diff}"
+          puts "STEP: #{index} -- commit_additions #{commit_additions}"
+          puts "STEP: #{index} -- commit_deletions #{commit_deletions}"
           commit_diff = []
           commit_additions = []
           commit_deletions = []
@@ -239,7 +244,7 @@ class GithubRadar < RadarBaseController
             url, json: {}
           )
           if index % 14 < 14
-            PrettyLogger.highlight("Slide window////--")
+            puts "Slide window////--"
             commit_diff.push(details_commits_response['stats']['total'])
             commit_additions.push(details_commits_response['stats']['additions'])
             commit_deletions.push(details_commits_response['stats']['deletions'])
@@ -248,7 +253,7 @@ class GithubRadar < RadarBaseController
             pattern1 = Pattern.where('id = 1') # total_changed_pattern
             pattern2 = Pattern.where('id = 2') # total removed pattern
             if euclideanDistance(commit_additions, pattern0.consensus_pattern) <= pattern0.threshold
-              PrettyLogger.highlight("GeneratedCapa.new(")
+              puts "GeneratedCapa.new("
               capa = GeneratedCapa.new(
                 title: 'For current progress suggested CAPA0',
                 body: 'Consider code style checking. Run linter',
@@ -257,7 +262,7 @@ class GithubRadar < RadarBaseController
               capa.save
             end
             if euclideanDistance(commit_diff, pattern1.consensus_pattern) <= pattern1.threshold
-              PrettyLogger.highlight("GeneratedCapa.new(")
+              puts "GeneratedCapa.new("
               capa = GeneratedCapa.new(
                 title: 'For current progress suggested CAPA1',
                 body: 'The high probability of bugs within the new code. Increase test coverage',
@@ -266,7 +271,7 @@ class GithubRadar < RadarBaseController
               capa.save
             end
             if euclideanDistance(commit_deletions, pattern2.consensus_pattern) <= pattern2.threshold
-              PrettyLogger.highlight("GeneratedCapa.new(")
+              puts "GeneratedCapa.new("
               capa = GeneratedCapa.new(
                 title: 'For current progress suggested CAPA0',
                 body: 'Consider code style checking. Run linter',
@@ -284,12 +289,6 @@ class GithubRadar < RadarBaseController
       else
         puts JSON.pretty_generate(response.parse)
       end
-    end
-
-    def getNextToken
-      @@call_count += 1
-      next_token_index = (@@call_count % @@Tokens.length)
-      @@Tokens[next_token_index].token
     end
   end
 end
