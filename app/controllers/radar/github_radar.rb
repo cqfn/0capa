@@ -172,12 +172,12 @@ class GithubRadar < RadarBaseController
   end
 
   def getQueueCounter
-    project_count = TomProject.where(sourse: 'github').count
+    project_count = TomProject.where(total_analyse_state: 'N').count
     project_count
   end
 
   def check_repos_update
-    repos_for_preliminary_analyse = TomProject.where(sourse: 'github')
+    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order("updated_at DESC")
 
     puts "repos_for_preliminary_analyse #{repos_for_preliminary_analyse}"
 
