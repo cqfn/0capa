@@ -85,6 +85,67 @@ Note: it's important to say that every component has endpoints to start and stop
 ___
 
 
+## Working with TOM
+### Add more patterns and rules
+
+$$ Rule => {P_i, C_j}, where P - pattern, C - capa$$
+
+Run query from an open file to add patterns and rules;
+```
+INSERT INTO public.patterns (id, title, body, "window", threshold, consensus_pattern, created_at, updated_at)
+VALUES (
+      DEFAULT, 
+      '<<CAPA NAME>>', 
+      '<<CAPA BODY>>', 
+      14, 
+      0.3919,
+      '{93.0,
+          2.0,
+          2.0,
+          2.0,
+          4.0,
+          4.0,
+          6.0,
+          4.0,
+          14.0,
+          20.0,
+          11.0,
+          11.0,
+          19.0,
+          19.0
+      }', '2022-12-19 17:01:22.000000',
+              '2022-12-19 17:01:25.000000');
+```
+
+A stored procedure is a set of SQL statements with an assigned name. You can execute stored procedures in PostgreSQL, Microsoft SQL Server, Oracle, and MySQL.
+<img width="1186" alt="Screenshot 2022-12-19 at 23 52 10" src="https://user-images.githubusercontent.com/38398999/208521714-1d116c5e-ef60-4262-a017-0d80ddb87715.png">
+
+### Switch mode
+
+The Chatbot Daemon Service can spam projects with suggested `CAPAS` in two supported modes: `Random` (that is random suggestion from a predefined set of rules and patterns) and `ML` (that is suggestins based on project metrics collected by Radar Daemon Service and predefined `consensus patterns`). 
+The identified `CAPAS` will be generated through the information that we can obtain through the github [APIs](https://docs.github.com/en/rest/reference), so below The stages of the analysis process are presented. 
+
+### How can i switch mode?
+
+All commands you give to 0capa should start with @0capa-beta and be followed by a text, which includes a mnemo of a command. For example, in order to check the status of 0capa in current conversation (ticket), you can post a comment:
+
+```
+@0capa-beta what is the current status?
+```
+The mnemo of the command here is status. All the rest is ignored. You can achieve exactly the same by just posting:
+```
+@0capa-beta status
+```
+Here is a full list of all commands, in alphabetic order.
+#### Hello
+Sort of a "ping". Post `@0capa-beta hello` and expect an immediate answer from Rultor (well, within 60 seconds). If you don't get an answer, there is something wrong with Rultor. Feel free to post a bug to our issue tracker.
+
+#### Status
+Checks the status of currently running analyze in project. Just post `@0capa-beta status` and see what 0capa says, like detailed information about mode;
+
+#### Switch mode
+By default 0capa proceed project metrics and generate `CAPAs` in `Random` mode. But if you consider it significant you can switch mode(that was described above) simply post `@0capa-beta switch ML mode` and vise-versa.
+
 ## How to Contribute
 
 Fork repository, make changes, send us a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
