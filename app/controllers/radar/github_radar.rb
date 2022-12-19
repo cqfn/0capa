@@ -35,11 +35,10 @@ class GithubRadar < RadarBaseController
       loop do
         check_new_invitations
         puts "Processing new invitations..."
-        _limit = getQueueCounter # count of projects that was not analyzed for the last 15 days
-        puts "_limit #{_limit}"
+        _limit = getQueueCounter 
         if _limit.positive?
           [*1.._limit].each do |p|
-            puts "Invitations for now #{_limit}"
+            puts "projects that need to analize #{_limit}"
             check_repos_update
             sleep(2)
             next unless @@External_threar_stop == true
@@ -177,14 +176,14 @@ class GithubRadar < RadarBaseController
   end
 
   def check_repos_update
-    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order("updated_at DESC")
+    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order("updated_at DESC").first(5)
 
-    puts "repos_for_preliminary_analyse #{repos_for_preliminary_analyse}"
+    puts "REPOS FOR PREMILINARY ANALYSE : #{repos_for_preliminary_analyse.count}"
 
     if repos_for_preliminary_analyse.length.positive?
-      repos_for_preliminary_analyse.update(total_analyse_state: 'Y')
-      repos_for_preliminary_analyse.save
       repos_for_preliminary_analyse.each do |repo|
+        repo.update(total_analyse_state: 'Y')
+        repo.save
         puts "Starting proceed preliminary analyse.. "
         proceed_preliminary_analyse(repo.repo_url)
       end
@@ -221,7 +220,7 @@ class GithubRadar < RadarBaseController
     end
 
     def proceed_preliminary_analyse(repo_url)
-      settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
+      settings = TomSetting.where(agentname: 'github').first
       commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
         "#{repo_url}/commits", json: {}
       )
