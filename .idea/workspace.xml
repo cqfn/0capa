@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="666bd0c6-5019-4d47-a6bb-99310d65df9c" name="Changes" comment="[#30] - timelines support">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/radar/github_radar.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/report/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/report/index.html.erb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -485,6 +485,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="[#30] - timelines support" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1671200495285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
+    <SUITE FILE_PATH="coverage/0capa@Development__0capa.rcov" NAME="Development: 0capa Coverage Results" MODIFIED="1671454178757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="0capa" />
   </component>
 </project>
