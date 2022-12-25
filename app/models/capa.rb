@@ -1,0 +1,2 @@
+class Capa < ApplicationRecord
+end

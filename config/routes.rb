@@ -1,10 +1,23 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :export do
+      namespace :v1 do
+        get 'repo_stats', to: 'repo_stats#export'
+      end
+    end
+  end
   root 'report#index'
   namespace :api do
     get 'endpoint/start'
     get 'endpoint/stop'
+    namespace :admin do
+      namespace :v1 do
+        post 'add_pattern', to: 'index#add_pattern'
+        post 'add_capa', to: 'index#add_capa'
+      end
+    end
     # ML Advisor endpoints
     namespace :advisor do
       namespace :v1 do
