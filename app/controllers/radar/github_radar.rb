@@ -30,38 +30,40 @@ class GithubRadar < RadarBaseController
     puts 'initializing radar...'
     @@External_threar_stop = false
     if @@Is_active_instance == false
-      puts "There is no active instance, setting up a new one..."
+      puts 'There is no active instance, setting up a new one...'
       @@Is_active_instance = true
       loop do
         check_new_invitations
-        puts "Processing new invitations..."
-        _limit = getQueueCounter 
+        puts 'Processing new invitations...'
+        _limit = getQueueCounter
         if _limit.positive?
-          [*1.._limit].each do |p|
+          [*1.._limit].each do |_p|
             puts "projects that need to analize #{_limit}"
             check_repos_update
-            sleep(2)
+            sleep(60)
             next unless @@External_threar_stop == true
+
             @@Is_active_instance = false
             return true
           end
         else
-          sleep(60)
+          sleep(2.hours)
         end
         next unless @@External_threar_stop == true
-        puts "signal stop catched.."
+
+        puts 'signal stop catched..'
         @@Is_active_instance = false
         return true
       end
     else
-      puts "There is already an instance runing..."
+      puts 'There is already an instance runing...'
       false
     end
   end
 
   def stop_radar
     @@External_threar_stop = true
-    puts "Signal stop sent..."
+    puts 'Signal stop sent...'
   end
 
   def get_tokens
@@ -85,6 +87,7 @@ class GithubRadar < RadarBaseController
       invitations = JSON.parse(response)
       invitations.each do |invitation|
         next unless invitation['expired'] != true
+
         project = TomProject.new(
           name: invitation['repository']['name'],
           repo_fullname: invitation['repository']['full_name'],
@@ -166,19 +169,19 @@ class GithubRadar < RadarBaseController
   end
 
   def euclideanDistance(p, q)
-    p, q = [p].flatten, [q].flatten
-    result = Math.sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last) ** 2 })
+    p = [p].flatten
+    q = [q].flatten
+    result = Math.sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last)**2 })
     puts "EUCLIDIAN DISTANCE data: #{p}, consensus: #{q} => #{result}"
     result
   end
 
   def getQueueCounter
-    project_count = TomProject.where(total_analyse_state: 'N').count
-    project_count
+    TomProject.where(total_analyse_state: 'N').count
   end
 
   def check_repos_update
-    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order("updated_at DESC").first(5)
+    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order('updated_at DESC').first(5)
 
     puts "REPOS FOR PREMILINARY ANALYSE : #{repos_for_preliminary_analyse.count}"
 
@@ -186,15 +189,15 @@ class GithubRadar < RadarBaseController
       repos_for_preliminary_analyse.each do |repo|
         # repo.update(total_analyse_state: 'Y')
         # repo.save
-        puts "Starting proceed preliminary analyse.. "
+        puts 'Starting proceed preliminary analyse.. '
         puts repo.repo_url
         proceed_preliminary_analyse repo.repo_url
-        puts "Ending proceed preliminary analyse.. "
+        puts 'Ending proceed preliminary analyse.. '
       end
     else
       repos_for_ordinary_analyse = TomProject.where("source = :source and (total_analyse_state ='Y') ", {
-        source: SOURCE
-      })
+                                                      source: SOURCE
+                                                    })
       if repos_for_ordinary_analyse.length.positive?
         repos_for_preliminary_analyse.each do |repo|
           proceed_ordinary_analyse(repo.repo_url, repo.last_commit_analyse_hash)
@@ -204,7 +207,7 @@ class GithubRadar < RadarBaseController
     end
   end
 
-  def proceed_ordinary_analyse(repo_url, last_commit_hash)
+  def proceed_ordinary_analyse(repo_url, _last_commit_hash)
     settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
     commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
       "#{repo_url}/commits", json: {}
@@ -212,7 +215,6 @@ class GithubRadar < RadarBaseController
     if commits_history_response.code == 200
       commits_history = JSON.parse(commits_history_response)
       commits_history.each do |commit|
-
       end
 
     else
@@ -221,9 +223,9 @@ class GithubRadar < RadarBaseController
   end
 
   def proceed_preliminary_analyse(repo_url)
-    puts "Starting.. "
+    puts 'Starting.. '
     settings = TomSetting.where(agentname: 'github').order(node_name: :asc).first
-    puts 'proceed_preliminary_analyse: #{repo_url}'
+    puts "proceed_preliminary_analyse: #{repo_url}"
     commits_history_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
       "#{repo_url}/commits", json: {}
     )
@@ -238,10 +240,9 @@ class GithubRadar < RadarBaseController
       commit_additions = []
       commit_deletions = []
       puts "commits #{commits.length}"
-      commits.each_with_index do |url, index|
-        # puts "STEP: #{index} -- commit_diff #{commit_diff}"
-        # puts "STEP: #{index} -- commit_additions #{commit_additions}"
-        # puts "STEP: #{index} -- commit_deletions #{commit_deletions}"
+      return if commits.length < 20
+
+      commits.each_with_index do |url, _index|
         details_commits_response = HTTP[accept: settings.content_type, Authorization: "token #{getNextToken}"].get(
           url, json: {}
         )
@@ -257,7 +258,7 @@ class GithubRadar < RadarBaseController
           pattern1 = Pattern.where(id: 2).first # total_changed_pattern
           pattern2 = Pattern.where(id: 3).first # total removed pattern
           if euclideanDistance(commit_additions, pattern0.consensus_pattern) <= 200
-            puts "GeneratedCapa.new("
+            puts 'GeneratedCapa.new('
             capa = GeneratedCapa.new(
               title: 'For current progress suggested CAPA0',
               body: 'Consider code style checking. Run linter',
@@ -265,7 +266,7 @@ class GithubRadar < RadarBaseController
             )
             capa.save
           elsif euclideanDistance(commit_diff, pattern1.consensus_pattern) <= 300
-            puts "GeneratedCapa.new("
+            puts 'GeneratedCapa.new('
             capa = GeneratedCapa.new(
               title: 'For current progress suggested CAPA1',
               body: 'The high probability of bugs within the new code. Increase test coverage',
@@ -273,7 +274,7 @@ class GithubRadar < RadarBaseController
             )
             capa.save
           elsif euclideanDistance(commit_deletions, pattern2.consensus_pattern) <= 400
-            puts "GeneratedCapa.new("
+            puts 'GeneratedCapa.new('
             capa = GeneratedCapa.new(
               title: 'For current progress suggested CAPA0',
               body: 'Consider code style checking. Run linter',
@@ -285,7 +286,6 @@ class GithubRadar < RadarBaseController
           commit_additions.clear
           commit_deletions.clear
         end
-
       end
 
     else
