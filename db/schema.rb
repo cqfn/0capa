@@ -10,27 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_16_133937) do
+ActiveRecord::Schema.define(version: 2022_12_23_005147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "capas", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "pattern_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "generated_capas", force: :cascade do |t|
     t.string "title"
     t.text "body"
     t.string "status"
+    t.string "mode", default: "random"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "repo_name"
   end
 
   create_table "patterns", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
     t.integer "window"
     t.float "threshold"
     t.float "consensus_pattern", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "metrics"
+    t.string "title"
   end
 
   create_table "tom_analyses", force: :cascade do |t|
@@ -376,6 +386,7 @@ ActiveRecord::Schema.define(version: 2022_12_16_133937) do
     t.string "webhook_active", default: "N"
     t.string "total_analyse_state", default: "N"
     t.string "last_commit_analyse_hash", default: "none"
+    t.string "mode", default: "Random"
   end
 
   create_table "tom_pull_infos", force: :cascade do |t|

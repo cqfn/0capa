@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  pull_request:
+    branches: '*'
+  push:
+    branches:
+      - master
+      - main
+      - 'release-*'
+
+jobs:
+  mri:
+    strategy:
+      matrix:
+        os: [ubuntu, macos, windows]
+        ruby: ['2.4', '2.5', '2.6', '2.7', '3.0', '3.1']
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # 'bundle install' and cache
+      - run: bundle exec rake
+
+  jruby:
+    strategy:
+      matrix:
+        os: [ubuntu]
+        # TODO: update to 9.3.3.0 once supported
+        # https://github.com/ruby/setup-ruby#supported-versions
+        ruby: ['jruby-9.2.19.0', 'jruby-9.3.2.0']
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # 'bundle install' and cache
+      - run: bundle exec rake
+
+  head-versions:
+    continue-on-error: true
+    strategy:
+      matrix:
+        os: [ubuntu]
+        ruby: ['ruby-head', 'jruby-head', 'truffleruby']
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # 'bundle install' and cache
+      - run: bundle exec rake || echo "failed, but ignore it"

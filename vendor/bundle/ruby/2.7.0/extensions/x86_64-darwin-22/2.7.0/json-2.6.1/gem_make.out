@@ -1,0 +1,13 @@
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/bin/ruby -I /Users/amoriodi/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0 -r ./siteconf20221221-89356-1lzyizx.rb extconf.rb
+creating Makefile
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make "DESTDIR=" install

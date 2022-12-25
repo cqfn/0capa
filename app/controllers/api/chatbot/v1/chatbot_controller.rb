@@ -37,10 +37,9 @@ module Api
               TomProject.where('source = :source', {
                 source: SOURCE,
               }).first(5).each do |project|
-                capa(project.repo_url)
-                sleep(60)
+                capa(project.repo_url, project.mode)
               end
-              sleep(2.hours)
+              sleep(60)
               next unless @@External_threar_stop == true
               puts 'signal stop catched...'
               @@Is_active_instance = false
@@ -52,28 +51,26 @@ module Api
           end
         end
 
-        def capa(request_url)
-          capas = [
-            'review and improve staff training procedures [#TOM-C001]',
-            'replan project and re-estimate targets [#TOM-C002]',
-            'review and improve estimating procedures [#TOM-C003]',
-            'review and improve project working procedures [#TOM-C004]',
-            'if the scope of the project has been underestimated, obtain more experienced staff [#TOM-C005]',
-            'if the scope has been overestimated, release experienced staff to other projects [#TOM-C006]',
-            'stop current work and revert to activities of preceding stage [#TOM-C007]',
-            'extend activities of previous stage into current stage, replanning effort and work assignment [#TOM-C008]',
-            'extend timescales for testing and debugging current stage because of anticipated additional latent faults from previous stage [#TOM-C009]',
-            'review and improve criteria for entry to, and exit from, stages and activities [#TOM-C010]',
-            'redesign the module into smaller components [#TOM-C011]',
-            'extend the timescales for testing the module [#TOM-C012]'
-          ]
-          issue_body = if $capas_mode == "Random"
-            "💫TOM has finished to check you code and it would like to advise you with some actions:
-            - #{capas.sample}"
-          else
-            "💫TOM has finished to check you code and it would like to advise you with some actions:
-            - #{GeneratedCapa.where(status: 'N').first.body}"
-                       end
+        def capa(request_url, mode)
+          issue_body = ''
+          case mode
+          when 'Random'
+            issue_body = "💫TOM has finished to check you code and it would like to advise you with some actions:
+            - #{GeneratedCapa.order('RANDOM()').first.body}"
+          when 'ML'
+            generated_capa = GeneratedCapa.where(repo_name: request_url, status: 'N').first
+
+            if generated_capa.nil?
+              return
+            end
+
+            generated_capa.status = 'S'
+            generated_capa.save
+
+            issue_body = "💫TOM has finished to check you code and it would like to advise you with some actions:
+            - #{generated_capa.body}"
+          end
+
           capaResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
             "#{request_url}/issues", json: { title: '🦥Capa suggestion', body: issue_body }
           )
@@ -83,23 +80,6 @@ module Api
         def stop_chatbot
           @@External_threar_stop = true
           puts 'signal stop sent...'
-        end
-
-        def welcome_issue
-          issue_body = 'some-body'
-
-          response = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-            'https://api.github.com/repos/xavzelada/repo_test/issues', json: { title: 'Welcome issue over repo',
-                                                                               body: 'some body' }
-          )
-
-          if response.code == 201
-            render json: { message: 'Call caught' }, status: 200
-          else
-            puts 'Error creating an ticket'
-            puts JSON.pretty_generate(response.parse)
-            render json: { message: 'Something went wrong' }, status: 404
-          end
         end
 
         def create

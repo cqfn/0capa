@@ -1,0 +1,1098 @@
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/cache/ruby/2.7.0/gems/narray-0.6.1.2/src
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/bin/ruby -I /Users/amoriodi/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0 -r ./siteconf20221221-98542-c6o34i.rb extconf.rb
+checking for stdint.h... yes
+checking for u_int8_t... yes
+checking for uint8_t... yes
+checking for int16_t... yes
+checking for int32_t... yes
+checking for u_int32_t... yes
+checking for uint32_t... yes
+creating narray_config.h
+creating Makefile
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/cache/ruby/2.7.0/gems/narray-0.6.1.2/src
+make "DESTDIR=" clean
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/cache/ruby/2.7.0/gems/narray-0.6.1.2/src
+make "DESTDIR="
+compiling narray.c
+narray.c:189:27: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  if (RTEST(rb_funcall(v, rb_intern("<="), 1, cNArray)))
+                          ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:481:26: note: expanded from macro 'RTEST'
+#define RTEST(v) RB_TEST(v)
+                         ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:479:31: note: expanded from macro 'RB_TEST'
+#define RB_TEST(v) !(((VALUE)(v) & (VALUE)~RUBY_Qnil) == 0)
+                              ^
+narray.c:189:27: note: '{' token is here
+  if (RTEST(rb_funcall(v, rb_intern("<="), 1, cNArray)))
+                          ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:481:26: note: expanded from macro 'RTEST'
+#define RTEST(v) RB_TEST(v)
+                         ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:479:31: note: expanded from macro 'RB_TEST'
+#define RB_TEST(v) !(((VALUE)(v) & (VALUE)~RUBY_Qnil) == 0)
+                              ^
+narray.c:189:27: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  if (RTEST(rb_funcall(v, rb_intern("<="), 1, cNArray)))
+                          ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:481:26: note: expanded from macro 'RTEST'
+#define RTEST(v) RB_TEST(v)
+                         ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:479:31: note: expanded from macro 'RB_TEST'
+#define RB_TEST(v) !(((VALUE)(v) & (VALUE)~RUBY_Qnil) == 0)
+                              ^
+narray.c:189:27: note: ')' token is here
+  if (RTEST(rb_funcall(v, rb_intern("<="), 1, cNArray)))
+                          ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:481:26: note: expanded from macro 'RTEST'
+#define RTEST(v) RB_TEST(v)
+                         ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:479:31: note: expanded from macro 'RB_TEST'
+#define RB_TEST(v) !(((VALUE)(v) & (VALUE)~RUBY_Qnil) == 0)
+                              ^
+narray.c:614:13: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  str_len = RSTRING_LEN(str);
+          ~ ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1007:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1003:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+narray.c:614:13: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  str_len = RSTRING_LEN(str);
+          ~ ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1008:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+narray.c:1113:28: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    return rb_funcall(obj, rb_intern("to_enum"), 0);
+                           ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+narray.c:1113:28: note: '{' token is here
+    return rb_funcall(obj, rb_intern("to_enum"), 0);
+                           ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+narray.c:1113:28: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    return rb_funcall(obj, rb_intern("to_enum"), 0);
+                           ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+narray.c:1113:28: note: ')' token is here
+    return rb_funcall(obj, rb_intern("to_enum"), 0);
+                           ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:2689:27: note: expanded from macro 'rb_funcall'
+        rb_funcallv(recv, mid, \
+                          ^~~
+narray.c:1180:21: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    ID id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1180:21: note: '{' token is here
+    ID id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1180:21: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    ID id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1180:21: note: ')' token is here
+    ID id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1186:42: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    cComplex = rb_const_get( rb_cObject, rb_intern("Complex") );
+                                         ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1186:42: note: '{' token is here
+    cComplex = rb_const_get( rb_cObject, rb_intern("Complex") );
+                                         ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1186:42: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    cComplex = rb_const_get( rb_cObject, rb_intern("Complex") );
+                                         ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1186:42: note: ')' token is here
+    cComplex = rb_const_get( rb_cObject, rb_intern("Complex") );
+                                         ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1293:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_beg   = rb_intern("begin");
+                  ^~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1293:19: note: '{' token is here
+    na_id_beg   = rb_intern("begin");
+                  ^~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1293:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_beg   = rb_intern("begin");
+                  ^~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1293:19: note: ')' token is here
+    na_id_beg   = rb_intern("begin");
+                  ^~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1294:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_end   = rb_intern("end");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1294:19: note: '{' token is here
+    na_id_end   = rb_intern("end");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1294:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_end   = rb_intern("end");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1294:19: note: ')' token is here
+    na_id_end   = rb_intern("end");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1295:25: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_exclude_end   = rb_intern("exclude_end?");
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1295:25: note: '{' token is here
+    na_id_exclude_end   = rb_intern("exclude_end?");
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1295:25: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_exclude_end   = rb_intern("exclude_end?");
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1295:25: note: ')' token is here
+    na_id_exclude_end   = rb_intern("exclude_end?");
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1296:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_real  = rb_intern("real");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1296:19: note: '{' token is here
+    na_id_real  = rb_intern("real");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1296:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_real  = rb_intern("real");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1296:19: note: ')' token is here
+    na_id_real  = rb_intern("real");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1297:18: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_imag  = rb_intern("imag");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1297:18: note: '{' token is here
+    na_id_imag  = rb_intern("imag");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1297:18: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_imag  = rb_intern("imag");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1297:18: note: ')' token is here
+    na_id_imag  = rb_intern("imag");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1298:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_new   = rb_intern("new");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1298:19: note: '{' token is here
+    na_id_new   = rb_intern("new");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1298:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_new   = rb_intern("new");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1298:19: note: ')' token is here
+    na_id_new   = rb_intern("new");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1299:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_to_i  = rb_intern("to_i");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1299:19: note: '{' token is here
+    na_id_to_i  = rb_intern("to_i");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1299:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_to_i  = rb_intern("to_i");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1299:19: note: ')' token is here
+    na_id_to_i  = rb_intern("to_i");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1300:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_usec  = rb_intern("usec");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1300:19: note: '{' token is here
+    na_id_usec  = rb_intern("usec");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1300:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_usec  = rb_intern("usec");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1300:19: note: ')' token is here
+    na_id_usec  = rb_intern("usec");
+                  ^~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1301:18: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_now   = rb_intern("now");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1301:18: note: '{' token is here
+    na_id_now   = rb_intern("now");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1301:18: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_now   = rb_intern("now");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1301:18: note: ')' token is here
+    na_id_now   = rb_intern("now");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1302:21: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_compare = rb_intern("<=>");
+                    ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1302:21: note: '{' token is here
+    na_id_compare = rb_intern("<=>");
+                    ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1302:21: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_compare = rb_intern("<=>");
+                    ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1302:21: note: ')' token is here
+    na_id_compare = rb_intern("<=>");
+                    ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1303:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_ne    = rb_intern("ne");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1303:19: note: '{' token is here
+    na_id_ne    = rb_intern("ne");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1303:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_ne    = rb_intern("ne");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1303:19: note: ')' token is here
+    na_id_ne    = rb_intern("ne");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1304:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_and   = rb_intern("&&");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1304:19: note: '{' token is here
+    na_id_and   = rb_intern("&&");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1304:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_and   = rb_intern("&&");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1304:19: note: ')' token is here
+    na_id_and   = rb_intern("&&");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1305:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_or    = rb_intern("||");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1305:19: note: '{' token is here
+    na_id_or    = rb_intern("||");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1305:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_or    = rb_intern("||");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1305:19: note: ')' token is here
+    na_id_or    = rb_intern("||");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1306:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_minus = rb_intern("-@");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1306:19: note: '{' token is here
+    na_id_minus = rb_intern("-@");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1306:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_minus = rb_intern("-@");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1306:19: note: ')' token is here
+    na_id_minus = rb_intern("-@");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1307:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_abs   = rb_intern("abs");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1307:19: note: '{' token is here
+    na_id_abs   = rb_intern("abs");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1307:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_abs   = rb_intern("abs");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1307:19: note: ')' token is here
+    na_id_abs   = rb_intern("abs");
+                  ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1308:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_power = rb_intern("**");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1308:19: note: '{' token is here
+    na_id_power = rb_intern("**");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1308:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_power = rb_intern("**");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1308:19: note: ')' token is here
+    na_id_power = rb_intern("**");
+                  ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1309:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_add   = rb_intern("+");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1309:19: note: '{' token is here
+    na_id_add   = rb_intern("+");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1309:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_add   = rb_intern("+");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1309:19: note: ')' token is here
+    na_id_add   = rb_intern("+");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1310:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_sbt   = rb_intern("-");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1310:19: note: '{' token is here
+    na_id_sbt   = rb_intern("-");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1310:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_sbt   = rb_intern("-");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1310:19: note: ')' token is here
+    na_id_sbt   = rb_intern("-");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1311:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_mul   = rb_intern("*");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1311:19: note: '{' token is here
+    na_id_mul   = rb_intern("*");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1311:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_mul   = rb_intern("*");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1311:19: note: ')' token is here
+    na_id_mul   = rb_intern("*");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1312:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_div   = rb_intern("/");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1312:19: note: '{' token is here
+    na_id_div   = rb_intern("/");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1312:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_div   = rb_intern("/");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1312:19: note: ')' token is here
+    na_id_div   = rb_intern("/");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1313:19: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_mod   = rb_intern("%");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1313:19: note: '{' token is here
+    na_id_mod   = rb_intern("%");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1313:19: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_mod   = rb_intern("%");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1313:19: note: ')' token is here
+    na_id_mod   = rb_intern("%");
+                  ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1314:24: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_coerce_rev = rb_intern("coerce_rev");
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1314:24: note: '{' token is here
+    na_id_coerce_rev = rb_intern("coerce_rev");
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1314:24: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_coerce_rev = rb_intern("coerce_rev");
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1314:24: note: ')' token is here
+    na_id_coerce_rev = rb_intern("coerce_rev");
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1315:21: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1315:21: note: '{' token is here
+    na_id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1315:21: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1315:21: note: ')' token is here
+    na_id_Complex = rb_intern("Complex");
+                    ^~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+narray.c:1317:23: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_class_dim = rb_intern("CLASS_DIMENSION");
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+narray.c:1317:23: note: '{' token is here
+    na_id_class_dim = rb_intern("CLASS_DIMENSION");
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+narray.c:1317:23: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+    na_id_class_dim = rb_intern("CLASS_DIMENSION");
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+narray.c:1317:23: note: ')' token is here
+    na_id_class_dim = rb_intern("CLASS_DIMENSION");
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+58 warnings generated.
+compiling na_array.c
+na_array.c:158:9: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  len = RARRAY_LEN(ary);
+      ~ ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1070:23: note: expanded from macro 'RARRAY_LEN'
+#define RARRAY_LEN(a) rb_array_len(a)
+                      ^~~~~~~~~~~~~~~
+na_array.c:564:17: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  int sep_len = RSTRING_LEN(sep);
+      ~~~~~~~   ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1007:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1003:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+na_array.c:564:17: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  int sep_len = RSTRING_LEN(sep);
+      ~~~~~~~   ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1008:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+3 warnings generated.
+compiling na_func.c
+na_func.c:1057:13: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+        rankv[c] = r;
+                 ~ ^
+na_func.c:1071:18: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+          rankv[c++] = r++;
+                     ~ ~^~
+2 warnings generated.
+compiling na_index.c
+na_index.c:169:21: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    na_index_scalar(FIX2LONG(idx),shape,sl);
+    ~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:394:21: note: expanded from macro 'FIX2LONG'
+#define FIX2LONG(x) RB_FIX2LONG(x)
+                    ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:378:25: note: expanded from macro 'RB_FIX2LONG'
+#define RB_FIX2LONG(x) ((long)RSHIFT((SIGNED_VALUE)(x),1))
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+na_index.c:174:21: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    na_index_scalar(NUM2LONG(idx),shape,sl);
+    ~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:679:21: note: expanded from macro 'NUM2LONG'
+#define NUM2LONG(x) RB_NUM2LONG(x)
+                    ^~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:678:24: note: expanded from macro 'RB_NUM2LONG'
+#define RB_NUM2LONG(x) rb_num2long_inline(x)
+                       ^~~~~~~~~~~~~~~~~~~~~
+na_index.c:761:10: warning: variable 'total' set but not used [-Wunused-but-set-variable]
+  int i, total;
+         ^
+3 warnings generated.
+compiling na_random.c
+na_random.c:155:46: warning: implicit conversion loses integer precision: 'long' to 'u_int32_t' (aka 'unsigned int') [-Wshorten-64-to-32]
+    return tv.tv_sec ^ tv.tv_usec ^ getpid() ^ n++;
+    ~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+na_random.c:169:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u_int32_t' (aka 'unsigned int') [-Wshorten-64-to-32]
+        seed = NUM2ULONG(sd);
+             ~ ^~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:689:22: note: expanded from macro 'NUM2ULONG'
+#define NUM2ULONG(x) RB_NUM2ULONG(x)
+                     ^~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:688:25: note: expanded from macro 'RB_NUM2ULONG'
+#define RB_NUM2ULONG(x) rb_num2ulong_inline(x)
+                        ^~~~~~~~~~~~~~~~~~~~~~
+na_random.c:194:13: warning: variable 'xu' set but not used [-Wunused-but-set-variable]
+  int i, x, xu, xl, n=4;
+            ^
+na_random.c:238:25: warning: function 'TpErr' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+static void TpErr(void) {
+                        ^
+4 warnings generated.
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/bin/ruby -I. ./mkop.rb
+compiling na_op.c
+na_op.c:41:25: warning: function 'TpErr' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+static void TpErr(void) {
+                        ^
+na_op.c:48:26: warning: function 'na_zerodiv' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+static void na_zerodiv() {
+                         ^
+na_op.c:1125:50: warning: parameter 'p2' set but not used [-Wunused-but-set-parameter]
+static void ImagB(int n, char *p1, int i1, char *p2, int i2)
+                                                 ^
+na_op.c:1132:50: warning: parameter 'p2' set but not used [-Wunused-but-set-parameter]
+static void ImagI(int n, char *p1, int i1, char *p2, int i2)
+                                                 ^
+na_op.c:1139:50: warning: parameter 'p2' set but not used [-Wunused-but-set-parameter]
+static void ImagL(int n, char *p1, int i1, char *p2, int i2)
+                                                 ^
+na_op.c:1146:50: warning: parameter 'p2' set but not used [-Wunused-but-set-parameter]
+static void ImagF(int n, char *p1, int i1, char *p2, int i2)
+                                                 ^
+na_op.c:1153:50: warning: parameter 'p2' set but not used [-Wunused-but-set-parameter]
+static void ImagD(int n, char *p1, int i1, char *p2, int i2)
+                                                 ^
+na_op.c:1637:19: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+      int   len = strlen(buf);
+            ~~~   ^~~~~~~~~~~
+8 warnings generated.
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/bin/ruby -I. ./mkmath.rb
+compiling na_math.c
+na_math.c:25:25: warning: function 'TpErr' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+static void TpErr(void) {
+                        ^
+1 warning generated.
+compiling na_linalg.c
+na_linalg.c:631:14: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  id_lu    = rb_intern("@lu");
+             ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+na_linalg.c:631:14: note: '{' token is here
+  id_lu    = rb_intern("@lu");
+             ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+na_linalg.c:631:14: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  id_lu    = rb_intern("@lu");
+             ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+na_linalg.c:631:14: note: ')' token is here
+  id_lu    = rb_intern("@lu");
+             ^~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+na_linalg.c:632:14: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  id_pivot = rb_intern("@pivot");
+             ^~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:23: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                      ^
+na_linalg.c:632:14: note: '{' token is here
+  id_pivot = rb_intern("@pivot");
+             ^~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1832:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    {                                                   \
+    ^
+na_linalg.c:632:14: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+  id_pivot = rb_intern("@pivot");
+             ^~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:24: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1837:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+    }
+    ^
+na_linalg.c:632:14: note: ')' token is here
+  id_pivot = rb_intern("@pivot");
+             ^~~~~~~~~~~~~~~~~~~
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/include/ruby-2.7.0/ruby/ruby.h:1847:56: note: expanded from macro 'rb_intern'
+        __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+                                                       ^
+4 warnings generated.
+linking shared-object narray.bundle
+
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/cache/ruby/2.7.0/gems/narray-0.6.1.2/src
+make "DESTDIR=" install
+/usr/local/opt/coreutils/bin/ginstall -c -m 0755 narray.bundle ./.gem.20221221-98542-1itgf3q
+installing narray libraries
+installing default narray libraries

@@ -4,7 +4,7 @@ class CreateGeneratedCapas < ActiveRecord::Migration[6.1]
       t.string :title
       t.text :body
       t.string :status
-
+      t.string :mode, default: 'random'
       t.timestamps
     end
   end

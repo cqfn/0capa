@@ -60,11 +60,56 @@
           row-gap: 30px;
           margin: 2em;
       }
+
+      .tabs {
+          display: contents;
+      }
+
+      .tabs .section,
+      .tabs .section:target ~ .section {
+          display: none;
+      }
+
+      .tabs .section:last-child,
+      .tabs .section:target {
+          display: contents;
+      }
+
+      #admin > div {
+          display: grid;
+          grid-template-areas: "pattern capa" "table table";
+          width: 100%;
+          min-height: 100vh;
+      }
+
+      #pattern {
+          grid-area: pattern;
+      }
+
+      #capa {
+          grid-area: capa;
+      }
+
+      #table {
+          grid-area: table;
+      }
+
+      .two-columns {
+          display: flex;
+          gap: 0.4rem;
+      }
+
+      .two-columns .form-group {
+          flex-grow: 1;
+      }
   </style>
+  <script>
+      location.hash = location.hash || "#overview"
+  </script>
 </head>
 <body>
 <div class="container">
-  <div style="min-height: 100vh" class="columns">
+  <div style="min-height: 100vh; flex-wrap: nowrap" class="columns">
     <div class="tom">
       <div class="">
         <h3>Tom Dashboard</h3>
@@ -73,167 +118,314 @@
             <li class="nav-item"><a href="https://github.com/<%= @username %>"><%= @username %></a></li>
           <% else %>
             <li class="nav-item">
-              <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468&scope=repo,admin:repo_hook">Authorize via GitHub</a>
+              <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468&scope=repo,admin:repo_hook">Authorize
+                via GitHub</a>
             </li>
           <% end %>
-          <li class="nav-item active"><a href="#">Overview</a></li>
-          <li class="nav-item"><a href="#">Growth</a></li>
+          <li class="nav-item active"><a href="#overview">Overview</a></li>
+          <li class="nav-item"><a href="#admin">Admin</a></li>
           <li class="nav-item"><a href="#">Reports</a></li>
           <li class="nav-item"><a href="#">About</a></li>
           <li class="nav-item"><a href="#">Support</a></li>
         </ul>
       </div>
     </div>
-    <div class="overview">
-      <div class="column col-3">
-        <h2>Overview</h2>
-        <div class="wrapper1">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title h1"><%= @commit_metrics %></div>
-              <div class="card-subtitle text-gray">Total Commits Analysed</div>
-            </div>
-            <div class="card-body">
-              The identified anomalies and CAPAS will be generated through the information that we can obtain through
-              the github api.
-            </div>
-            <div class="card-footer">
-              <div class="bar bar-sm">
-                <div class="bar-item" role="progressbar" style="width:80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="tabs">
+      <div class="section" id="overview">
+        <div class="overview">
+          <h2>Overview</h2>
+          <div class="wrapper1">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title h1"><%= @commit_metrics %></div>
+                <div class="card-subtitle text-gray">Total Commits Analysed</div>
+              </div>
+              <div class="card-body">
+                The identified anomalies and CAPAS will be generated through the information that we can obtain through
+                the github api.
+              </div>
+              <div class="card-footer">
+                <div class="bar bar-sm">
+                  <div class="bar-item" role="progressbar" style="width:80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title h1"><%= @repos_metrics %></div>
-              <div class="card-subtitle text-gray">Total Repos Analysed</div>
-            </div>
-            <div class="card-body">
-              TOM has the history of the metrics collected from each yours repository individually.
-            </div>
-            <div class="card-footer">
-              <div class="bar bar-sm">
-                <div class="bar-item" role="progressbar" style="width:40%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title h1"><%= @repos_metrics %></div>
+                <div class="card-subtitle text-gray">Total Repos Analysed</div>
+              </div>
+              <div class="card-body">
+                TOM has the history of the metrics collected from each yours repository individually.
+              </div>
+              <div class="card-footer">
+                <div class="bar bar-sm">
+                  <div class="bar-item" role="progressbar" style="width:40%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title h1"><%= @issues_metrics %></div>
-              <div class="card-subtitle text-gray">Total Patterns evaluated</div>
-            </div>
-            <div class="card-body">
-              Once TOM has generated the list of CAPAs for your repository, a bot will create an issue within your
-              repository, indicating each of the anomalies that were identified and the actions to take in
-              consideration.
-            </div>
-            <div class="card-footer">
-              <div class="bar bar-sm">
-                <div class="bar-item" role="progressbar" style="width:70%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title h1"><%= @issues_metrics %></div>
+                <div class="card-subtitle text-gray">Total Patterns evaluated</div>
+              </div>
+              <div class="card-body">
+                Once TOM has generated the list of CAPAs for your repository, a bot will create an issue within your
+                repository, indicating each of the anomalies that were identified and the actions to take in
+                consideration.
+              </div>
+              <div class="card-footer">
+                <div class="bar bar-sm">
+                  <div class="bar-item" role="progressbar" style="width:70%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title h1"><%= @capas_predicted_count %></div>
-              <div class="card-subtitle text-gray">Total Capas Predicted</div>
-            </div>
-            <div class="card-body">
-              A component based on ML is in charge of processing this data in order to identify a list of possible
-              anomalies, on which the list of LAYERS that best suit the particular case.
-            </div>
-            <div class="card-footer">
-              <div class="bar bar-sm">
-                <div class="bar-item" role="progressbar" style="width:25%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title h1"><%= @capas_predicted_count %></div>
+                <div class="card-subtitle text-gray">Total Capas Predicted</div>
+              </div>
+              <div class="card-body">
+                A component based on ML is in charge of processing this data in order to identify a list of possible
+                anomalies, on which the list of LAYERS that best suit the particular case.
+              </div>
+              <div class="card-footer">
+                <div class="bar bar-sm">
+                  <div class="bar-item" role="progressbar" style="width:25%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div><!-- .column .col-3 -->
-    </div>
-    <!-- RIGHT COLUMN -->
-    <div class="column">
-      <h2>Pushes History</h2>
-      <div style="margin: 2em" class="card">
-        <div class="card-header">
-          <div class="card-title text-bold"> 
-            <figure class="avatar avatar-xl" data-initial="0" style="background-color: #5755d9;">
-              <img src="<%= "logo-256.png" %>" alt="">
-            </figure>
-            0capa-bot Beta
+        <!-- RIGHT COLUMN -->
+        <div class="column" style="overflow: hidden">
+          <h2>Pushes History</h2>
+          <div style="margin: 2em" class="card">
+            <div class="card-header">
+              <div class="card-title text-bold">
+                <figure class="avatar avatar-xl" data-initial="0" style="background-color: #5755d9;">
+                  <img src="<%= "logo-256.png" %>" alt="">
+                </figure>
+                0capa-bot Beta
+              </div>
+              <div class="card-body">TOM (stands for Theoretically Objective Measurements of Software Development
+                Projects)
+                is a set of services that are in charge of helping developers or teams in the process of identifying
+                anomilies within their software development process, and providing a list of preventive or corrective
+                actions (aka CAPAS) that positively impact the process. and in this way to improve the quality of the
+                final
+                product and its development process.
+              </div>
+            </div>
           </div>
-          <div class="card-body">TOM (stands for Theoretically Objective Measurements of Software Development Projects)
-            is a set of services that are in charge of helping developers or teams in the process of identifying
-            anomilies within their software development process, and providing a list of preventive or corrective
-            actions (aka CAPAS) that positively impact the process. and in this way to improve the quality of the final
-            product and its development process.
-          </div>
-        </div>
-      </div>
-      <h2>Capas Statistics</h2>
-      <div style="margin: 2em" class="card">
-        <div class="card-body">
-          <table class="table table-striped table-hover table-scroll" style="height:500px;width:100%;max-width: 400px">
-            <thead>
-            <tr>
-              <th>Analysis Id</th>
-              <th>Testimonial</th>
-              <th>Suggestion</th>
-              <th>Created at</th>
-              <th>Updated at</th>
-              <th>Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @capas_predicted.each do |capa| %>
-              <tr class onclick="document.location.hash='modal-id-<%= capa.id %>'">
-                <td><%= capa.id %></td>
-                <td><%= capa.title %></td>
-                <td><%= capa.body %></td>
-                <td><%= capa.created_at.strftime("%F %H:%M") %></td>
-                <td><%= capa.updated_at.strftime("%F %H:%M") %></td>
-                <td><%= capa.status %></td>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <h2>Projects</h2>
-      <div style="margin: 2em" class="card">
-        <div class="card-body">
-          <table class="table table-striped table-hover">
-            <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>is Active</th>
-              <th>Created at</th>
-              <th>is Private</th>
-              <th>Webhook</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @project_list.each do |project| %>
-              <tr class onclick="document.location.href='<%= project.repo_url %>'">
-                <td><%= project.id %></td>
-                <td><%= project.name %></td>
-                <td><%= project.isactive %></td>
-                <td><%= project.created_at.strftime("%F %H:%M") %></td>
-                <td><%= project.is_private %></td>
-                <% if project.webhook_active == 'N' %>
-                  <td><a class="btn btn-primary" href="/api/chatbot/v1/setup_webhook?project_id=<%= project.id %>">Add Webhook</a></td>
-                <% else %>
-                  <td><%= project.webhook_active %></td>
+          <h2>Capas Statistics</h2>
+          <div style="margin: 2em" class="card">
+            <div class="card-body">
+              <table class="table table-striped table-hover table-scroll" style="height:500px;">
+                <thead>
+                <tr>
+                  <th>Analysis Id</th>
+                  <th>Testimonial</th>
+                  <th>Suggestion</th>
+                  <th>Created at</th>
+                  <th>Updated at</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @capas_predicted.each do |capa| %>
+                  <tr class onclick="document.location.hash='modal-id-<%= capa.id %>'">
+                    <td><%= capa.id %></td>
+                    <td><%= capa.title %></td>
+                    <td><%= capa.body %></td>
+                    <td><%= capa.created_at.strftime("%F %H:%M") %></td>
+                    <td><%= capa.updated_at.strftime("%F %H:%M") %></td>
+                    <td><%= capa.status %></td>
+                  </tr>
                 <% end %>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <h2>Projects</h2>
+          <div style="margin: 2em" class="card">
+            <div class="card-body">
+              <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>is Active</th>
+                  <th>Created at</th>
+                  <th>is Private</th>
+                  <th>Webhook</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @project_list.each do |project| %>
+                  <tr class onclick="document.location.href='<%= project.repo_url %>'">
+                    <td><%= project.id %></td>
+                    <td><%= project.name %></td>
+                    <td><%= project.isactive %></td>
+                    <td><%= project.created_at.strftime("%F %H:%M") %></td>
+                    <td><%= project.is_private %></td>
+                    <% if project.webhook_active == 'N' %>
+                      <td><a class="btn btn-primary" href="/api/chatbot/v1/setup_webhook?project_id=<%= project.id %>">Add
+                        Webhook</a></td>
+                    <% else %>
+                      <td><%= project.webhook_active %></td>
+                    <% end %>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </div>
+      <div class="section" id="admin">
+        <div>
+          <div id="pattern" style="padding-left: 30px; padding-right: 30px">
 
+            <div class="card-body ">
+              <h2>Add Pattern</h2>
+              <form action="/api/admin/v1/add_pattern" method="post">
+                <fieldset>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-19">Title</label>
+                    <input class="form-input" type="text" id="input-example-19" name="title" placeholder="Testinomial">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-19">Consensus pattern - Array of window size</label>
+                    <input class="form-input" type="text" id="input-example-19" name="pattern" placeholder="ex: 10, 20, 30">
+                  </div>
+                  <div class="two-columns">
+                    <div class="form-group">
+                      <label class="form-label" for="input-example-19">Window</label>
+                      <input type="number" class="form-input" name="window" placeholder="Time series slide window size">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="input-example-19">Threshold</label>
+                      <input type="number" step="0.001" name="threshold" class="form-input" placeholder="Threshold">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-20">Based on this we proceed time series</label>
+                    <select class="form-select" name="metrics">
+                      <option disabled selected>Choose metrics</option>
+                      <option value="deleted_lines">deleted-lines</option>
+                      <option value="added_lines">added lines</option>
+                      <option value="total_diff">diff overall</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-19">sorry, but this edits is "staff only".</label>
+                    <input class="form-input" type="password" placeholder="Super-user Password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$">
+                  </div>
+                  <input type="submit" class="btn btn-primary input-group-btn"/>
+                </fieldset>
+              </form>
+            </div>
+
+          </div>
+          <div id="capa" style="background: #f8f8f8; padding-left: 30px; padding-right: 30px">
+            <div class="card-body">
+              <h2>Suggest CAPAs</h2>
+              <form action="/api/admin/v1/add_capa" method="post">
+                <fieldset>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-19">Title</label>
+                    <input class="form-input" type="text" name="title" id="input-example-19" placeholder="Testinomial">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-20">Description</label>
+                    <textarea class="form-input" id="input-example-20" name="description" placeholder="Please provide detailed description" rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <select name="pattern" class="form-select">
+                      <option disabled selected>Choose a pattern</option>
+                      <% @patterns.each do |pattern| %>
+                        <option value="<%= pattern.title %>"><%= pattern.title %></option>
+                      <% end %>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="input-example-19">sorry, but this edits is "staff only".</label>
+                    <input class="form-input" type="password" placeholder="Super-user Password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$">
+                  </div>
+                  <input type="submit" class="btn btn-primary input-group-btn"/>
+                </fieldset>
+              </form>
+            </div>
+
+
+          </div>
+          <div id="table" style="background: #807fe2; padding: 60px">
+            <div class="card">
+
+              <div class="card-body">
+                <table class="table table-striped table-hover">
+                  <thead>
+                  <tr>
+                    <th>Analysis Id</th>
+                    <th>Testimonial</th>
+                    <th>Suggestion</th>
+                    <th>Created at</th>
+                    <th>Mode</th>
+                    <th>Repo</th>
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @capas_predicted.each do |capa| %>
+                    <tr class onclick="document.location.hash='modal-id-<%= capa.id %>'">
+                      <td><%= capa.id %></td>
+                      <td><%= capa.title %></td>
+                      <td><%= capa.body %></td>
+                      <td><%= capa.created_at.strftime("%F %H:%M") %></td>
+                      <td><%= capa.mode%></td>
+                      <td><%= capa.repo_name%></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="success-pattern">
+  <a href="#close" class="modal-overlay" aria-label="Close"></a>
+  <div class="modal-container">
+    <div class="modal-header">
+      <a href="#close" class="btn btn-clear float-right" aria-label="Close"></a>
+      <div class="modal-title h5">Success</div>
+    </div>
+    <div class="modal-body">
+      <div class="content">
+        Pattern added successfully!
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="success-capa">
+  <a href="#close" class="modal-overlay" aria-label="Close"></a>
+  <div class="modal-container">
+    <div class="modal-header">
+      <a href="#close" class="btn btn-clear float-right" aria-label="Close"></a>
+      <div class="modal-title h5">Success</div>
+    </div>
+    <div class="modal-body">
+      <div class="content">
+        Capa added successfully!
+      </div>
     </div>
   </div>
 </div>

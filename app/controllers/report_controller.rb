@@ -13,6 +13,8 @@ class ReportController < ApplicationController
     @capas_predicted = []
     @capas_predicted_count = 0
 
+    @patterns = Pattern.all
+
 
 
     unless cookies[:github_token].nil?
