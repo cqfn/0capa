@@ -38,8 +38,9 @@ module Api
                 source: SOURCE,
               }).first(5).each do |project|
                 capa(project.repo_url, project.mode)
+                sleep(60)
               end
-              sleep(60)
+              sleep(12.hours)
               next unless @@External_threar_stop == true
               puts 'signal stop catched...'
               @@Is_active_instance = false

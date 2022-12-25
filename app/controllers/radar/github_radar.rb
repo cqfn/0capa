@@ -40,13 +40,13 @@ class GithubRadar < RadarBaseController
           [*1.._limit].each do |p|
             puts "projects that need to analize #{_limit}"
             check_repos_update
-            sleep(2)
+            sleep(60)
             next unless @@External_threar_stop == true
             @@Is_active_instance = false
             return true
           end
         else
-          sleep(60)
+          sleep(12.hours)
         end
         next unless @@External_threar_stop == true
         puts "signal stop catched.."
@@ -225,6 +225,8 @@ class GithubRadar < RadarBaseController
       commit_additions = []
       commit_deletions = []
       puts "commits #{commits.length}"
+      return if commits.length < 20
+
       windows = Hash.new
       Pattern.all.each do |pattern|
         if windows.has_key?(pattern.window)
