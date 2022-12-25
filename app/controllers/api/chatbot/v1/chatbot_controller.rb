@@ -38,6 +38,7 @@ module Api
                 source: SOURCE,
               }).first(5).each do |project|
                 capa(project.repo_url)
+                sleep(60)
               end
               sleep(2.hours)
               next unless @@External_threar_stop == true
