@@ -54,7 +54,7 @@ module Api
             end
           when /hello/
             HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
-              payload['issue']['comments_url'], json: { body: "Current mode for project is '#{project.mode}'" }
+              payload['issue']['comments_url'], json: { body: "Hey! Good news: 0capa works stable.\nNew suggestions every 12h. Current mode for project is '#{project.mode}'" }
             )
 
           when /export/

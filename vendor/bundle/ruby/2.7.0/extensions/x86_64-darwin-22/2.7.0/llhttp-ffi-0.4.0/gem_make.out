@@ -1,0 +1,8 @@
+current directory: /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/llhttp-ffi-0.4.0/ext
+/Users/amoriodi/.rvm/rubies/ruby-2.7.0/bin/ruby -I/Users/amoriodi/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0/rubygems -rrubygems /Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/gems/rake-13.0.6/exe/rake RUBYARCHDIR\=/Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/extensions/x86_64-darwin-22/2.7.0/llhttp-ffi-0.4.0 RUBYLIBDIR\=/Users/amoriodi/RubymineProjects/0capa/vendor/bundle/ruby/2.7.0/extensions/x86_64-darwin-22/2.7.0/llhttp-ffi-0.4.0
+mkdir -p x86_64-darwin/llhttp
+gcc -fexceptions -O -fno-omit-frame-pointer -fno-strict-aliasing   -o x86_64-darwin/llhttp/api.o -c ./llhttp/api.c
+gcc -fexceptions -O -fno-omit-frame-pointer -fno-strict-aliasing   -o x86_64-darwin/llhttp/http.o -c ./llhttp/http.c
+gcc -fexceptions -O -fno-omit-frame-pointer -fno-strict-aliasing   -o x86_64-darwin/llhttp/llhttp.o -c ./llhttp/llhttp.c
+gcc -fexceptions -O -fno-omit-frame-pointer -fno-strict-aliasing   -o x86_64-darwin/llhttp/llhttp_ext.o -c ./llhttp/llhttp_ext.c
+gcc -bundle -o x86_64-darwin/libllhttp-ext.bundle x86_64-darwin/llhttp/api.o x86_64-darwin/llhttp/http.o x86_64-darwin/llhttp/llhttp.o x86_64-darwin/llhttp/llhttp_ext.o -fexceptions 
