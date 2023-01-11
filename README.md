@@ -114,19 +114,22 @@ The mnemo of the command here is status. All the rest is ignored. You can achiev
 Here is a full list of all commands, in alphabetic order.
 #### Hello
 Sort of a "ping". Post `@0capa-beta hello` and expect an immediate answer from 0capa (well, within 60 seconds). If you don't get an answer, there is something wrong with Rultor. Feel free to post a bug to our issue tracker.
-
+![](https://i.imgur.com/Nua7lhY.png)
 #### Generate report with all suggestions for particular project
-This `@0capa-beta generate report` command will provide a link where you can download `.csv` file with all generated CAPAs that are related to your project repository.
+This `@0capa-beta export report` command will provide a link where you can download `.csv` file with all generated CAPAs that are related to your project repository.
+
+![](https://i.imgur.com/2l7cpa1.png)
 
 #### Status
 Checks the status of currently running analyze in project. Just post `@0capa-beta status` and see what 0capa says, like detailed information about mode;
+![](https://i.imgur.com/sNlgCRa.png)
 
 #### Switch mode
 By default 0capa proceed project metrics and generate `CAPAs` in `Random` mode. But if you consider it significant you can switch mode(that was described above) simply post `@0capa-beta switch ML mode` and vise-versa.
-
+![](https://i.imgur.com/jJS6Ru8.png)
 #### Stop suggestions 
 In case you wanna to prevent spam from 0capa just post `@0capa-beta please stop` to remove your repo from sort of "white" list.
-
+![](https://i.imgur.com/omWzzay.jpg)
 ## How to Contribute
 
 Fork repository, make changes, send us a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
