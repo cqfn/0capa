@@ -1,7 +1,5 @@
 <img src="https://github.com/cqfn/0capa/blob/master/public/logo-256.png" width="64px"/>
 
-[![Hits-of-Code](https://hitsofcode.com/github/xavzelada/tom?branch=master)](https://hitsofcode.com/github/xavzelada/tom/view?branch=master)
-
 
 **TOM** (stands for Theoretically Objective Measurements
 of Software Development Projects) is a set of services that are in charge of helping developers or teams in the process of identifying anomilies within their software development process, and providing a list of preventive or corrective actions (aka **CAPAS**) that positively impact the process. and in this way to improve the quality of the final product and its development process.
