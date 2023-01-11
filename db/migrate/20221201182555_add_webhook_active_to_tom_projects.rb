@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class AddWebhookActiveToTomProjects < ActiveRecord::Migration[6.1]
   def change
-    add_column :tom_projects, :webhook_active, :string, :default => 'N'
+    add_column :tom_projects, :webhook_active, :string, default: 'N'
   end
 end

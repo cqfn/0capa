@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Api
   module Chatbot
     module V1
@@ -49,8 +50,6 @@ module Api
               HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
                 payload['issue']['comments_url'], json: { body: 'Changing mode for project to "ML"' }
               )
-            else
-              # type code here
             end
           when /hello/
             HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
@@ -64,12 +63,14 @@ module Api
             HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
               payload['issue']['comments_url'], json: { body: "[Click](#{export_url}) to download your stats" }
             )
+          when /stop/
+            TomProject.where(repoid: payload['repository']['id']).destroy_all
           end
         end
 
         private
 
-        def webhook_secret(payload)
+        def webhook_secret(_payload)
           'GITHUB_WEBHOOK_SECRET'
         end
       end

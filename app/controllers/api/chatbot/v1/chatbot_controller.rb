@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Паттерн 5 - капа 0
 # Паттерн 11 - капа 1
@@ -35,13 +36,14 @@ module Api
             loop do
               puts 'Processing repos...'
               TomProject.where('source = :source', {
-                source: SOURCE,
-              }).first(5).each do |project|
+                                 source: SOURCE
+                               }).first(5).each do |project|
                 capa(project.repo_url, project.mode)
                 sleep(60)
               end
               sleep(12.hours)
               next unless @@External_threar_stop == true
+
               puts 'signal stop catched...'
               @@Is_active_instance = false
               return true
@@ -61,9 +63,7 @@ module Api
           when 'ML'
             generated_capa = GeneratedCapa.where(repo_name: request_url, status: 'N').first
 
-            if generated_capa.nil?
-              return
-            end
+            return if generated_capa.nil?
 
             generated_capa.status = 'S'
             generated_capa.save
@@ -208,7 +208,6 @@ module Api
           puts "project_count -> #{project_count}"
           project_count
         end
-        
       end
     end
   end

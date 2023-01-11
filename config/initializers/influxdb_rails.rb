@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 InfluxDB::Rails.configure do |config|
   ## The only setting you actually need to update is the name of the
   ## database within the InfluxDB server instance. Don't forget to
   ## create this database as well.
-  config.client.database = "rails"
+  config.client.database = 'rails'
   # config.client.hosts = ["localhost"]
   # config.client.port = 8086
 

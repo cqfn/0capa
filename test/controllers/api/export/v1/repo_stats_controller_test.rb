@@ -1,8 +1,16 @@
-require "test_helper"
+# frozen_string_literal: true
 
-class Api::Export::V1::RepoStatsControllerTest < ActionDispatch::IntegrationTest
-  test "should get repo_stats" do
-    get api_export_v1_repo_stats_repo_stats_url
-    assert_response :success
+require 'test_helper'
+
+module Api
+  module Export
+    module V1
+      class RepoStatsControllerTest < ActionDispatch::IntegrationTest
+        test 'should get repo_stats' do
+          get api_export_v1_repo_stats_repo_stats_url
+          assert_response :success
+        end
+      end
+    end
   end
 end

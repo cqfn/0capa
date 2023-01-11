@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tom Dashboard</title>
   <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css"/>
+  <link rel="stylesheet" href="icons.css"/>
   <link rel="canonical" href="https://picturepan2.github.io/spectre/experimentals/filters.html">
   <style>
       h1, h2 {
@@ -131,7 +132,9 @@
       </div>
     </div>
     <div class="tabs">
+
       <div class="section" id="overview">
+        <% if @logged %>
         <div class="overview">
           <h2>Overview</h2>
           <div class="wrapper1">
@@ -197,6 +200,7 @@
             </div>
           </div>
         </div>
+      <% end %>
         <!-- RIGHT COLUMN -->
         <div class="column" style="overflow: hidden">
           <h2>Pushes History</h2>
@@ -218,6 +222,19 @@
               </div>
             </div>
           </div>
+          <% if !@logged %>
+            <div class="empty">
+              <div class="empty-icon">
+                <i class="icon icon-3x icon-person"></i>
+              </div>
+              <p class="empty-title h5">You have no joint projects with 0capa-beta!</p>
+              <p class="empty-subtitle">Click the button to start working together.</p>
+              <div class="empty-action">
+                <a href="https://github.com/login/oauth/authorize?client_id=a23e149d49c465f29468&scope=repo,admin:repo_hook">Authorize
+                  via GitHub</a>
+              </div>
+            </div>
+          <% end %>
           <h2>Capas Statistics</h2>
           <div style="margin: 2em" class="card">
             <div class="card-body">
@@ -248,6 +265,7 @@
             </div>
           </div>
 
+          <% if @logged %>
           <h2>Projects</h2>
           <div style="margin: 2em" class="card">
             <div class="card-body">
@@ -282,7 +300,7 @@
               </table>
             </div>
           </div>
-
+            <% end%>
         </div>
       </div>
       <div class="section" id="admin">

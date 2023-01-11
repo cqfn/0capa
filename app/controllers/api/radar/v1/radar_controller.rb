@@ -7,26 +7,6 @@ module Api
   module Radar
     module V1
       class RadarController < ApplicationController
-        # def check_repos_update
-        #   radar_name = params[:source].capitalize
-        #   radar = FactoryClass.create("#{radar_name}Radar", nil)
-        #   if radar.check_repos_update()
-        #     render json: { message: "Call catched" }, status: 200
-        #   else
-        #     render json: { error: "Error Fetching the data" }, status: 400
-        #   end
-        # end
-
-        # def repos_full_update
-        #   radar_name = params[:source].capitalize
-        #   radar = FactoryClass.create("#{radar_name}Radar", nil)
-        #   if radar.get_repos_full_update()
-        #     render json: { message: "Call catched" }, status: 200
-        #   else
-        #     render json: { error: "Error Fetching the data" }, status: 400
-        #   end
-        # end
-
         def repos_from_json
           radar_name = params[:source].capitalize
           query = params[:query_url]

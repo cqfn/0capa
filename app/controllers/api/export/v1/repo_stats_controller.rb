@@ -1,7 +1,16 @@
-class Api::Export::V1::RepoStatsController < ApplicationController
-  def export
-    puts params[:url]
+# frozen_string_literal: true
 
-    send_data GeneratedCapa.to_csv(params[:url]), filename: "generated-capas-#{DateTime.now.strftime("%d%m%Y%H%M")}.csv"
+module Api
+  module Export
+    module V1
+      class RepoStatsController < ApplicationController
+        def export
+          puts params[:url]
+
+          send_data GeneratedCapa.to_csv(params[:url]),
+                    filename: "generated-capas-#{DateTime.now.strftime('%d%m%Y%H%M')}.csv"
+        end
+      end
+    end
   end
 end

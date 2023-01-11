@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     namespace :chatbot do
       namespace :v1 do
         resources :issues, only: [:create]
-        resource :github_webhooks, only: :create, defaults: { formats: :json } 
+        resource :github_webhooks, only: :create, defaults: { formats: :json }
         get 'setup_webhook', to: 'setup_webhook#index'
         post 'update_issue', to: 'issues#update_issue'
         post 'create_issue', to: 'issues#create_github_issues'
@@ -54,6 +54,5 @@ Rails.application.routes.draw do
         get 'github', to: 'github#index'
       end
     end
-
   end
 end
