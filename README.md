@@ -117,6 +117,9 @@ Here is a full list of all commands, in alphabetic order.
 #### Hello
 Sort of a "ping". Post `@0capa-beta hello` and expect an immediate answer from 0capa (well, within 60 seconds). If you don't get an answer, there is something wrong with Rultor. Feel free to post a bug to our issue tracker.
 
+#### Generate report with all suggestions for particular project
+This command will provide a link where you can download `.csv` file with all generated CAPAs that are related to your project repository.
+
 #### Status
 Checks the status of currently running analyze in project. Just post `@0capa-beta status` and see what 0capa says, like detailed information about mode;
 
