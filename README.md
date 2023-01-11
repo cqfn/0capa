@@ -6,7 +6,7 @@
 **TOM** (stands for Theoretically Objective Measurements
 of Software Development Projects) is a set of services that are in charge of helping developers or teams in the process of identifying anomilies within their software development process, and providing a list of preventive or corrective actions (aka **CAPAS**) that positively impact the process. and in this way to improve the quality of the final product and its development process.
 
-In order to get help from TOM, it is as simple as adding our bot([@0capa](https://github.com/0capa)) to the list of collaborators in your repository, and with this our bot will automatically take care of obtaining different metrics from your repository, in order to suggest actions to take into account to that in your future updates the identified anomalies are not repeated.
+In order to get help from TOM, it is as simple as adding our bot([@0capa](https://github.com/0capa) or [@0capa-beta](https://github.com/0capa-beta)) to the list of collaborators in your repository, and with this our bot will automatically take care of obtaining different metrics from your repository, in order to suggest actions to take into account to that in your future updates the identified anomalies are not repeated.
 
 
 
@@ -51,7 +51,7 @@ Once the services are properly deployed and the database has been created, the n
 ## Starting TOM
 At the moment **TOM** is composed by 3 different components, which are
 * **TOM-Radar**, is the responsible to collect the data from the different VCS.
-* **TOM-Advisor**, is the component aimed to analyze the data collected previously by the *Radar* to find some possible anomalies and produce a set of possible actions to fix it or to avoid it in the future.
+* **TOM-Advisor**, is the component aimed to analyze the data collected previously by the *Radar* to find some possible anomalies and produce a set of possible actions to fix it or to avoid it in the future. [deprecated]
 * **TOM-Chat-bot**, and lately, the chat-bot is the component which is in charge on posting issues to the repos and keep track of the actions taken.
 
 Once the app has been deploy and setting up process is completed, the rest is to start running the components of TOM.
@@ -63,14 +63,12 @@ Once the app has been deploy and setting up process is completed, the rest is to
 E.G
 > https://mydomain.com/api/radar/v1/start-radar?source=github
 
-* **TOM-Advisor**
+* **TOM-Advisor** [deprecated]
 > 1. http://your-server-ip/api/advisor/v1/start-advisor?model=[prediction_model]
 > 2. http://your-server-ip/api/advisor/v1/stop-advisor?model=[prediction_model]
 
 E.G
 > https://mydomain.com/api/advisor/v1/start-advisor?model=kmeans
-
-// Chat-bot daemon is currently not supported.
 
 * **TOM-Chat-bot**
 > 1. http://your-server-ip/api/chatbot/v1/start-chatbot?source=[source_vcs]
@@ -93,28 +91,7 @@ $$ Rule => {P_i, C_j}, where P - pattern, C - capa$$
 Run query from an open file to add patterns and rules;
 ```
 INSERT INTO public.patterns (id, title, body, "window", threshold, consensus_pattern, created_at, updated_at)
-VALUES (
-      DEFAULT, 
-      '<<CAPA NAME>>', 
-      '<<CAPA BODY>>', 
-      14, 
-      0.3919,
-      '{93.0,
-          2.0,
-          2.0,
-          2.0,
-          4.0,
-          4.0,
-          6.0,
-          4.0,
-          14.0,
-          20.0,
-          11.0,
-          11.0,
-          19.0,
-          19.0
-      }', '2022-12-19 17:01:22.000000',
-              '2022-12-19 17:01:25.000000');
+VALUES (<<insert your pattern data here>>);
 ```
 
 A stored procedure is a set of SQL statements with an assigned name. You can execute stored procedures in PostgreSQL, Microsoft SQL Server, Oracle, and MySQL.
@@ -145,6 +122,9 @@ Checks the status of currently running analyze in project. Just post `@0capa-bet
 
 #### Switch mode
 By default 0capa proceed project metrics and generate `CAPAs` in `Random` mode. But if you consider it significant you can switch mode(that was described above) simply post `@0capa-beta switch ML mode` and vise-versa.
+
+#### Stop suggestions 
+In case you wanna to prevent spam from 0capa just post `@0capa-beta please stop` to remove your repo from sort of "white" list.
 
 ## How to Contribute
 
