@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 2.7'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+gem "honeybadger", "~> 5.0"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -70,3 +71,4 @@ gem 'time'
 gem 'kmeans-clusterer'
 # for Github issue comments tracking
 gem 'github_webhook', '~> 1.4'
+gem "influxdb-rails"

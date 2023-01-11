@@ -100,6 +100,7 @@ GEM
       railties (>= 4)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    honeybadger (5.0.2)
     http (5.0.4)
       addressable (~> 2.8)
       http-cookie (~> 1.0)
@@ -110,6 +111,10 @@ GEM
     http-form_data (2.3.0)
     i18n (1.9.1)
       concurrent-ruby (~> 1.0)
+    influxdb (0.8.1)
+    influxdb-rails (1.0.3)
+      influxdb (~> 0.6, >= 0.6.4)
+      railties (>= 5.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -289,7 +294,9 @@ DEPENDENCIES
   celluloid
   git
   github_webhook (~> 1.4)
+  honeybadger (~> 5.0)
   http
+  influxdb-rails
   jbuilder (~> 2.7)
   kmeans-clusterer
   nokogiri
