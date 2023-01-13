@@ -56,6 +56,10 @@ module Api
               payload['issue']['comments_url'], json: { body: "Hello! Good news: everything works fine.\n0capa-beta detailed info:\nNew suggestions every 12hours.\nCurrent mode for project is '#{project.mode}'" }
             )
 
+          when /status/
+            HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+              payload['issue']['comments_url'], json: { body: 'Hello! Good news: everything works fine.' }
+            )
           when /export/
             export_query = { url: project.repo_url }.to_query
             export_url = "https://0capa.ru/api/export/v1/repo_stats?#{export_query}"
@@ -65,6 +69,9 @@ module Api
             )
           when /stop/
             TomProject.where(repoid: payload['repository']['id']).destroy_all
+            HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
+              payload['issue']['comments_url'], json: { body: 'Hello! Ima so sorry you dont want to be friends with me anymore!!!!! ![](https://i.imgur.com/hjnZvs5.png)' }
+            )
           end
         end
 

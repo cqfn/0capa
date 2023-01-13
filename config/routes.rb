@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :export do
       namespace :v1 do
         get 'repo_stats', to: 'repo_stats#export'
+        get 'stats', to: 'repo_stats#export_all'
       end
     end
   end
