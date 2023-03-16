@@ -82,8 +82,13 @@ ___
 
 
 ## Working with TOM
+### First of all: Webhooks
+For full access to all the functionality of the bot you first need to set the webhooks for the project - this can be done in the dashboard.
+1. Go to 0capa.com
+2. Login via GithubOauth
+3. In project list click "setup webhook'
+![](https://i.imgur.com/YrwjESV.png)
 ### Add more patterns and rules
-
 $$ Rule => {P_i, C_j}, where P - pattern, C - capa$$
 
 Run query from an open file to add patterns and rules;
