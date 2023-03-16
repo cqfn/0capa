@@ -10,9 +10,8 @@ class CheckReposUpdateJob < ApplicationJob
   def euclideanDistance(p, q)
     p = [p].flatten
     q = [q].flatten
-    result = Math.sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last)**2 })
+    Math.sqrt(p.zip(q).inject(0) { |sum, coord| sum + (coord.first - coord.last) ** 2 })
     # puts "EUCLIDIAN DISTANCE data: #{p}, consensus: #{q} => #{result}"
-    result
   end
 
   def perform(*_args)
@@ -22,7 +21,7 @@ class CheckReposUpdateJob < ApplicationJob
 
     [*1.._limit].each do |_p|
       puts "projects that need to be analyzed #{_limit}"
-      check_repos_update
+      generate_capas
     end
   end
 
@@ -30,28 +29,38 @@ class CheckReposUpdateJob < ApplicationJob
     TomProject.where(total_analyse_state: 'N').count
   end
 
-  def check_repos_update
-    repos_for_preliminary_analyse = TomProject.where(total_analyse_state: 'N').order('updated_at DESC').first(20)
+  def ml_based_generation(project)
+    project.update(total_analyse_state: 'Y')
+    project.save
+    puts 'Starting proceed preliminary analyse.. '
+    puts project.repo_url
+    proceed_preliminary_analyse project.repo_url
+    puts 'Ending proceed preliminary analyse.. '
+  end
 
-    puts "REPOS FOR PRELIMINARY ANALYSE : #{repos_for_preliminary_analyse.count}"
+  def random_based_generation(project)
+    capa = Capa.where(pattern_id: 0).order('RANDOM()').first
+    generated = GeneratedCapa.new(
+      title: capa.title,
+      body: capa.description,
+      mode: 'Random',
+      status: 'N',
+      repo_name: project.repo_url
+    )
+    generated.save
+  end
 
-    if repos_for_preliminary_analyse.length.positive?
-      repos_for_preliminary_analyse.each do |repo|
-        repo.update(total_analyse_state: 'Y')
-        repo.save
-        puts 'Starting proceed preliminary analyse.. '
-        puts repo.repo_url
-        proceed_preliminary_analyse repo.repo_url
-        puts 'Ending proceed preliminary analyse.. '
+  def generate_capas
+    TomProject.where(source: 'github').each do |project|
+      puts "generate_capas: PROJECT MODE #{project.mode}"
+      
+      if project.mode == 'ML'
+        puts 'generate_capas: ML MODE'
+        ml_based_generation(project) if project.total_analyse_state == 'N'
+      else
+        puts 'generate_capas: RANDOM MODE'
+        random_based_generation(project)
       end
-    else
-      # repos_for_ordinary_analyse = TomProject.where(total_analyse_state: 'Y')
-      # if repos_for_ordinary_analyse.length.positive?
-      #   repos_for_preliminary_analyse.each do |repo|
-      #     proceed_ordinary_analyse(repo.repo_url, repo.last_commit_analyse_hash)
-      #   end
-      #
-      # end
     end
   end
 
@@ -110,10 +119,7 @@ class CheckReposUpdateJob < ApplicationJob
         windows.each do |key, value|
           next unless (index % key).zero? && index.positive?
 
-          # puts 'Generating....'
           value.each do |pattern|
-            metrics = []
-
             metrics = case pattern.metrics
                       when :total_diff
                         commit_diff
@@ -127,8 +133,6 @@ class CheckReposUpdateJob < ApplicationJob
 
             next unless euclideanDistance(metrics, pattern.consensus_pattern) <= 200
 
-            # puts 'Generated Capa'
-
             Capa.where(pattern_id: pattern.id).all.each do |capa|
               generated = GeneratedCapa.new(
                 title: capa.title,
@@ -138,7 +142,6 @@ class CheckReposUpdateJob < ApplicationJob
                 repo_name: repo_url
               )
               generated.save
-              # puts generated.inspect
             end
           end
         end

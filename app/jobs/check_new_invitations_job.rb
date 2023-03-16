@@ -29,7 +29,8 @@ class CheckNewInvitationsJob < ApplicationJob
           is_private: invitation['repository']['private'] == true ? 'True' : 'False',
           owner_login: invitation['repository']['owner']['login'],
           source: 'github',
-          isactive: 'Y'
+          isactive: 'Y',
+          mode: 'Ml'
         )
         accept_url = settings.invitations_accept_endpoint.sub! '#invitation_id', invitation['id'].to_s
 
@@ -49,12 +50,6 @@ class CheckNewInvitationsJob < ApplicationJob
 
         issue_body =
           "🥳TOM has started processing your repository. \nSeat & drink some coffee ☕ and wait, in just a couple of minutes the @0capa-demo bot will open the capa suggestion issues for this particular project. You can also visit https://0capa.ru/ 🥸 to read detailed info."
-
-        issue_body.sub! '#capa-1', Capa.order('RANDOM()').first.description
-        issue_body.sub! '#capa-2', Capa.order('RANDOM()').first.description
-        issue_body.sub! '#capa-3', Capa.order('RANDOM()').first.description
-        issue_body.sub! '#capa-4', Capa.order('RANDOM()').first.description
-        issue_body.sub! '#capa-5', Capa.order('RANDOM()').first.description
 
         welcomeResponse = HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{TomTokensQueue.where(source: 'github').first.token}"].post(
           "#{request_url}/issues", json: { title: '💥Welcome issue over repo💥', body: issue_body }

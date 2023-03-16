@@ -38,14 +38,14 @@ module Api
             case payload['comment']['body']
             when /Random/
               puts 'скорее всего нас попросили свитчнуться в рандом мод'
-              project.mode = 'Random'
+              project.update(mode: 'Random')
               project.save
               HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
                 payload['issue']['comments_url'], json: { body: 'Changing mode for project to "Random"' }
               )
             when /ML/
               puts 'скорее всего нас попросили свитчнуться в мл мод'
-              project.mode = 'ML'
+              project.update(mode: 'ML')
               project.save
               HTTP[accept: 'application/vnd.github.v3+json', Authorization: "token #{getNextToken}"].post(
                 payload['issue']['comments_url'], json: { body: 'Changing mode for project to "ML"' }
