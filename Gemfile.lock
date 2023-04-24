@@ -92,7 +92,8 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    git (1.10.2)
+    git (1.13.0)
+      addressable (~> 2.8)
       rchardet (~> 1.8)
     github_webhook (1.4.1)
       activesupport (>= 4)
